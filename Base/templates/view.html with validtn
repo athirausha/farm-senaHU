@@ -1,0 +1,954 @@
+{% extends 'index.html' %}
+{% block content %}
+        <!-- breadcrumb Start -->
+        <div class="breadcrumb-header">
+            <div class="project-dashboard-content">
+                <div class="board-header-main">
+                    <div class="header-top">
+                        <div class="p-head-left">
+                            <div class="board-name">
+                                <h4 contenteditable="true">
+                                    {% for obj in menus %}
+                                        {% if obj.pk == id %}
+                                            {{obj.base_name}}
+                                        {% endif %}
+                                    {% endfor %}
+                                </h4>
+                                <h4 contenteditable="true">
+                                    {% for obj in base_tbl %}
+                                        {% if obj.pk == id %}
+                                            {{obj.base_name}}
+                                        {% endif %}
+                                    {% endfor %}
+                                </h4>
+                            </div>
+                        </div>
+                        <div class="p-head-right">
+                            <div class="board-actions">
+                                <div class="subscribers">
+                                    <div class="subscriber-list-overlay">
+                                        <div class="subscriber-name">
+                                            <a>A</a>
+                                        </div>
+                                        <div class="more-subscriber" >
+                                            <i class="fa fa-folder-o" aria-hidden="true"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="automations-menu-wrapper">
+                                    <div class="automation-menu-button">
+                                        <div class="automation-button" data-toggle="tooltip" data-placement="bottom" title="Integrations">
+                                            <span><i class="fa fa-indent" aria-hidden="true"></i></span>
+                                            <span>/ 0</span>
+                                        </div>
+                                        <div class="automation-button" data-toggle="tooltip" data-placement="bottom" title="Automations">
+                                            <span><i class="fa fa-external-link-square" aria-hidden="true"></i></span>
+                                            <span>/ 0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="activity-menu-wrapper" data-toggle="tooltip" data-placement="bottom" title="Activity">
+                                    <div class="activity-menu-button">
+                                        <div class="activity-btn">
+                                            <a><i class="fa fa-user-o" aria-hidden="true"></i> <span>/ 1</span></a>
+                                            <span class="b-divider"></span>
+                                            <span>Activity /0</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="board-menu-action" data-toggle="tooltip" data-placement="bottom" title="Actions">
+                                    <div class="action-menu-btn">
+                                        <div class="btn-group">
+                                            <a data-toggle="dropdown" class="btn-arrow-dropdown" type="button">
+                                                <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a href="#" ><i class="fa fa-clone" aria-hidden="true"></i> Add Board</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#"><i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>Board Subscribers</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" ><i class="fa fa-columns" aria-hidden="true"></i>Boar Activity</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#"><i class="fa fa-compress" aria-hidden="true"></i>Add Ref. column</a>
+                                                </li>
+                                                <li>
+                                                    <a href="#" ><i class="fa fa-clone" aria-hidden="true"  ></i> Board Permission</a>
+                                                </li>
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="header-bottom">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- breadcrumb End -->
+
+        <div class="row row-sm">
+            <div class="board-content-wrapper">
+                <div class="board-filter">
+                    <div class="board-control-component">
+                        <div class="control-component-btn">
+                            <div class="dropdown">
+                                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-table" aria-hidden="true"></i>
+                                    {% for obj in menus %}
+                                        {% if obj.pk == id %}
+                                            {{obj.base_name}}
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% for obj in base_tbl %}
+                                        {% if obj.pk == id %}
+                                            {{obj.base_name}}
+                                        {% endif %}
+                                    {% endfor %}
+                                </button>
+
+                                {% if pr_check  == t %}
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="width: 180px; padding: 1px;" >
+                                        <a class="dropdown-item trunback" href="#"  id="{{id}}" onclick="datadel(event)"><i class="fa fa-circle-o-notch" aria-hidden="true"></i> Truncate Table</a>
+                                        <a class="dropdown-item delbasetable trunback" href="#"  id="{{id}}"  onclick="delbase(event)" ><i class="fa fa-trash-o" aria-hidden="true"></i> Drop Table</a>
+                                        <!-- <a class="dropdown-item" href="#">Something else here</a> -->
+                                    </div>
+                                {% else %}
+                                    {% for x in tbl_data %}
+                                        {% if x.create_tables == true %}
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <a class="dropdown-item" href="#"  id="{{id}}" onclick="datadel(event)">Truncate Table</a>
+                                                <a class="dropdown-item delbasetable" href="#"  id="{{id}}"  onclick="delbase(event)" >Drop Table</a>
+                                                <!-- <a class="dropdown-item" href="#">Something else here</a> -->
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="board-new-item-component">
+                        <div class="new-item-btn">
+                            <div class="btn-group">
+                                <button class="btn btn-primary btn-new-item newrow_add"  id="{{id}}" >New Item</button>
+                                <button data-toggle="dropdown" class="btn btn-default btn-arrow-dropdown" type="button"><i class="fa fa-angle-down"></i></button>
+                                {% if pr_check  == t %}
+                                    <ul class="dropdown-menu">
+                                        <li id="btn_new_row"><a id="more-subs" > <i class="fa fa-clone" aria-hidden="true"></i> New Items</a></li>
+                                        <li data-toggle="modal" data-target="#importmod"><a href="#"><i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>Import Items</a></li>
+                                        <li  data-toggle="modal" data-target="#myModal1"><a href="#"><i class="fa fa-columns" aria-hidden="true"></i>Add new column</a></li>
+                                        <li  class="item_tbl_drop" id="col_relation"><a href="#"><i class="fa fa-compress" aria-hidden="true"></i>Add Ref. column</a></li>
+                                        <li data-toggle="modal" data-target="#calc_model"><a href="#" id="btn_open_calc_modal"><i class="fa fa-link" aria-hidden="true"></i>Add Calc. column</a></li>
+                                    </ul>
+                                {% else %}
+                                    <ul class="dropdown-menu">
+                                        {% for x in tbl_data %}
+                                            {% if x.add_data == true %}
+                                                <li id="btn_new_row"><a id="more-subs" > <i class="fa fa-clone" aria-hidden="true"></i> New Items</a></li>
+                                                <li data-toggle="modal" data-target="#importmod"><a href="#"><i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>Import Items</a></li>
+                                            {% endif %}
+                                            {% if x.add_col == true %}
+                                                <li  data-toggle="modal" data-target="#myModal1"><a href="#"><i class="fa fa-columns" aria-hidden="true"></i>Add new column</a></li>
+                                                <li  class="item_tbl_drop" id="col_relation"><a href="#"><i class="fa fa-compress" aria-hidden="true"></i>Add Ref. column</a></li>
+                                                <li data-toggle="modal" data-target="#calc_model"><a href="#" id="btn_open_calc_modal"><i class="fa fa-compress" aria-hidden="true"></i>Add Calc. column</a></li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="board-filters-component">
+                        <div class="search-filter">
+                            <div class="form-group m-0">
+                                <input type="text" placeholder="Search / Filter Board" class="form-control">
+                            </div>
+                        </div>
+                        <div class="profile-filter">
+                            <a data-toggle="dropdown" class="menu-icon"><i class="fa fa-user-circle" aria-hidden="true"></i></a>
+                            <ul class="dropdown-menu">
+                                <li>{{user.email}}</li>
+                                <hr>
+                                {% for obj in allowed_users %}
+                                    <li>{{obj.user_id}}</li>
+                                    <hr>
+                                {% endfor %}
+
+                            </ul>
+                        </div>
+                        <div class="profile-filter hidden-columns">
+                            <a class="menu-icon " data-toggle="dropdown">
+                                <i class="fa fa-eye-slash" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Hoohelloray!"></i>
+                                <!-- <span class="item-title">Hidden Columns</span>-->
+                            </a>
+                            <ul class="dropdown-menu">
+                                <p class="head">Choose Columns to Display</p>
+                                <!-- <li>
+                                    <a href="#">
+                                        <span>All Columns</span>
+                                        <div class="custom-checkbox">
+                                            <label class="c-container">
+                                              <input type="checkbox">
+                                              <span class="c-checkmark"></span>
+                                            </label>
+                                        </div>
+                                    </a>
+                                </li> -->
+                                {% for all in alls %}
+                                    <li>
+                                        <a href="#">
+                                            <span  class="drop_check_box_label" id="{{all.pk}}" >{{all.c_name}}</span>
+                                            <div class="custom-checkbox">
+                                                <label class="c-container">
+                                                    <input  type="checkbox" class="h_ch" id="{{forloop.counter}}" >
+                                                    <!-- <span class="c-checkmark"></span> -->
+                                                </label>
+                                            </div>
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                                <div class="col-xs-12">
+                                    <button class="btn btn-primary" color="primary" expand="block" shape="round" id="btn_h">Apply Changes</button>
+                                </div>
+                            </ul>
+                        </div>
+                        <div class="profile-filter filter-column">
+                            <a class="menu-icon" data-toggle="dropdown"><i class="fa fa-filter" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Hooray!"></i></a>
+                            <ul class="dropdown-menu" id="fiter-dropdown">
+                                <div class="filter-title">
+                                    <div class="title-container">
+                                        <span class="main-title">
+                                            <b>Filter your board</b>
+                                        </span>
+                                        <div class="filter-action">
+                                            <div class="export-to-excel">
+                                                <a class="export-advanced-filter-button" id="btnExport">Export to Excel </a>
+                                                <a class="export-advanced-filter-button" onclick="javascript:demoFromHTML();" > Export to PDF</a>
+                                            </div>
+                                            <div class="save-filter">
+                                                <button  class="btn btn-default save-filter-btn tablefilter">
+                                                    <i class="fa fa-floppy-o" aria-hidden="true"></i>Save as new view
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="filter-items">
+                                    <div class="filter-items-inner">
+                                        {% for col in column %}
+                                            <div class="advanced-filter-item groups">
+                                                <p class="filter-head-text">{{col.c_name}}</p>
+                                                <div class="filter-items-list-container">
+                                                    {% for obj in c_values %}
+                                                        {% if col.pk == obj.bc_fk %}
+                                                            <div class="advanced-filter-option groups filterdiv">
+                                                                <!-- <input  name="filter" type="checkbox" class="f_ch " > -->
+                                                                <span class="advanced-filter-option-content filter-option">{{obj.c_v}}</span>
+                                                                <span class="advanced-filter-option-counter">{{ct}}</span>
+                                                            </div>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="board-content-area">
+
+            {% if messages %}
+              <!-- {% for message in messages %} -->
+              <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+              <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close"> -->
+              <!-- <span aria-hidden="true" >&times;</span>
+               </button> -->
+                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                {{ message }}
+               </div>
+              <!-- {% endfor %} -->
+            {% endif %}
+
+                    <div class="project-table-container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div id="customers"  class="dataTables_wrapper reference_table_container">
+                                    <table class="table display resizable " id="demo">
+                                        <thead class="addcol" id="{{id}}">
+                                            <tr>
+                                                {% for all in alls %}
+                                                    <th id="{{all.pk}}">{{ all.c_name }}</th>
+                                                {% endfor %}
+                                            </tr>
+                                        </thead>
+                                        <tbody id= "{{max_row}}" class="table_body">
+                                            <tr id="0">
+                                                {% for c, id, row_id in mylist %}
+                                                    {% if forloop.counter|divisibleby:bc and forloop.counter != mylist_length %}
+                                                        <td id="{{id}}" class="" >
+                                                            {{c}}
+                                                        </td>
+                                                        </tr>
+                                                        <tr id="{{row_id}}">
+                                                    {%else%}
+                                                        <td id="{{id}}" class="">
+                                                            {{c}}
+                                                        </td>
+                                                    {%endif%}
+                                                {% endfor %}
+                                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    {% if pr_check  == t %}
+                                        <a class="newrow_add" id="{{id}}"><button type="submit" class="btn btn-primary"><i class='fa fa-plus' ></i> New row</button></a>
+                                    {% else %}
+                                        {% for x in tbl_data %}
+                                            {% if x.add_data == true %}
+                                                <a class="newrow_add" id="{{id}}"><button type="submit"><i class='fa fa-plus' ></i> New row</button></a>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+       <div class="sidebar sidebar-right">
+            <a class="sidebar-close"><img src="/static/img/close.svg"></a>
+            <div class="content-sidebar">
+                <div class="card-header tab-card-header bg-transparent">
+                    <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link" id="one-tab" data-toggle="tab" href="#one" role="tab" aria-controls="One" aria-selected="true">Activity</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="two-tab" data-toggle="tab" href="#two" role="tab" aria-controls="Two" aria-selected="false">Information</a>
+                        </li>
+
+
+                    </ul>
+                </div>
+
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active p-4" id="one" role="tabpanel" aria-labelledby="one-tab">
+                       <form class="was-validated">
+                        {% for all in alls %}
+                            <div class="row form-group">
+                                <div class="col-md-6">
+                                    <label class="col-form-label">{{all.c_name}}</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    {%if all.d_type == tydate %}
+                                        <input type="date" class="form-control detailid_add_new" name="fname" id="{{all.pk}}" required>
+                                        <div class="valid-feedback">Valid.</div>
+                                        <div class="invalid-feedback">Please fill out this field.</div>
+                                    {%elif all.d_type == tytime%}
+                                        <input type="time" class="form-control detailid_add_new" id="{{all.pk}}" required>
+                                        <div class="valid-feedback">Valid.</div>
+                                        <div class="invalid-feedback">Please fill out this field.</div>
+                                    {%elif all.d_type == ttext or all.d_type == tt %}
+                                        <input type="text" class="form-control detailid_add_new max" id="{{all.pk}}" maxlength="{{all.d_size}}" required>
+                                        <div class="valid-feedback">Valid.</div>
+                                        <div class="invalid-feedback">Please fill out this field.</div>
+                                    {% elif all.d_type == tnumeric or all.d_type == tnum %}
+                                        <input type="text" class="form-control detailid_add_new max" id="{{all.pk}}" maxlength="{{all.d_size}}" required>
+                                        <div class="valid-feedback">Valid.</div>
+                                        <div class="invalid-feedback">Please fill out this field.</div>
+                                    {% elif all.d_type == Calc %}
+                                        <input type="text" class="form-control detailid_clc max" id="{{all.pk}}" maxlength="{{all.d_size}}" required>
+                                        <div class="valid-feedback">Valid.</div>
+                                        <div class="invalid-feedback">Please fill out this field.</div>
+                                    {% elif all.d_type == timage %}
+                                        <input type="file" class="form-control detailid_add_new" id="{{all.pk}}" required>
+                                        <div class="valid-feedback">Valid.</div>
+                                        <div class="invalid-feedback">Please fill out this field.</div>
+                                    {%else%}
+                                        <select class="form-control detailid_add_new ref_select_drop {{all.pk}}" id="{{all.pk}}" required>
+                                        </select>
+                                        <div class="valid-feedback">Valid.</div>
+                                        <div class="invalid-feedback">Please fill out this field.</div>
+                                    {%endif%}
+                                </div>
+                               
+                            </div>
+                        {%endfor%}
+                   
+                        <div class="form-group row">
+                            <div class="col-sm-7">
+                                <button  class="btn btn-primary adddetails"  id="{{id}}">Add Row</button>
+                            </div>
+                        </div>
+                    </form> 
+                    </div>
+                    <div class="tab-pane fade p-3" id="two" role="tabpanel" aria-labelledby="two-tab">
+                        <div class="row form-group">
+                            <div class="col-md-6">
+                                <label class="col-form-label">Base Name</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control detailid bname" value="{{info.base_name}}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="col-form-label">Technical Name</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control detailid tname" value="{{info.technical_name}}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="col-form-label">Table Type</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control detailid ttype" value="{{info.table_type}}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="col-form-label">Description</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control detailid desc" value="{{info.discription}}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="col-form-label">Purpose</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control detailid purp" value="{{info.purpose}}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="col-form-label">BCP</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control detailid bcp" value="{{info.bcp}}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="col-form-label">Tags</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control detailid tag" value="{{info.tags}}" required>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-7">
+                                    <button class="btn btn-danger info_edit"  id="{{id}}" >Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade p-3" id="three" role="tabpanel" aria-labelledby="three-tab">
+                        <div class="col-md-12">
+                            <div id="customers"  class="dataTables_wrapper reference_table_container">
+                                <table class="table display resizable " id="demo">
+                                    <thead class="addcol_additional" id="{{id}}">
+
+                                    </thead>
+                                    <tbody  class="table_body_additional">
+                                        <tr id="0">
+                                                {% for c, id, row_id in mylist %}
+                                                    {% if forloop.counter|divisibleby:bc and forloop.counter != mylist_length %}
+                                                        <td id="{{id}}" class="" >
+                                                            {{c}}
+                                                        </td>
+                                                        </tr>
+                                                        <tr id="{{row_id}}">
+                                                    {%else%}
+                                                        <td id="{{id}}" class="">
+                                                            {{c}}
+                                                        </td>
+                                                    {%endif%}
+                                                {% endfor %}
+                                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+
+
+  <!-- Modal Adding New Column-->
+     <div class="modal fade" id="myModal1" role="dialog">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Adding New Column</h4>
+            </div>
+            <div class="modal-body">
+              <input type="text" id="" class="form-control newcol space_adjust_md" placeholder="Enter New Column">
+
+             <br>
+              <select class="form-control space_adjust_md newcoltype">
+                <option value="Text">Text</option>
+                <option value="Date">Date</option>
+                <option value="Time">Time</option>
+                <option value="Image">Image</option>
+                <option value="Numeric">Numeric</option>
+              </select>
+              <br>
+              <input type="text" id="" class="form-control newcolsize space_adjust_md" placeholder="Enter Column Size">
+            </div>
+
+
+            <div class="modal-footer">
+              <button type="button" id="savenewcol" class="btn btn-success" data-dismiss="modal">Save</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Modal Adding New Column end-->
+
+       <!-- Modal Adding New Relation Column-->
+    <div class="modal fade" id="Relation_column_model" role="dialog">
+        <div class="modal-dialog modal-sm">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Adding New Relation Column</h4>
+            </div>
+            <!-- Relation tables -->
+            <div class="modal-body">
+              <select class="form-control space_adjust_md" id="master_table_relation_select">
+                <option value="None">Select ...</option>
+              </select>
+            </div>
+            <!-- Relation tables -->
+            <!-- Relation columns -->
+            <div class="modal-body">
+              <select class="form-control space_adjust_md " id="master_table_relation_column_select">
+                <option value="None">Select ...</option>
+              </select>
+            </div>
+            <!-- Relation columns -->
+            <div class="modal-footer">
+              <button type="button" id="btn_add_relation" class="btn btn-success" data-dismiss="modal">Save</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Modal Adding New Relation Column end-->
+
+
+
+    {% if pr_check  == t %}
+        <!-- column menus -->
+        <div class="menu" id="contextMenu" class="dropdown clearfix" style="width: 120px;">
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;width: 100%;">
+            <li data-action="first" class="menu-option-list " id="col_edite"> <a><i class="fa fa-pencil"></i> Rename </li> </a>
+            <li data-action="second" class="menu-option-list " id="col_delete"><a>  <i class="fa fa-trash"></i> Delete </li> </a>
+          </ul>
+        </div>
+        <!-- column menus -->
+    {% else %}
+        <!-- column menus -->
+        <div class="menu" id="contextMenu" class="dropdown clearfix" style="width: 120px;">
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;width: 100%;">
+                {% for x in tbl_data %}
+                     {% if x.update_col == true %}
+                        <li data-action="first" class="menu-option-list " id="col_edite"> <a><i class="fa fa-pencil"></i> Rename </li> </a>
+                     {% endif %}
+                     {% if x.delete_col == true %}
+                        <li data-action="second" class="menu-option-list " id="col_delete"><a>  <i class="fa fa-trash"></i> Delete </li> </a>
+                     {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        <!-- column menus -->
+    {% endif %}
+
+   {% if pr_check  == t %}
+       <!-- row menus -->
+        <div class="RW_menu">
+          <ul class="menu-options">
+              <li class="menu-option-list" id="row_delete"><a> <i class="fa fa-trash" aria-hidden="true"></i> Delete Row </a></li>
+              <li class="menu-option-list" id="row_dup">  <a><i class="fa fa-files-o" aria-hidden="true"></i>Duplicate Row</a></li>
+              <li class="menu-option-list"><a id="row_copy"><i class="fa fa-files-o" aria-hidden="true"></i>Edit</a></li>
+              <li class="menu-option-list"><a id="sutable_click_menu" data-toggle="modal" data-target="#exampleModal">Sub Tables</a></li>
+
+          </ul>
+        </div>
+        <!-- row menus -->
+   {% else %}
+        <!-- row menus -->
+        <div class="RW_menu">
+            <ul class="menu-options">
+                {% for x in tbl_data %}
+                     {% if x.delete_data == true %}
+                        <li class="menu-option-list" id="row_delete"><a> <i class="fa fa-trash" aria-hidden="true"></i> Delete Row </a></li>
+                     {% endif %}
+                     {% if x.add_data == true %}
+                        <li class="menu-option-list" id="row_dup"><a> <i class="fa fa-trash" aria-hidden="true"></i> Duplicate Row </a></li>
+                     {% endif %}
+                     {% if x.update_data == true %}
+                       <li class="menu-option-list"><a id="row_copy"><i class="fa fa-files-o" aria-hidden="true"></i>Edit</a></li>
+                     {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        <!-- row menus -->
+   {% endif %}
+
+
+      <!-- Modal Rename  Column-->
+    <div class="modal fade" id="rmodal" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Rename</h4>
+          </div>
+          <div class="modal-body">
+            <input type="text"  class="form-control newcol space_adjust_md col_md_rn">
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="btn_rn" class="btn btn-success" data-dismiss="modal">Save</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal Rename  Column end-->
+
+    <!-- Message Box -->
+    <div class="modal fade" id="messagebox" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="modal-body no_border_style">
+            <p class="messagetxt"></p>
+          </div>
+          <div class="modal-footer no_border_style">
+            <button type="button" id="btnconfirm" class="btn btn-success" data-dismiss="modal">Yes !!</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Message Box -->
+
+
+
+    <!-- Calculation modal -->
+    <div class="modal fade" id="calc_model" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Calculation Column</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-5 calc_columns column_box">
+
+                            </div>
+                            <div class="col-md-2">
+
+                            </div>
+                            <div class="col-md-5 calc_columns equation_box">
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 calc_columns operator_box">
+                                <button class="btn btn-info btn-oprator" id="+">+</button>
+                                <button class="btn btn-primary btn-oprator" id="-">-</button>
+                                <button class="btn btn-danger btn-oprator" id="*">*</button>
+                                <button class="btn btn-warning btn-oprator" id="/">/</button>
+                                <button class="btn btn-success btn-oprator" id="%">%</button>
+                                <button class="btn btn-success btn-oprator" id=">">Max</button>
+                                <button class="btn btn-success btn-oprator" id="<">Min</button>
+                            </div>
+                            <div class="col-md-2">
+
+                            </div>
+                            <div class="col-md-5 ignore_padding">
+                                <div class="form-group mtop">
+                                    <label class="label_frm">Resultant Column Name :</label>
+                                    <input type="text" class="form-control calc_result_column">
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <label class="label_frm">Costant Value : </label>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input type="text" class="form-control" id="cr_sv">
+                                    </div>
+                                    <div class="col-md-2">
+                                         <button class="btn btn-info" id="adding_const_btn">Add</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-info save_calc" data-dismiss="modal">Save</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Calculation modal End -->
+
+<!-- Modal copy table-->
+
+ <div class="modal right fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel2">Edit Record
+        </h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+
+      <div class="modal-body  copy_details">
+
+
+      </div>
+      <div class="col-md-2">
+      <button class="btn btn-danger edit_modal"  id="{{id}}" style="float:right">Save</button>
+    </div>
+      <div class="modal-footer">
+
+      </div>
+
+    </div><!-- modal-content -->
+  </div><!-- modal-dialog -->
+</div><!-- modal  add row-->
+
+<!-- Modal copy  table end-->
+
+
+
+
+
+
+<!-- Modal copy sub table-->
+ <div class="modal right fade" id="myModal123" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" style="z-index:2000;">
+     <div class="modal-dialog" role="document">
+         <div class="modal-content">
+             <div class="modal-header">
+                 <h4 class="modal-title" id="myModalLabel123">Edit Record</h4>
+                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+             </div>
+
+             <div class="modal-body  copy_details_sub_table">
+
+             </div>
+             <div class="col-md-2">
+                 <button class="btn btn-danger edit_modal_sub_table"  id="{{id}}" style="float:right">Save</button>
+             </div>
+             <div class="modal-footer">
+
+             </div>
+         </div>
+         <!-- modal-content -->
+     </div>
+     <!-- modal-dialog -->
+ </div>
+<!-- Modal copy  sub table end-->
+
+
+ <!--invit Modal -->
+<div class="modal fade" id="inviteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+          <h6 class="modal-title" id="myModalLabel"><i class="fa fa-share-alt"></i> Share</h6>
+        </div>
+        <div class="modal-body">
+          <!-- <p><a title="Facebook" href=""><span class="fa-stack fa-lg"><i class="fa fas-square-o fa-stack-2x"></i><i class="fa fa-facebook fa-stack-1x"></i></span></a> <a title="Twitter" href=""><span class="fa-stack fa-lg"><i class="fa fa-square-o fa-stack-2x"></i><i class="fa fa-twitter fa-stack-1x"></i></span></a> <a title="Google+" href=""><span class="fa-stack fa-lg"><i class="fa fa-square-o fa-stack-2x"></i><i class="fa fa-google-plus fa-stack-1x"></i></span></a> <a title="Linkedin" href=""><span class="fa-stack fa-lg"><i class="fa fa-square-o fa-stack-2x"></i><i class="fa fa-linkedin fa-stack-1x"></i></span></a> <a title="Reddit" href=""><span class="fa-stack fa-lg"><i class="fa fa-square-o fa-stack-2x"></i><i class="fa fa-reddit fa-stack-1x"></i></span></a> <a title="WordPress" href=""><span class="fa-stack fa-lg"><i class="fa fa-square-o fa-stack-2x"></i><i class="fa fa-wordpress fa-stack-1x"></i></span></a> <a title="Digg" href=""><span class="fa-stack fa-lg"><i class="fa fa-square-o fa-stack-2x"></i><i class="fa fa-digg fa-stack-1x"></i></span></a>  <a title="Stumbleupon" href=""><span class="fa-stack fa-lg"><i class="fa fa-square-o fa-stack-2x"></i><i class="fa fa-stumbleupon fa-stack-1x"></i></span></a><a title="E-mail" href=""><span class="fa-stack fa-lg"><i class="fa fa-square-o fa-stack-2x"></i><i class="fa fa-envelope fa-stack-1x"></i></span></a>  <a title="Print" href=""><span class="fa-stack fa-lg"><i class="fa fa-square-o fa-stack-2x"></i><i class="fa fa-print fa-stack-1x"></i></span></a></p> -->
+
+          <h2><i class="fa fa-envelope"></i>Invitation</h2>
+
+                  <p>Invite the New Member</p>
+
+                  <form action="/invitemail" method="POST">
+                    {% csrf_token %}
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+                        <input type="email" class="form-control" name="email" placeholder="your@email.com">
+                      </div>
+                      <br />
+                      <button type="submit" value="sub" name="sub" class="btn btn-primary"><i class="fa fa-share"></i> Subscribe Now!</button>
+                </form>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+ <!--invit Modal End -->
+
+<!-- import start -->
+
+ <div class="modal right fade" id="importmod" tabindex="-1" role="dialog" >
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+      <h4>Import Data</h4>
+      </div>
+
+      <div class="modal-body ">
+
+        <form method="POST" enctype="multipart/form-data" id="fileUploadForm">
+          {% csrf_token %}
+
+          <input type="file" name="files"/><br/><br/>
+          <input type="submit" value="Submit" id="btnSubmit" class="" >
+      </form>
+      </div>
+
+      <div class="modal-footer">
+
+      </div>
+
+    </div>
+    </div>
+    </div>
+
+
+
+ <!-- import End -->
+ <!-- Modal for schema -->
+ <div class="modal fade create_tbl" id="createbase" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+
+        <h4 class="modal-title">Create Table</h4>
+         <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="row col-md-12 form-group">
+          <div class="col-md-6">
+            <label  class="col-form-label ">Table Name</label>
+          </div>
+          <div class="col-md-6">
+         <input type="text" class="table_name form-control">
+          </div>
+
+        </div>
+
+       <div class="row col-md-12 form-group">
+         <div class="col-md-6">
+           <label  class="col-form-label" >select table</label>
+       </div>
+
+      <div class="col-md-6">
+
+          <select name="seltable"  class="form-control space_adjust_md" id="table_select">
+            <option>Select...</option>
+              {% for menu in menus %}
+                  <option value="{{ menu.pk }}">{{ menu.base_name }}</option>
+              {% endfor %}
+          </select>
+
+         </div>
+
+         <!--**** column select***** -->
+         <div class="row col-md-12 form-group">
+            <div class="col-md-6">
+              <label  class="col-form-label "> Select column </label>
+            </div>
+
+            <div class="col-md-6 ">
+            <select id="column_select"  name="colselect" class="selectpicker w-160 form-control space_adjust_md" multiple title="select.." >
+
+              <!-- <option value="0">select</option> -->
+
+          </select>
+
+            </div>
+
+        </div>
+
+
+     </div>
+
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary saveseltable">submit</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- End -->
+
+
+
+
+<div class="modal left fade sutable_model_box" id="exampleModal" tabindex="" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="container">
+                        <ul class="nav nav-tabs" id="sub_table_ul">
+                            {% for id,col in additional_tbls %}
+                                <li class="additional_table" id="{{id}}">
+                                    <a data-toggle="tab" href="#menu2">{{col}}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+
+                        <div class="tab-content">
+                            <div id="menu2" class="tab-pane fade">
+                              <div class="col-md-12">
+                                  <div id="customers"  class="dataTables_wrapper reference_table_container">
+                                      <table class="table display resizable sub_tables_main">
+                                          <thead class="addcol_additional" id="{{id}}">
+
+                                          </thead>
+                                          <tbody  class="table_body_additional">
+
+                                          </tbody>
+                                      </table>
+                                  </div>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 pull-right new_row_btn_div">
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

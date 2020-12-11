@@ -1,0 +1,86 @@
+// Tables
+// --------------------------------------------------
+
+table {
+  border-collapse: collapse;
+  margin: $small-spacing 0;
+  table-layout: fixed;
+  width: 100%;
+}
+
+th {
+  border-bottom: 2px solid $base-border-color;
+  font-weight: 600;
+  padding: $small-spacing 0;
+  text-align: left;
+}
+
+td {
+  border-bottom: $base-border;
+  padding: $small-spacing 0;
+}
+
+tr,
+td,
+th {
+  vertical-align: middle;
+}
+
+.table-model1{
+    table{
+        th, td{
+            border: none;
+            height: 45px;
+            vertical-align: middle;
+        }
+        
+        tr{
+            background: #e0e4ee5c;
+            margin-bottom:5px;
+            border-bottom: 5px solid #fff;
+        }
+        
+        tr{
+            th, td{
+                &:first-child{
+                    //border-left: 2px solid #4cc5de;
+                }
+            }
+        }
+    }
+    
+    .form-control{
+       height: 33px; 
+    }
+}
+
+table.dataTable tbody th, table.dataTable tbody td {
+    padding: 0px 5px;
+}
+
+table.dataTable thead th, table.dataTable thead td {
+    padding: 2px 9px;
+    border-bottom: 5px solid #fff !important;
+}
+
+//table.dataTable thead .sorting:after{
+//    opacity: 0 !important;
+//    
+//}
+
+//table.dataTable thead .sorting_asc:after{
+//    content: "" !important;
+//}
+
+table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+    border-bottom-width: 0;
+    border-bottom: 5px solid #fff !important;
+}
+table.dataTable.nowrap th, table.dataTable.nowrap td {
+    white-space: unset !important;
+        border-bottom: 5px solid #fff;
+}
+
+.table-responsive{
+       overflow-x: unset; 
+}

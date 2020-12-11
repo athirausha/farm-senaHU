@@ -1,0 +1,77 @@
+// Brand colors
+//––––––––––––––––––––––––––––––––––––––––––––––––––
+$blue:       #4078c0 !default;
+$gray-light: #ddd    !default;
+$gray:       #767676 !default;
+$gray-dark:  #333    !default;
+$grey-block: #ccc;
+$white: #fff;
+$bg-primary: #866ec7;
+
+
+
+// Line height
+$base-line-height: 1.4;
+$heading-line-height: 1.2;
+
+// Other Sizes
+$base-border-radius: 3px;
+$base-spacing: $base-line-height * 1em;
+$small-spacing: $base-spacing / 2;
+$base-z-index: 0;
+
+// Border
+$base-border-color: $gray-light;
+$base-border: 1px solid $base-border-color;
+
+
+// Font stack
+//––––––––––––––––––––––––––––––––––––––––––––––––––
+$body-font: 'Roboto', sans-serif;;
+$font-secondary: 'Open Sans', sans-serif;
+
+// The base body size
+//––––––––––––––––––––––––––––––––––––––––––––––––––
+$body-font-size: 16px !default;
+
+
+// Breakpoints
+//––––––––––––––––––––––––––––––––––––––––––––––––––
+
+$lg-320    	: "min-width: 320px";
+$lg-480   	: "min-width: 480px";
+$lg-768    	: "min-width: 768px";
+$lg-992   	: "min-width: 992px";
+$lg-1024   	: "min-width: 1024px";
+$lg-1200 	: "min-width: 1200px";
+
+/*$sm-479   	: "max-width: 479px";
+$sm-576   	: "max-width: 576px";
+$sm-767    	: "max-width: 767px";
+$sm-991   	: "max-width: 991px";
+$sm-1023   	: "max-width: 1023px";
+$sm-1199 	: "max-width: 1199px";
+$sm-1679 	: "max-width: 1679px";*/
+
+$sm-1679 	: "max-width: 1679px"; /** WSXGA resolution **/
+$sm-1441 	: "max-width: 1441px"; /** laptop with HiDPI resolution **/
+$sm-1367 	: "max-width: 1367px"; /** developers resolution **/
+$sm-1281 	: "max-width: 1281px"; /** laptop with MDPI resolution **/
+$sm-1199 	: "max-width: 1199px";
+$sm-1023   	: "max-width: 1023px";
+$sm-991   	: "max-width: 991px";
+$sm-767    	: "max-width: 767px";
+$sm-479   	: "max-width: 479px";
+
+// Colors
+//––––––––––––––––––––––––––––––––––––––––––––––––––
+
+$white: #fff;
+$dashboard-gray: #eff2f5;
+
+
+// Button
+//––––––––––––––––––––––––––––––––––––––––––––––––––
+
+
+

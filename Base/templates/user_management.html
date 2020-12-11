@@ -1,0 +1,61 @@
+{% extends 'index.html' %}
+{% block content %}
+<div class="col-md-12">
+    <div class="row">
+        {% if status == T %}
+        {% for item in data %}
+        <div class="col-md-3 user_management_card">
+
+            <div class="row" style="text-align:left;">
+                <div class="col-md-12" style="text-align:center;margin-top:0.5em;">
+                    <span class="heading-name">{{item.name}}</span>
+                </div>
+                <div class="col-md-12" style="margin-top:0.5em;">
+                    <span class="heading">Email : </span>
+                    <span>{{item.email}}</span>
+                </div>
+                <div class="col-md-12" style="margin-top:0.5em;">
+                    <span class="heading">Profile : </span>
+                    <span>{{item.role}}</span>
+                </div>
+                <div class="col-md-12" style="margin-top:0.5em;">
+                    <span class="heading">Account status : </span>
+                    {% if item.is_active == T %}
+                    <span class="badge badge-success">Active</span>
+                    {% else %}
+                    <span class="badge badge-danger">In-active</span>
+                    {% endif %}
+                </div>
+                <div class="col-md-12" style="margin-top:0.5em;">
+                    <span class="heading">Pho : </span>
+                    <span>{{item.phone}}</span>
+                </div>
+
+                <div class="col-md-12" style="margin-top:0.5em;">
+                    {% for x in tmp_data %}
+                    {% if x.user_id == item.email %}
+                    {% for y in base %}
+                    {% if y.pk == x.table_id %}
+                    <a class="badge badge-primary" href="viewbase/{{y.pk}}">{{y.base_name}}</a>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                <!--
+                <div class="col-md-12" style="text-align:center;margin:0px; margin-top:1em;">
+                    <button class="btn btn-info btn-block">View Profile</button>
+                </div>
+                -->
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="col-md-12">
+            <h4 style="text-align:center;margin-top:3em;">{{data}}</h4>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

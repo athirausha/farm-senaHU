@@ -1,0 +1,70 @@
+{% extends 'index.html' %}
+{% block content %}
+
+<div style="overflow:scroll;">
+<div>
+
+  {% if messages %}
+  <!-- {% for message in messages %} -->
+  <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+  <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close"> -->
+  <!-- <span aria-hidden="true" >&times;</span>
+   </button> -->
+    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+    {{ message }}
+   </div>
+  <!-- {% endfor %} -->
+{% endif %}
+    <label><h6>Report Name</h6></label>
+            <input type="text" id="" class="form-control rname" placeholder="Enter the Report name">
+
+           <br>
+           <label><h6>Detailed Report Name</h6></label>
+            <input type="text" id="" class="form-control drname" placeholder="Enter the Detailed Report name">
+
+           <br>
+           <label><h6>Table Name</h6></label>
+
+            <select class="form-control space_adjust_md " id="tname">
+                <option value="0">Select..</option>
+                {% for menu in menus %}
+              <option value="{{ menu.pk }}">{{ menu.base_name }}</option>
+              {% endfor %}
+              {% for menu in permitted_tables %}
+              <option value="{{ menu.pk }}">{{ menu.base_name }}</option>
+              {% endfor %}
+            </select>
+
+            <br>
+            <label><h6>Field Name</h6></label>
+            <select class="form-control selectpicker" multiple id="field_name" name="fieldselect"  title="select..">
+
+              <!-- <option value="Numeric">x</option> -->
+
+            </select>
+            <br><br>
+           <!-- <input type="button" class="btn btn-primary" value="Add"> -->
+          </div>
+          <br>
+          <div class="" style="padding: 15px;">
+            <!-- <table >
+                <tr>
+                    <th>Table Name</th>
+                    <th>Field Name</th>
+                </tr>
+                <tr>
+                    <td>
+                  sachin
+                    </td>
+                    <td>
+                        ddd
+                    </td>
+                </tr>
+            </table> -->
+           </div>
+           <button type="button" class="btn btn-primary savetable" style="background: #866ec7;color: white;">submit</button>
+           <br><br><br><br><br><br>
+</div>
+
+
+{% endblock %}

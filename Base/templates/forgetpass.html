@@ -1,0 +1,132 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+<!------ Include the above in your HEAD tag ---------->
+
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+</head>
+<style>
+    .form-gap {
+    padding-top: 70px;
+    
+}
+
+.form-control{
+border-color: #dc3545;
+border-radius: 4px;
+  }
+</style>
+
+
+<body style="background:#193048">
+    
+  <a style="margin-left: 30%;">
+    <img src="/static/img/logo1.png" style="width: 80px; height: 80px;">
+</a>
+<div class="container">
+	<div class="row">
+		<div class="col-md-6 ">
+            <div class="panel panel-default" style="width: 600px; height: 600px; margin-left: 50%;">
+              <div class="panel-body" style="">
+                <div class="text-center">
+                  
+                  <h3 class="text-left" style="">Get help signin in to Senahu?</h3>
+                  {% if messages %}
+                  <!-- {% for message in messages %} -->
+                <div class="alert {{ message.tags }} alert-dismissible" role="alert" style="background: #FDEDED;padding: 20px;">
+                  <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close"> -->
+                    <!-- <span aria-hidden="true" >&times;</span>
+                  </button> -->
+                  <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+                  {{ message }}
+                </div>
+              <!-- {% endfor %} -->
+              {% endif %}
+                  <br>
+                  <div><label   class="text-left" style="float: left;" for="">Enter your email ID</label></div>
+                  <br>
+                  <div class="panel-body">
+                  
+                
+                    <form id="register-form" role="form" autocomplete="off" class="form" method="POST">
+                        {% csrf_token %}
+                      <div class="form-group">
+                        <div class="input-validation">
+                          
+                          <!-- <span class="input-group-addon"><i class="glyphicon glyphicon-envelope color-blue"></i></span> -->
+                          <input id="email" name="email"  placeholder="email address" class="form-control"  type="email" required>
+                          <a class="cross"><img src="/static/images/cross.jpg"></a>
+                        </div>
+                        
+                      </div>
+                      <div><h6 style="float: left;">Please enter correct Email id</h6></div><br><br>
+                        <hr>
+                      <div class="form-group">
+                        <a href="/login" style="float: left; margin-left: 0px;">Back to sign in</a>
+                        <input name="recover-submit" class="btn  btn-primary" style="float: right;" value="Continue" type="submit">
+                      </div>
+                      
+                      <input type="hidden" class="hide" name="token" id="token" value=""> 
+                    </form>
+    
+                    <!-- <footer class="footer-content">
+                      <div class="container col-md-12" style=" margin-top: 280px;">
+                              <div class="footer-box">
+                                  <div class="footer-top-row">
+                                     
+                                      <div class="footer-menu">
+                                          <a>Legal</a><span>|</span>
+                                          <a>Privacy</a><span>|</span>
+                                          <a>Security</a><span>|</span>
+                                      </div>
+                                  </div>
+                                  <div class="footer-bottom-row">
+                                      <div class="footer-c-text">
+                                          <p>© 2020 Senahu Technologies Pvt. Ltd.  All rights reserved.</p>
+                                      </div>
+                                      <div class="">
+          
+                                      </div>
+                                  </div>
+                              </div>
+                      </div>      
+                  </footer> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+	</div>
+</div>
+</body>
+<script>
+  $(".form-control").keyup(function(){
+
+      // $(".cross").addClass('textcross')
+      if( $(this).val()=='')
+
+      {
+          console.log()
+      $(this).closest('.input-validation').find('.cross').css('visibility', 'visible');
+      $(this).closest('.input-validation').find('.form-control').css('border-color', '#dc3545');
+     
+     
+     
+       }
+       else{
+          $(this).closest('.input-validation').find('.cross').css('visibility', 'hidden');
+          $(this).closest('.input-validation').find('.form-control').css('border-color', '#333');
+       }
+
+
+});
+</script>
+</html>

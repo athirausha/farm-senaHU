@@ -1,0 +1,221 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    
+   
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+      <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+
+</head>
+
+<style>
+    label.error{
+    color:#ED7476;
+    margin-left:5px;
+    display:inline;
+}
+.alert {
+  padding: 20px;
+  
+  
+  width:410px;
+  height: 50px;
+
+}
+
+.closebtn {
+  margin-left: 15px;
+  
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
+</style>
+
+<body>
+    
+   
+    <div class="container-fluid p-0 bg-background">
+        <div class="main-container">
+            <header class="header">
+                <div class="container header-content">
+                       
+                        
+                </div>
+                
+            </header>
+
+           
+            <div class="content-area container">
+                <div class="row">
+                    <div class="main-flex">
+                        <div class="signup-form">
+                    
+							<a>
+								<img src="/static/img/logo1.png" style=" width: 90px; height: 90px; " class="img-fluid">
+                            </a>
+                            {% if messages %}
+                            <!-- {% for message in messages %} -->
+                          <div class="alert {{ message.tags }} alert-dismissible" role="alert" style="background: #FDEDED;padding: 20px;width: 300px;margin-left: 90px; border-color:mintcream;padding: 10px;">
+                            <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close"> -->
+                              <!-- <span aria-hidden="true" >&times;</span>
+                            </button> -->&nbsp;&nbsp;
+                            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                            {{ message }}
+                          </div>
+                        <!-- {% endfor %} -->
+                        {% endif %}
+                            <form method="POST" action="">
+                                {% csrf_token %}
+                                
+
+                                <div class="form-group">
+                                    <label>Email address</label>
+                                    <div class="input-validation">
+                                        <input class="form-control " name="username"  placeholder="Username" type="email" required>
+                                        <a class="cross"><img src="/static/images/cross.jpg"></a>
+                                        <span style="" class="arrow_box">&nbsp; Type valid user ID </span>
+
+                                    </div>
+                                </div>
+                                
+                              
+
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <div class="input-validation">
+                                        <input class="form-control " name="password" id="password" placeholder="Password" type="Password" required>
+                                        <a class="cross"><img src="/static/images/cross.jpg"></a>
+                                        <span  class="arrow_box" style="">Type Valid Password  </span>
+                                    </div>
+                                </div>
+                               
+
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block btn-signup create_personal_ac" value="Log In">Sign In</button>
+                                </div>
+
+
+                            </form>
+
+                            <div class="form-footer">
+                                <p>By clicking Sign Up, you agree to our
+									<a href="#">Terms</a> and have read and acknowledge our <a href="#">Privacy Statement.</a></p>
+									<p><a href="/forgetpassword">I forgot my user ID or password</a></p>
+									<p>New to Senahu?<a href="/register">Create an account</a> </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="main-flex">
+                        <div class="signup-form bg-gray">
+                                <div class="signup-content">
+                                    
+
+                                    <ul class="signup-list">
+										<p><a href="/forgetpassword">I forgot my user ID or password</a></p>
+										<p>New to Senahu ?<a href="/register">Create an account</a> </p>
+                                    </ul>
+                                   
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <footer class="footer-content">
+                <div class="container">
+                        <div class="footer-box">
+                            <div class="footer-top-row">
+                                <div class="footer-logo">
+                                    <a>
+                                        <img src="/static/img/logo1.png">
+                                    </a>
+                                </div>
+                                <div class="footer-menu">
+                                    <a>Legal</a><span>|</span>
+                                    <a>Privacy</a><span>|</span>
+                                    <a>Security</a>
+                                </div>
+                            </div>
+                            <div class="footer-bottom-row">
+                                <div class="footer-c-text">
+                                    <p>© 2020 Intuit Inc. All rights reserved. Senahu are registered
+                                        trademarks of Intuit Inc. Terms and conditions, features, support, pricing, and
+                                        service options subject to change without notice.</p>
+                                </div>
+                                <div class="">
+    
+                                </div>
+                            </div>
+                        </div>
+                </div>      
+            </footer>
+
+          
+        </div>
+
+    </div>
+
+
+
+</body>
+
+<script>
+    $(".form-control").keyup(function(){
+  
+        // $(".cross").addClass('textcross')
+        if( $(this).val()=='')
+
+        {
+            console.log()
+        $(this).closest('.input-validation').find('.cross').css('visibility', 'visible');
+        $(this).closest('.input-validation').find('.form-control').css('border-color', '#dc3545');
+       
+       
+       
+         }
+         else{
+            $(this).closest('.input-validation').find('.cross').css('visibility', 'hidden');
+            $(this).closest('.input-validation').find('.form-control').css('border-color', '#333');
+         }
+
+  
+});
+</script>
+
+<script>
+    $(".form-control").click(function(){
+
+      $(this).closest('.input-validation').find('.arrow_box').css('visibility', 'visible');
+      
+    });
+
+    $(".form-control").mouseover(function(){
+
+$('.arrow_box').css('visibility', 'hidden');
+
+});
+
+</script>
+</html>

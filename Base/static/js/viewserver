@@ -1,0 +1,957 @@
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.http import JsonResponse
+from django.db.models import Q
+from django.core.mail import EmailMessage
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from .token_generator import account_activation_token
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+import smtplib
+from django.http import HttpResponseRedirect
+from django.contrib import messages
+
+from Base.models import Base, Login, Basecolumns, Basedetails, Profile, Calculation
+from Base.forms import ProfileForm
+
+
+def index(request):
+    user = Login.objects.get(id=request.session['user_id'])
+    user_email = user.email
+
+    menus = Base.objects.filter(created_by=user_email)
+    login_obj=Login.objects.all()
+    pro = Profile.objects.get(log_fk=request.session['user_id'])
+    if request.session.has_key('user_id'):
+        return render(request, 'table.html', {'menus':menus,'pro':pro,'login_obj':login_obj,'user':user})
+    return HttpResponseRedirect('/login')
+
+
+def Register(request):
+	try:
+		if request.method == 'POST':
+			name = request.POST['fname']
+			email = request.POST['email']
+			mobile = request.POST['mobile']
+			password = request.POST['password']
+			cpassword = request.POST['cpassword']
+			if password != cpassword:
+				# return HttpResponse('password not correct')
+			    messages.success(request,'Wrong password')
+			check_exist= Login.objects.filter(email=email).exists()
+			if check_exist == False:
+				user = Login(name=name,phone=mobile,password=password,email=email)
+				user.save()
+				if user.id > 0:
+					current_site = get_current_site(request)
+					email_subject = 'Activate Your Account'
+					message = render_to_string('activate_account.html', {
+						'user': user,
+						'domain': current_site.domain,
+						'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+						'token': account_activation_token.make_token(user),
+            		})
+					to_email = user.email
+					email = EmailMessage(email_subject, message, to=[to_email])
+					email.send()
+					# return HttpResponseRedirect('/verify')
+					messages.success(request, 'We have sent you an email, please confirm your email address to complete registration')
+					# return HttpResponse('We have sent you an email, please confirm your email address to complete registration')
+			# return HttpResponse('email id already exist')
+			else:
+			    messages.success(request,'Email id already exist')
+		return render(request,'register.html')
+	except Exception as e:
+		print(e)
+		return HttpResponse(e)
+
+def activate_account(request, uidb64, token):
+    try:
+        uid = force_bytes(urlsafe_base64_decode(uidb64))
+        user = Login.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, user.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        Login(request,user)
+		# return render(request,'login.html')
+        return HttpResponseRedirect('/login')
+        # return HttpResponse('Your account has been activate successfully')
+    else:
+        return HttpResponse('Activation link is invalid!')
+
+# def verification(request):
+# 	return render(request,'verifyemail.html')
+
+def fn_login(request):
+    try:
+        if request.method == 'POST':
+            username = request.POST['username']
+            password = request.POST['password']
+            check_exist = Login.objects.filter(email=username).exists()
+            if check_exist == False:
+                messages.success(request, 'User not Exist')
+                return HttpResponseRedirect('/login')
+            login_obj = Login.objects.get(email=username)
+            request.session['user_id'] = login_obj.id
+            print(request.session['user_id'])
+            if login_obj.password == password:
+                return HttpResponseRedirect('/index')
+            messages.success(request,'Wrong password')
+        return render(request, "login.html")
+    except Exception as e:
+        print(e)
+
+
+def Logout(request):
+    # s=request.session['user_id']
+    # s.delete()
+    # session_destroy()
+	try:
+		if request.session.has_key('user_id'):
+			# del request.session['user_id']
+			request.session.flush()
+			return HttpResponseRedirect('/login')
+		else:
+			return HttpResponseRedirect('/login')
+	except Exception as e:
+		return HttpResponse(e)
+
+
+
+def Basecreation(request):
+	if request.method == "POST":
+		try:
+			user = Login.objects.get(id=request.session['user_id'])
+			createdby = user.email
+			bname = request.POST['bname']
+			tname = request.POST['tname']
+			table_type = request.POST['table_type']
+			table_discription = request.POST['table_discription']
+			table_purpose = request.POST['table_purpose']
+			table_bcp = request.POST['table_bcp']
+			tags = request.POST['tags']
+
+			alls = Base.objects.filter(Q(base_name=bname) & Q(created_by=createdby)).values('base_name').count()
+			if alls == 0:
+				Base.objects.create(base_name=bname, created_by=createdby, technical_name=tname,
+				table_type=table_type, discription=table_discription, purpose=table_purpose, bcp=table_bcp, tags=tags)
+				rs = Base.objects.filter(created_by=createdby).values('base_name', 'pk')
+				return JsonResponse({'Result' : 1, 'RD':list(rs)})
+			else:
+				return JsonResponse({"Result": 0})
+		except Exception as e:
+			return HttpResponse(e)
+	else:
+		return HttpResponse('Not a POST request')
+
+
+
+# ADDING NEW COLUMNS IF NO COLUMNS FOUND
+def Addcolumns(request):
+    if request.method == "POST":
+        try:
+            fk = request.POST['fk']
+            user = Login.objects.get(id=request.session['user_id'])
+            createdby = user.email
+            alls = Base.objects.filter(Q(base_name=fk) & Q(created_by=createdby)).values('pk')
+            colname = request.POST['colname']
+            type_d = request.POST['type_d']
+            Basecolumns.objects.create(c_name=colname, base_fk=alls[0]['pk'], d_type=type_d)
+            return HttpResponse('Basecol Done')
+        except Exception as e:
+            return HttpResponse(e)
+
+
+
+# SAVING THE RELATION COLUMN
+def save_relation_column(request):
+    if request.method == 'POST':
+        try:
+            # COLUMN PRIMARY KEY
+            colum_pk = request.POST['key']
+            # TABLE PRIMARY KEY
+            table_pk = request.POST['m_key']
+            # NAME OF THE COLUMN
+            name = request.POST['name']
+            # MAXIMUM NUMBER OF ROWS HAVE
+            max_row = request.POST['mx']
+            data_column = Basecolumns.objects.filter(pk=colum_pk).values('pk', 'c_name', 'base_fk', 'd_type')
+            data_column = list(data_column)
+            Basecolumns.objects.create(c_name=data_column[0]['c_name']+ ' ( ' + name + ' )', base_fk=table_pk, d_type=data_column[0]['base_fk'])
+            max_row = int(max_row) + 1
+            # THE ID OF NEW COLUMN CREATED
+            f = Basecolumns.objects.latest('id')
+
+            for item in range( 1, int( max_row ) ):
+                Basedetails.objects.create(c_v='No', bc_fk=f, row_num=item)
+            return JsonResponse({'data': 'Success Relation column'})
+
+        except Exception as e:
+            return HttpResponse(e)
+
+
+
+# ADDING VALUES TO COLUMNS
+def Adddetails(request):
+    if request.method == "POST":
+        try:
+            login_id =Login.objects.get(id=request.session['user_id'])
+            # print(login_id)
+            login_user =login_id.email
+            # print(login_user)
+
+
+
+            d1 = request.POST['d1']
+            rr = request.POST['rr']
+            max_row = request.POST['mx']
+
+            max_row = int(max_row) + 1
+            if d1 != '' and rr != '':
+                Basedetails.objects.create(c_v=d1, bc_fk=rr, row_num=max_row)
+                return HttpResponse('Adddetails')
+        except Exception as e:
+            return HttpResponse(e)
+
+
+
+def cal_add_details(request):
+    if request.method == "POST":
+        try:
+            login_id = Login.objects.get(id=request.session['user_id'])
+            login_user = login_id.email
+
+            max_row = request.POST['mx']
+            calc_column_id = request.POST['relation_clc']
+            d1 = request.POST.getlist('d1[]')
+            rr = request.POST.getlist('rr[]')
+            print("==== ADD DETAILS CALC VALUE AUTO UPDATE SECTION ===")
+            print("D1 : ")
+            print(d1)
+            print("RR : ")
+            print(rr)
+
+            ft_equation = Calculation.objects.filter(fk_column=calc_column_id).values('pk', 'equ', 'fk_column', 'fk_table', 'createdby', 'equ_normal')
+
+            fr_ids = str(ft_equation[0]['equ']).split(',')
+            fr_vals = str(ft_equation[0]['equ_normal']).split(',')
+            print("fr_ids : ")
+            print(fr_ids)
+            print("fr_vals : ")
+            print(fr_vals)
+
+            for item in range(0, len(fr_ids)-1, 2):
+                tmp = fr_ids[item]
+                for x in range(0, len(rr)):
+                    if rr[x] == fr_ids[item]:
+                        fr_ids[item] = int(d1[x])
+                if tmp == fr_ids[item]:
+                    print("--- More Options ---")
+                    data = Basecolumns.objects.filter(pk=int(fr_ids[item])).values('d_type', 'pk')
+                    print("Data --> ")
+                    print(data)
+                    if data[0]['d_type'] == 'Calc':
+                        print("--- Checking Data Type ---")
+                        tmp = int(tmp)
+                        max_tmp = int(max_row) + 1
+                        print("tmp :  " + str(tmp))
+                        print("max_tmp : " + str(max_tmp))
+                        data_value = Basedetails.objects.filter(Q(bc_fk=tmp) & Q(row_num=max_tmp)).values('c_v')
+                        data_value = int(data_value[0]['c_v'])
+                        print("data_value : " + str(data_value))
+                        fr_ids[item] = data_value
+            print("Update fr_ids : ")
+            print(fr_ids)
+
+            x1 = fr_ids[0]
+            x2 = fr_ids[2]
+            op = fr_ids[1]
+
+            result = operation(int(x1), int(x2), op)
+            print("1st Time result : " + str(result))
+            for item in range(3, len(fr_ids)-1, 2):
+                op = fr_ids[item]
+                x2 = fr_ids[item + 1]
+                operation(result, int(x2), op)
+
+            print("Final Result : " + str(result))
+            max_row = int(max_row) + 1
+            Basedetails.objects.create(c_v=result, bc_fk=calc_column_id, row_num=max_row)
+            return HttpResponse('Adddetails to calc value')
+
+        except Exception as e:
+            return HttpResponse(e)
+
+
+
+# BASIC TABLE VIEW FUNCTIONALITY
+def Details(request, pkp):
+	try:
+		if request.session.has_key('user_id'):
+			user_in = Login.objects.get(id=request.session['user_id'])
+			user_email=user_in.email
+			menus = Base.objects.filter(created_by=user_email)
+			profile=Profile.objects.get(id=request.session['user_id'])
+			pro = Profile.objects.get(log_fk=request.session['user_id'])
+			user=Login.objects.all()
+
+			Message_me = Basecolumns.objects.filter(base_fk=pkp).count()
+			pros = Base.objects.filter(pk=pkp).values('base_name','pk')
+			info = Base.objects.get(id=pkp)
+			if Message_me == 0:
+				return render(request,'view.html',{'status':0, 'menus':menus, 'pros':pros ,'user':user_in})
+			else:
+
+				# Fetching the columns related to master table
+				alls = Basecolumns.objects.filter(base_fk=pkp).values('base_name', 'c_name', 'base_fk','pk', 'd_type')
+
+				array_dtype = []
+				for item in alls:
+					array_dtype.append(item['d_type'])
+
+				tmp = []
+				# filtering columns primary key
+				for item in alls:
+					tmp.append(item['pk'])
+
+				mapp_value = []
+				map_filter_value = None
+
+				# Checking it is relation column
+				for item in alls:
+					if item['d_type'].isnumeric() == True:
+						mapp_value.append(item['d_type'])
+				if len(mapp_value) > 0:
+					mapp_filter_columns = Basecolumns.objects.filter(base_fk=mapp_value[0]).values('base_name', 'c_name', 'base_fk','pk', 'd_type')
+					mapp_filter_arry = []
+
+					for item in mapp_filter_columns:
+						if item['c_name'] == 'Name':
+							mapp_filter_arry.append(item['pk'])
+					map_filter_value = Basedetails.objects.filter(bc_fk__in=mapp_filter_arry).values('c_v','bc_fk','pk', 'row_num').order_by('row_num', 'bc_fk')
+					map_filter_value = list(map_filter_value)
+
+				# Fetching values related to column
+				querysets = Basedetails.objects.filter(bc_fk__in=tmp).values('c_v','bc_fk','pk', 'row_num').order_by('row_num', 'bc_fk')
+
+				# Final result of row values
+				column_values = []
+				# Final result of row value Id
+				colum_values_id =[]
+				# Final reslut of row number
+				column_row_val = []
+
+				# converting fetched basedetails object to list
+				querysets = list(querysets)
+				for item in querysets:
+					column_values.append(item['c_v'])
+					colum_values_id.append(item['pk'])
+					column_row_val.append(item['row_num'])
+
+				# Length of
+				length_base_details = len(column_values)
+				length_base_column = Basecolumns.objects.filter(base_fk=pkp).count()
+				total = int(length_base_details/length_base_column)
+
+				#Last row number ---> appending to table body as id
+				if len(column_row_val) == 0:
+					max_row = 0
+				else:
+					max_row  = max(column_row_val)
+
+
+				mylist = zip(column_values, colum_values_id, column_row_val)
+				mylist_length = len(column_values)
+
+
+
+			return render(request,'view.html',{ 'mylist_length':mylist_length,'profile':profile,'pro':pro,'user':user_in,'login_obj':user, 'map_filter_value':map_filter_value,'info':info, 'tytime':'Time', 'tydate':'Date', 'ttext':'String', 'tt': 'Text', 'Calc': 'Calc', 'tnumeric':'Numeric', 'tnum':'Number', 'max_row':max_row, 'mylist':mylist, 'bc':length_base_column,'id':pkp, 'menus':menus, 'alls':alls, 'pros':pros})
+		return HttpResponseRedirect('/login')
+
+			#return JsonResponse({'base_relation': array_dtype})
+	except Exception as e:
+		return HttpResponse(e)
+
+
+
+# FETCHING RELATION COLUMNS OF THE TABLE
+def filter_columns_for_relation(request):
+    if request.method == "POST":
+        try:
+            fk = request.POST['fk']
+            result = Basecolumns.objects.filter(base_fk=fk).values('c_name', 'pk')
+            return JsonResponse({'Result': list(result)})
+        except Exception as e:
+            return HttpResponse(e)
+
+
+
+# FETCHING RELATION TABLE OF THE TABLE
+def relation_maters(request):
+    if request.method == "POST":
+        try:
+            user = Login.objects.get(id=request.session['user_id'])
+            user_email = user.email
+            data = Base.objects.filter(created_by=user_email).values('fk', 'pk', 'base_name')
+            # list_fk = [ item['fk'] for item in data ]
+            # data = Base.objects.filter(pk__in=list_fk).values('pk', 'base_name')
+            return JsonResponse({'Result': list(data)})
+        except Exception as e:
+            return HttpResponse(e)
+    else:
+        return HttpResponse('Request not POST')
+
+
+
+# SAVING THE RELATION COLUMN
+def save_relation_column_page_one(request):
+    if request.method == 'POST':
+        try:
+            user = Login.objects.get(id=request.session['user_id'])
+            user_email = user.email
+            # COLUMN PRIMARY KEY
+            colum_pk = request.POST['key']
+            # TABLE PRIMARY KEY
+            table_pk = request.POST['m_key']
+            table_pk = Base.objects.filter(Q(base_name=table_pk) & Q(created_by=user_email)).values('pk', 'base_name')
+            table_pk = table_pk[0]['pk']
+            # NAME OF THE COLUMN
+            name = request.POST['name']
+            data_column = Basecolumns.objects.filter(pk=colum_pk).values('pk', 'c_name', 'base_fk', 'd_type')
+            data_column = list(data_column)
+            Basecolumns.objects.create(c_name=data_column[0]['c_name']+ ' ( ' + name + ' )', base_fk=table_pk, d_type=data_column[0]['base_fk'])
+
+            return JsonResponse({'data': 'Success'})
+
+        except Exception as e:
+            return HttpResponse(e)
+
+# CREATING NEW COLUMN IN TABLE
+def Newcol(request):
+    if request.method == "POST":
+        try:
+            fk = request.POST['fk']
+            colname = request.POST['colname']
+            max_row = request.POST['mx']
+            col_size = request.POST['col_size']
+            col_type = request.POST['col_type']
+            Basecolumns.objects.create(c_name= colname, base_fk=fk, d_type=col_type ,d_size=col_size)
+            querysets = Basecolumns.objects.filter(base_fk=fk).values('pk')
+            a = []
+            for item in querysets:
+                a.append(item['pk'])
+            row_count = 1
+            max_row = int(max_row) + 1
+            f= Basecolumns.objects.latest('id')
+            for item in range(1,int(max_row)):
+                Basedetails.objects.create(c_v= 'No', bc_fk= f, row_num= item)
+            row_count = row_count + 1
+            return HttpResponse(max_row)
+
+        except Exception as e:
+            return HttpResponse(e)
+
+
+
+
+
+
+def referanfce_col_filter(request):
+    if request.method == "POST":
+        try:
+            col_id = request.POST['col_id']
+            data_set = Basecolumns.objects.filter(pk=col_id).values('base_name', 'c_name', 'base_fk', 'pk', 'd_type')
+            col = ''
+            for x in data_set:
+                col = x['c_name']
+            col = col.split('(')
+            print(col)
+
+            # '6', 'Nothing', '2020-06-01', '2020-06-01', 'Qr Code', '1', '2'
+
+            mapp_value = []
+            for item in data_set:
+                if item['d_type'].isnumeric():
+                    mapp_value.append(item['d_type'])
+                if len(mapp_value) > 0:
+                    print("mapp value : " + mapp_value[0])
+                    print("c_name : " + col[0].strip())
+                    mapp_filter_columns = Basecolumns.objects.filter(
+                        Q(base_fk__in=mapp_value) & Q(c_name=col[0].strip())) \
+                        .values('base_name', 'c_name', 'base_fk', 'pk', 'd_type')
+                    # '3', 'Nothing', '2020-06-01', '2020-06-01', 'Bay Name', 'Text', '1'
+                    # '4', 'Nothing', '2020-06-01', '2020-06-01', 'Qr Code', 'Numeric', '1'
+
+                    mapp_filter_arry = []
+                    for item in mapp_filter_columns:
+                        mapp_filter_arry.append(item['pk'])
+                        print("x---> " + str(item['pk']))
+                        # '3'
+                        # '4'
+                    filter_value = Basedetails.objects.filter(bc_fk__in=mapp_filter_arry).values('c_v', 'bc_fk', 'pk',
+                                                                                                 'row_num').order_by(
+                        'row_num',
+                        'bc_fk')
+
+                    # '1', 'Nothing', '1', '4', '1'
+                    # '2', 'Nothing', 'BAY 1', '3', '1'
+                    # '3', 'Nothing', 'BAY 2', '3', '2'
+                    # '4', 'Nothing', '2', '4', '2'
+
+                    return JsonResponse({'filter_value': list(filter_value)})
+        except Exception as e:
+            return  HttpResponse(e)
+
+def inline_type(request):
+	if request.method == "POST":
+		try:
+			key = request.POST['key'] # 184
+
+			# 184 | Nothing   | Appu |    42 |       2
+			querysets=Basedetails.objects.filter(pk=key).values('c_v','bc_fk','pk', 'row_num').order_by('row_num', 'bc_fk')
+
+			querysets = list(querysets)
+			"""
+		    +----+-----------+------------------+--------------------+----------------------------------+--------+---------+--------+
+            | id | base_name | base_create_date | base_modified_date | c_name                           | d_type | base_fk | d_size |
+            +----+-----------+------------------+--------------------+----------------------------------+--------+---------+--------+
+            | 42 | Nothing   | 2020-06-25       | 2020-06-25         | Student Name ( Student Details ) | 7      |       8 |     40 |
+            +----+-----------+------------------+--------------------+----------------------------------+--------+---------+--------+
+            """
+			querysets = Basecolumns.objects.filter(pk=querysets[0]['bc_fk']).values('pk', 'd_type', 'c_name')
+			querysets = list(querysets)
+
+			relation_val_pk = [];
+			relation_val = [];
+
+			if len(querysets) > 0:
+				if querysets[0]['d_type'].isnumeric() == True:
+				    """
+				    +----+-----------+------------------+--------------------+--------------+--------+---------+--------+
+                    | id | base_name | base_create_date | base_modified_date | c_name       | d_type | base_fk | d_size |
+                    +----+-----------+------------------+--------------------+--------------+--------+---------+--------+
+                    | 36 | Nothing   | 2020-06-25       | 2020-06-25         | Student Name | String |       7 |     40 |
+                    | 37 | Nothing   | 2020-06-25       | 2020-06-25         | Student Age  | Number |       7 |     40 |
+                    | 38 | Nothing   | 2020-06-25       | 2020-06-25         | Place        | String |       7 |     40 |
+                    +----+-----------+------------------+--------------------+--------------+--------+---------+--------+
+
+				    """
+				    col = querysets[0]['c_name']
+				    col = col.split('(')
+				    base = Basecolumns.objects.filter(Q(base_fk=querysets[0]['d_type']) & Q(c_name=col[0].strip())).values('base_name', 'c_name', 'base_fk','pk', 'd_type')
+
+				    for item in base:
+				        relation_val_pk.append(item['pk'])
+
+			relation = Basedetails.objects.filter(bc_fk__in=relation_val_pk).values('c_v','bc_fk','pk', 'row_num')
+			for item in relation:
+				relation_val.append(item['c_v'])
+			return JsonResponse({'Result':querysets, 'Relation':relation_val})
+
+		except Exception as e:
+			return HttpResponse(e)
+
+
+def Updatedetails(request):
+	if request.method == "POST":
+		try:
+			login_id =Login.objects.get(id=request.session['user_id'])
+            # print(login_id)
+			login_user =login_id.email
+
+			details_id =request.POST['id']
+			base_data =  Basedetails.objects.get(pk=details_id)
+			update = 0
+			if base_data.c_v != request.POST['d']:
+				base_data.c_v = request.POST['d']
+				update=update + 1
+			if update > 0 :
+				base_data.save()
+				update = 100
+			return JsonResponse({'dataresult':update})
+
+		except Exception as e:
+			return HttpResponse(e)
+
+def delete_row(request):
+	if request.method == "POST":
+		try:
+
+			m_id = request.POST['id']
+			Basedetails.objects.filter(pk=m_id).delete()
+			return HttpResponse('Done')
+
+		except Exception as e:
+			return HttpResponse(e)
+
+# # RENAMING COLUMN
+def edit_column(request):
+    if request.method == "POST":
+        try:
+
+            # COLUMN ID
+            c_id = request.POST['id']
+            # NEW NAME OF COLUMN
+            c_val = request.POST['val']
+            Basecolumns.objects.filter(pk=c_id).update(c_name=c_val)
+            return JsonResponse({'id': c_id, 'val': c_val})
+
+        except Exception as e:
+            return HttpResponse(e)
+
+
+def Columndelete(request):
+    if request.method == "POST":
+        try:
+            del_id = request.POST['id']
+            print(del_id)
+            col_id = Basecolumns.objects.get(id=del_id)
+            print(col_id)
+            details = Basedetails.objects.filter(bc_fk=col_id).delete()
+            Basecolumns.objects.filter(id=del_id).delete()
+            data = {'deleted': True}
+            return JsonResponse(data)
+
+        except Exception as e:
+            print(e)
+            return HttpResponse(e)
+
+
+def Deletebase(request):
+    if request.method == "POST":
+        try:
+
+            c=[]
+            service_id =request.POST['id']
+            print(service_id)
+            count = Basecolumns.objects.filter(base_fk=service_id).values('pk').count()
+            if count == 0:
+                Base.objects.get(pk=service_id).delete()
+            else:
+                columns=Basecolumns.objects.filter(base_fk=service_id).values('pk')
+                print(columns)
+                for item in columns:
+                    c.append(item['pk'])
+                    print(c.append(item['pk']))
+                details = Basedetails.objects.filter(bc_fk__in=c).delete()
+                Basecolumns.objects.filter(base_fk=service_id).delete()
+                Base.objects.get(pk=service_id).delete()
+                data ={'deleted':True}
+                return JsonResponse(data)
+
+        except Exception as e:
+            return HttpResponse(e)
+
+def Deletebasedetails(request):
+
+    if request.method == "POST":
+        try:
+            b =[]
+            del_id =request.POST['id']
+            print(del_id)
+            base_columns = Basecolumns.objects.filter(base_fk=del_id).values('pk')
+            print(base_columns)
+            for item in base_columns:
+                b.append(item['pk'])
+                # print(b.append(item['pk']))
+            details = Basedetails.objects.filter(bc_fk__in=b).delete()
+            # Basecolumns.objects.filter(base_fk=del_id).delete()
+            data = {'deleted':True}
+            return JsonResponse(data)
+
+
+        except Exception as e:
+            print(e)
+            return HttpResponse(e)
+
+def infoedit(request):
+    try:
+        if request.method == "POST" :
+            basedata=Base.objects.get(id=request.POST['id'])
+            update = 0
+            if basedata.base_name != request.POST['bname'] :
+                basedata.base_name =request.POST['bname']
+                update += 1
+
+            if basedata.technical_name != request.POST['tname'] :
+                basedata.technical_name =request.POST['tname']
+                update += 1
+            if basedata.table_type != request.POST['ttype'] :
+                basedata.table_type =request.POST['ttype']
+                update += 1
+            if basedata.discription != request.POST['desc'] :
+                basedata.discription =request.POST['desc']
+                update += 1
+            if basedata.purpose != request.POST['purp'] :
+                basedata.purpose =request.POST['purp']
+                update += 1
+            if basedata.bcp != request.POST['bcp'] :
+                basedata.bcp =request.POST['bcp']
+                update += 1
+            if basedata.tags != request.POST['tag'] :
+                basedata.tags =request.POST['tag']
+                update += 1
+            if update >0:
+                basedata.save()
+        return JsonResponse({'data':updated})
+
+    except Exception as e:
+        print(e)
+        return HttpResponse(e)
+
+
+def Updatepassword(request):
+	try:
+		if request.method == "POST":
+			user = Login.objects.get(id=request.session['user_id'])
+			print(user)
+			cpass =request.POST['cpass']
+			print(cpass)
+			npass =request.POST['npass']
+			if user.password == cpass :
+				update = 0
+				if user.password != npass :
+					user.password = npass
+					update += 1
+					if update >0:
+						user.save()
+						messages.success(request, 'New password Updated')
+
+				else:
+					messages.success(request, 'New password same as old Password')
+
+			else:
+				messages.success(request, 'Current password not same')
+
+		return HttpResponseRedirect('/userprofile')
+	except Exception as e:
+		print(e)
+		return HttpResponse(e)
+
+
+def userprofile(request):
+	if request.method == "POST":
+	    user_in = Login.objects.get(id=request.session['user_id'])
+	    user_email=user_in.email
+	    menus = Base.objects.filter(created_by=user_email)
+	    form = ProfileForm(request.POST, request.FILES)
+	    if form.is_valid():
+	        try:
+	            data_count = Profile.objects.filter(log_fk=request.session['user_id']).count()
+	            if data_count == 0:
+	                section = form.save(commit=False)
+	                section.log_fk = request.session['user_id']
+	                section.save()
+	                return render(request,'userdetails.html', {'form':form,'menus':menus})
+	            else:
+	                pro = Profile.objects.get(log_fk=request.session['user_id'])
+	                form_up = ProfileForm(request.POST, request.FILES, instance = pro)
+	                form_up.save()
+	                return render(request,'userdetails.html', {'form':form,'menus':menus})
+	        except Exception as e:
+	            return HttpResponse(e)
+	    else:
+		    pass
+			#return HttpResponse(form)
+	else:
+	    user_in = Login.objects.get(id=request.session['user_id'])
+	    user_email=user_in.email
+	    menus = Base.objects.filter(created_by=user_email)
+	    data_count = Profile.objects.filter(log_fk=request.session['user_id']).count()
+	    if data_count > 0:
+	        pro = Profile.objects.get(log_fk=request.session['user_id'])
+	        form = ProfileForm(instance= pro)
+	        return render(request,'userdetails.html',{'form':form, 'pro':pro,'menus':menus})
+	    else:
+	        form = ProfileForm()
+	        return render(request,'userdetails.html',{'form':form,'menus':menus})
+
+
+
+def calculation_page(request):
+    try:
+        if request.session.has_key('user_id'):
+            user_in = Login.objects.get(id=request.session['user_id'])
+            user_email = user_in.email
+            pkp = request.POST['pkp']
+            # Fetching the columns related to master table
+            alls = Basecolumns.objects.filter(base_fk=pkp).values('base_name', 'c_name', 'base_fk', 'pk', 'd_type')
+            return JsonResponse({'Result': list(alls)})
+        else:
+            return HttpResponseRedirect('/login')
+    except Exception as e:
+        return HttpResponse(e)
+
+
+def calc_save(request):
+    if request.method == 'POST':
+        try:
+            user = Login.objects.get(id=request.session['user_id'])
+            createdby = user.email
+
+            # ARRAY WITH COLUMN NAME
+            vals = request.POST.getlist('arr_val[]')
+            # ARRAY WITH COLUMN IDS
+            ids = request.POST.getlist('arr_ids[]')
+            # RESULTANT COLUMN NAME
+            rs_column = request.POST['rs_column']
+            # TABLE ID
+            fk = request.POST['fk']
+            max_row = request.POST['mx']
+
+            print("vals : ")
+            print(vals)
+
+            print("ids : ")
+            print(ids)
+
+            print("RESULTANT COLUMN NAME : " + str(rs_column))
+            print("TABLE ID : " + str(fk))
+            print("MAX ROW : " + str(max_row))
+
+            """
+            length = 5  equatiion = a+b-c
+            position = 0  1  2  3  4 --> a  +  b  -  c
+            item --> 0      x1 = 0-->a     op = 0+1-->+    x2 = 0+2 -->b
+            """
+            x1 = ids[0]
+            op = ids[1]
+            x2 = ids[2]
+            print("===============")
+            print("x1 : " + x1)
+            print("op : " + op)
+            print("x2 : " + x2)
+            # fetch vales related to column x1  form base details
+            data_x1 = Basedetails.objects.filter(bc_fk=x1).values('pk', 'c_v', 'bc_fk', 'row_num')
+            print("data_x1 : ")
+            print(data_x1)
+            # fetch vales related to column x2  form base details
+            data_x2 = Basedetails.objects.filter(bc_fk=x2).values('pk', 'c_v', 'bc_fk')
+            print("data_x2 : ")
+            print(data_x2)
+            # result valuse
+            result_arr_val = []
+            # result row
+            result_arr_row = []
+            # perform 1st time operation
+            for item in range(0, len(list(data_x1))):
+                res_val = operation(data_x1[item]['c_v'], data_x2[item]['c_v'], op)
+                result_arr_val.append(res_val)
+                result_arr_row.append(data_x1[item]['row_num'])
+            print("RESULT OF 1ST TIME OPERATION")
+            print(result_arr_val)
+            print(result_arr_row)
+            step = 2
+            for item in range(3, len(ids), step):
+                """
+                item ---> 3     x1 = 0-->-      op = 0+1-->c
+                """
+                op = ids[item]
+                x2 = ids[item+1]
+                print("op form loop : "+op)
+                print("x2 from loop : "+x2)
+                data_x2 = Basedetails.objects.filter(bc_fk=x2).values('pk', 'c_v', 'bc_fk')
+                for item in range(0, len(list(data_x2))):
+                    res_val = operation(result_arr_val[item], data_x2[item]['c_v'], op)
+                    result_arr_val[item] = res_val
+            print("RESULT OF 2ND TIME OPERATION")
+            print(result_arr_val)
+            print(result_arr_row)
+            print("=== COLUMN CREATION ===")
+            cal_column_creation(fk, createdby, rs_column, max_row, result_arr_val, result_arr_row)
+            adding_equation_to_calc_table(fk, vals, ids, rs_column, createdby)
+            return JsonResponse({'vals': vals, 'ids': ids})
+        except Exception as e:
+            return HttpResponse(e)
+
+
+def operation(num1=0, num2=0, opr=""):
+    print("=== SARTING CLAC ===")
+    print("opr : " + str(opr))
+    print("num1 : " + str(num1))
+    print("num2 : " + str(num2))
+    result = 0
+    if opr == '+':
+        result = int(num1) + int(num2)
+    elif opr == '-':
+        result = int(num1) - int(num2)
+    elif opr == '*':
+        result = int(num1) * int(num2)
+    elif opr == '/':
+        result = int(num1) / int(num2)
+    elif opr == '%':
+        result = int(num1) % int(num2)
+    return result
+
+
+def cal_column_creation(fk, createdby, colname, max_row, result_arr_val, result_arr_row):
+    """
+
+    """
+    try:
+        print("FK : "+str(fk))
+        print("COL NAME: "+colname)
+        print("MAX ROW : "+max_row)
+        print("CREATED BY : "+createdby)
+
+        alls = Base.objects.filter(Q(pk=fk) & Q(created_by=createdby)).values('pk')
+        print("PK : "+str(alls[0]['pk']))
+        Basecolumns.objects.create(c_name=colname, base_fk=alls[0]['pk'], d_type="Calc", d_size=20)
+        querysets = Basecolumns.objects.filter(base_fk=fk).values('pk')
+        a = []
+        for item in querysets:
+            a.append(item['pk'])
+        print("A [] : ")
+        print(a)
+        max_row = int(max_row) + 1
+        f = Basecolumns.objects.latest('id')
+        for item in range(1, int(max_row)):
+            for x in range(0, len(result_arr_row)):
+                if int(result_arr_row[x]) == item:
+                    Basedetails.objects.create(c_v=result_arr_val[x], bc_fk=f, row_num=item)
+    except Exception as e:
+        return HttpResponse(e)
+
+
+def adding_equation_to_calc_table(fk, vals, ids, rs_column, createdby):
+
+    formated_ids = ''
+    formated_vals = ''
+    for item in range(0, len(ids)):
+        formated_ids = formated_ids + ids[item] + ','
+        formated_vals = formated_vals + vals[item] + ','
+    print("formated_ids : " + formated_ids)
+    print("formated_vals : " + formated_vals)
+
+    col_id = Basecolumns.objects.filter(Q(c_name=rs_column) & Q(base_fk=fk)).values('pk')
+    col_id = col_id[0]['pk']
+    print("col_id : " + str(col_id))
+    Calculation.objects.create(fk_table=fk, fk_column=col_id, equ=formated_ids, equ_normal = formated_vals,
+                               createdby=createdby)
+    print("Equation added to table")
+
+def Editinmodal(request):
+	if request.method == "POST":
+		try:
+			detail_id=request.POST['key']
+			print(detail_id)
+			data=Basedetails.objects.get(id=detail_id)
+
+			print(data)
+			value = request.POST['value']
+			print(value)
+			count=0
+			if data.c_v != value:
+				data.c_v = value
+				count += 1
+			if count > 0 :
+				data.save()
+
+			return JsonResponse({'data':True})
+		except Exception as e:
+			print(e)
+			return HttpResponse(e)
+

@@ -1,0 +1,319 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    
+   
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+      <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+
+
+</head>
+<style>
+    .form-control{
+ border-color: #dc3545;
+  border-radius: 4px;
+    }
+</style>
+
+
+<body>
+    
+   
+    <div class="container-fluid p-0 bg-background">
+        <div class="main-container">
+            <header class="header">
+                <div class="container header-content">
+                        <a>
+                            <img src="/static/img/logo1.png" style=" width: 90px; height: 90px;" class="img-fluid">
+                        </a>
+                </div>
+            </header>
+
+            <div class="content-area container">
+                <div class="row">
+                    <div class="main-flex">
+                        <div class="signup-form">
+                            <div class="top-head">
+                                <h4>Signup </h4>
+                            </div>
+                            <p class="signup-text">Already have an account? <a href="/login">Sign in.</a></p>
+                            <form method="POST" action="/register">
+                                {% csrf_token %}
+                                
+
+                                <div class="form-group">
+                                    <label>Email address</label>
+                                    <div class="input-validation">
+                                        <input class="form-control" name="email" placeholder="Email address" type="email" required>
+                                        <a class="cross"><img src="/static/images/cross.jpg"></a>
+                                        <span style="" class="arrow_box">&nbsp; You'll use this as your user ID </span>
+
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label>First Name</label>
+                                    <div class="input-validation">
+                                        <input class="form-control" name="fname" placeholder="Full name" type="text" required>
+                                        <a class="cross"><img src="/static/images/cross.jpg"></a>
+                                       
+                                    </div>
+                                </div>
+                                
+                                
+
+                                <div class="form-group">
+                                    <label>Company Name</label>
+                                    <div class="input-validation">
+                                        <input class="form-control" name="company" placeholder="Company Name" type="text" required>
+                                        <a class="cross"><img src="/static/images/cross.jpg"></a>
+                                        <span  class="arrow_box">&nbsp; Choose Company Name</span>
+                                    </div>
+                                </div>
+
+                                
+
+                                <div class="form-group">
+                                    <label>Mobile Number</label>
+                                    <div class="input-validation">
+                                        <input class="form-control" name="mobile" placeholder="Phone number" type="number" required>
+                                        <a class="cross"><img src="/static/images/cross.jpg"></a>
+                                        <span  class="arrow_box">&nbsp; Use Valid Contact Number </span>
+                                    </div>
+                                </div>
+
+                               
+
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <div class="input-validation">
+                                        <input class="form-control" name="password" placeholder="Create password" type="password" id="pwd" required>
+                                        <a class="cross"><img src="/static/images/cross.jpg"></a>
+                                        <span  class="arrow_boxp" style="">Create a password you've never used before. This will help to keep the account safe </span>
+                                    </div>
+                                </div>
+                                
+                                
+
+                                <div class="form-group">
+                                    <label>Confirm Password</label>
+                                    <div class="input-validation">
+                                        <input class="form-control" name="cpassword" placeholder="Repeat password" type="password" id="cpass" required>
+                                        <a class="cross"><img src="/static/images/cross.jpg"></a>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block btn-signup createac">Sign Up</button>
+                                </div>
+
+
+                            </form>
+
+                            <div class="form-footer">
+                                <p>By clicking Sign Up, you agree to our
+                                    <a href="#">Terms</a> and have read and acknowledge our <a href="#">Privacy Statement.</a></p>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="main-flex">
+                        <div class="signup-form bg-gray">
+                                <div class="signup-content">
+                                  <h4> Signup </h4>
+                                    <!--   <p>QuickBooks Online Plus</p>
+
+                                    <ul class="signup-list">
+                                        <li>All features and functionalities</li>
+                                        <li>Free training and support</li>
+                                        <li>Bank-level security and privacy</li>
+                                        <li>No payment details needed</li>
+                                    </ul> -->
+                                    <div style="text-align: center;"><a href="/personal_registration">For Personal Account</a></div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <footer class="footer-content">
+                <div class="container">
+                        <div class="footer-box">
+                            <div class="footer-top-row">
+                                <div class="footer-logo">
+                                    <a>
+                                        <img src="/static/img/logo1.png">
+                                    </a>
+                                </div>
+                                <div class="footer-menu">
+                                    <a>Legal</a><span>|</span>
+                                    <a>Privacy</a><span>|</span>
+                                    <a>Security</a>
+                                </div>
+                            </div>
+                            <div class="footer-bottom-row">
+                                <div class="footer-c-text">
+                                    <p>© 2020 Senahu Technologies Pvt. Ltd.  All rights reserved.</p>
+                                </div>
+                                <div class="">
+    
+                                </div>
+                            </div>
+                        </div>
+                </div>      
+            </footer>
+
+          
+        </div>
+
+    </div>
+
+
+
+</body>
+<script>
+    $(document).ready(function()
+    {
+    $('#pwd').keyup(function()
+    {
+    $('#strength_message').html(checkStrength($('#pwd').val()))
+    })
+    function checkStrength(password)
+    {
+    var strength = 0
+    if (password.length <= 0) {
+    $('#strength_message').removeClass()
+    $('#strength_message').addClass('short')
+    return ''
+    }
+
+    if (password.length < 6) {
+    $('#strength_message').removeClass()
+    $('#strength_message').addClass('short')
+    return 'Too short'
+    }
+
+    if (password.length > 7) strength += 1
+    if (password.match(/([a-z].*[A-Z])|([A-Z].*[a-z])/))  strength += 1
+    if (password.match(/([a-zA-Z])/) && password.match(/([0-9])/))  strength += 1
+    if (password.match(/([!,%,&,@,#,$,^,*,?,_,~])/))  strength += 1
+    if (password.match(/(.*[!,%,&,@,#,$,^,*,?,_,~].*[!,%,&,@,#,$,^,*,?,_,~])/)) strength += 1
+    if (strength < 2 )
+    {
+    $('#strength_message').removeClass()
+    $('#strength_message').addClass('weak')
+    return 'Minimum 8 charactors including special charactors'
+    }
+    else if (strength == 2 )
+    {
+    $('#strength_message').removeClass()
+    $('#strength_message').addClass('good')
+    return 'Good'
+    }
+    else
+    {
+    $('#strength_message').removeClass()
+    $('#strength_message').addClass('strong')
+    return 'Strong'
+    }
+    }
+    });
+    </script>
+
+    <script>
+$('#cpass').keyup(function(){
+  cps=$(this).val();
+  pass=$('#pwd').val()
+
+
+  if (cps == pass)
+  {
+    $(this).css("border", "2px solid green");
+  }
+  else
+  {
+    $(this).css("border", "5px black");
+  }
+
+
+});
+</script>
+
+<script>
+$("#pwd").mouseenter(function(){
+$('#strength_message').show();
+
+});
+
+$("#pwd").mouseleave(function(){
+$('#strength_message').hide();
+});
+
+</script>
+
+<script>
+    $(".form-control").keyup(function(){
+  
+        // $(".cross").addClass('textcross')
+        if( $(this).val()=='')
+
+        {
+            console.log()
+        $(this).closest('.input-validation').find('.cross').css('visibility', 'visible');
+        $(this).closest('.input-validation').find('.form-control').css('border-color', '#dc3545');
+       
+       
+       
+         }
+         else{
+            $(this).closest('.input-validation').find('.cross').css('visibility', 'hidden');
+            $(this).closest('.input-validation').find('.form-control').css('border-color', '#333');
+         }
+
+  
+});
+</script>
+
+<script>
+      $(".form-control").click(function(){
+
+        $(this).closest('.input-validation').find('.arrow_box').css('visibility', 'visible');
+        
+      });
+
+      $(".form-control").mouseover(function(){
+
+$('.arrow_box').css('visibility', 'hidden');
+
+});
+
+</script>
+<script>
+    $(".form-control").click(function(){
+
+      $(this).closest('.input-validation').find('.arrow_boxp').css('visibility', 'visible');
+      
+    });
+
+    $(".form-control").mouseover(function(){
+
+$('.arrow_boxp').css('visibility', 'hidden');
+
+});
+
+</script>
+
+</html>

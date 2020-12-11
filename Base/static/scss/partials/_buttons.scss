@@ -1,0 +1,145 @@
+.btn-google {
+    background: #fff;
+    font-size: 16px;
+    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.1);
+
+    img {
+        max-width: 25px;
+        margin-right: 10px;
+    }
+}
+
+.btn-facebook {
+    background: #4267b2;
+    font-size: 16px;
+    color: #fff;
+    -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.1);
+
+    img {
+        max-width: 25px;
+        margin-right: 10px;
+    }
+
+    &:hover {
+        color: #fff;
+    }
+}
+
+.link-btn {
+    font-size: 16px;
+    color: #333 !important;
+    font-weight: 500;
+}
+
+.plus-btn {
+    height: 14px;
+    width: 14px;
+    display: block;
+    color: white;
+    border: 2px solid white;
+    border-radius: 14px;
+    box-shadow: 0 0 3px #444;
+    box-sizing: content-box;
+    text-align: center;
+    text-indent: 0 !important;
+    line-height: 14px;
+    background-color: #31b131;
+    font-style: normal;
+    cursor: pointer;
+}
+
+.btn-form-save {
+    color: #fff;
+    background: $bg-primary;
+    border-radius: 0;
+    padding: 8px 20px;
+}
+
+.btn-more {
+    color: #fff;
+    border-radius: 0;
+
+    &:hover {
+        background: $bg-primary;
+    }
+}
+
+.btn-add-row {
+    color: #fff;
+    background: $bg-primary;
+    padding: 4px 20px;
+
+}
+
+.bootstrap-select .dropdown-toggle:focus,
+.bootstrap-select > select.mobile-device:focus + .dropdown-toggle {
+    outline: 0 !important;
+}
+
+.bootstrap-select {
+    .dropdown-toggle {
+        &.btn-light {
+            background: #fff !important;
+            border-radius: 0 !important;
+            border: 1px solid #e9ecef;
+            height: 33px;
+            font-size: 14px;
+            outline: none !important;
+
+            &:focus {
+                outline: none !important;
+            }
+        }
+
+    }
+}
+
+
+.dropdown-menu {
+        border-radius: 8px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 17px 6px rgba(0, 0, 0, 0.1);
+        border: none;
+        padding: 10px;
+    li{
+        a{
+            color: #333333;
+            font-size: 14px;
+            padding: 8px 8px;
+            white-space: nowrap;
+            border-radius: 4px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            i{
+                font-size: 20px;
+                width: 25px;
+            }
+        }
+        &:hover{
+            a{
+                    color: #ffffff;
+                    background-color: #009AFF;
+                    width: 100%;
+            }
+        }
+    }
+
+}
+.save-filter-btn{
+        padding: 6px 12px;
+        border-radius: 4px;
+        color: white;
+        background-color: #009AFF;
+        font-size: 14px;
+        font-weight: 400;
+    i{
+        margin-right: 10px;
+    }
+    &:hover{
+        color: white;
+        background-color: #0083d9;
+    }
+}

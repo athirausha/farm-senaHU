@@ -1,0 +1,1085 @@
+<style>
+    .sutable_model_box.sub-tables-con .modal-dialog{
+       max-width:800px;
+       width:800px;
+    
+    }
+    .sub-tables-con .nav-tabs{
+        border-bottom:0;
+    }
+    
+        .sub-tables-con .nav-tabs .additional_table a{
+        padding:15px;
+    
+    }
+    .new_row_btn_div .btn{
+        margin:10px;
+    }
+    
+    .sub-table-outer {  }
+    .sub-table-outer th, .sub-table-outer td {
+        max-width:180px;
+        width:auto;
+        min-width:180px;
+        text-align: center;
+    
+    }
+     .sub-table-outer td::last-child {
+        max-width:100px;
+        width:auto;
+        min-width:100px;
+    
+    }
+    .reference_table_container .sub_tables_main .inlinetxt {     width: 100%; }
+    .sub-table-outer td input { width:100%; }
+    .sub_tables_main{
+           margin: auto;
+            border-collapse: collapse;
+            overflow-x: auto;
+            display: block;
+            width: -webkit-fit-content;
+            width: -moz-fit-content;
+            width: fit-content;
+            max-width: 100%;
+            box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+            margin-top: 30px;
+    }
+    
+    .sub_tables_main::-webkit-scrollbar {
+      width: 5px;
+      height:5px;
+    }
+    
+    /* Track */
+    .sub_tables_main::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    
+    /* Handle */
+    .sub_tables_main::-webkit-scrollbar-thumb {
+      background: #888;
+    }
+    
+    /* Handle on hover */
+    .sub_tables_main::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+    
+    .sub_tables_main .addcol_additional tr th::first-child{ min-width: 163px; }
+    .table-responsive{
+        overflow-x:auto !important;
+        padding-bottom:10px;
+    }
+    .table-responsive::-webkit-scrollbar {
+      width: 5px;
+      height:7px;
+    }
+    .table-responsive::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    
+    /* Handle */
+    .table-responsive::-webkit-scrollbar-thumb {
+      background: #009AFF;
+    }
+    
+    
+    .reference_table_container .table.dataTable thead th{
+        min-width:100px !important;
+    }
+    table{
+        table-layout: auto !important;
+    }
+    </style>
+    
+    {% extends 'index.html' %}
+    {% block content %}
+            <!-- breadcrumb Start -->
+            <div class="breadcrumb-header">
+                <div class="project-dashboard-content">
+                    <div class="board-header-main">
+                        <div class="header-top">
+                            <div class="p-head-left">
+                                <div class="board-name">
+                                    <h4 contenteditable="true">
+                                        {% for obj in menus %}
+                                            {% if obj.pk == id %}
+                                                {{obj.base_name|capfirst}}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </h4>
+                                    <h4 contenteditable="true">
+                                        {% for obj in base_tbl %}
+                                            {% if obj.pk == id %}
+                                                {{obj.base_name}}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </h4>
+                                </div>
+                            </div>
+                            <div class="p-head-right">
+                                <div class="board-actions">
+                                    <div class="subscribers">
+                                        <div class="subscriber-list-overlay">
+                                            <div class="subscriber-name">
+                                                <a>A</a>
+                                            </div>
+                                            <div class="more-subscriber" >
+                                                <i class="fa fa-folder-o" aria-hidden="true"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--<div class="automations-menu-wrapper">-->
+                                    <!--    <div class="automation-menu-button">-->
+                                    <!--        <div class="automation-button" data-toggle="tooltip" data-placement="bottom" title="Integrations">-->
+                                    <!--            <span><i class="fa fa-indent" aria-hidden="true"></i></span>-->
+                                    <!--            <span>/ 0</span>-->
+                                    <!--        </div>-->
+                                    <!--        <div class="automation-button" data-toggle="tooltip" data-placement="bottom" title="Automations">-->
+                                    <!--            <span><i class="fa fa-external-link-square" aria-hidden="true"></i></span>-->
+                                    <!--            <span>/ 0</span>-->
+                                    <!--        </div>-->
+                                    <!--    </div>-->
+                                    <!--</div>-->
+                                    <!--<div class="activity-menu-wrapper" data-toggle="tooltip" data-placement="bottom" title="Activity">-->
+                                    <!--    <div class="activity-menu-button">-->
+                                    <!--        <div class="activity-btn">-->
+                                    <!--            <a><i class="fa fa-user-o" aria-hidden="true"></i> <span>/ 1</span></a>-->
+                                    <!--            <span class="b-divider"></span>-->
+                                    <!--            <span>Activity /0</span>-->
+                                    <!--        </div>-->
+                                    <!--    </div>-->
+                                    <!--</div>-->
+                                    <!--<div class="board-menu-action" data-toggle="tooltip" data-placement="bottom" title="Actions">-->
+                                    <!--    <div class="action-menu-btn">-->
+                                    <!--        <div class="btn-group">-->
+                                    <!--            <a data-toggle="dropdown" class="btn-arrow-dropdown" type="button">-->
+                                    <!--                <i class="fa fa-ellipsis-v" aria-hidden="true"></i>-->
+                                    <!--            </a>-->
+                                    <!--            <ul class="dropdown-menu">-->
+                                    <!--                <li>-->
+                                    <!--                    <a href="#" ><i class="fa fa-clone" aria-hidden="true"></i> Add Board</a>-->
+                                    <!--                </li>-->
+                                    <!--                <li>-->
+                                    <!--                    <a href="#"><i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>Board Subscribers</a>-->
+                                    <!--                </li>-->
+                                    <!--                <li>-->
+                                    <!--                    <a href="#" ><i class="fa fa-columns" aria-hidden="true"></i>Boar Activity</a>-->
+                                    <!--                </li>-->
+                                    <!--                <li>-->
+                                    <!--                    <a href="#"><i class="fa fa-compress" aria-hidden="true"></i>Add Ref. column</a>-->
+                                    <!--                </li>-->
+                                    <!--                <li>-->
+                                    <!--                    <a href="#" ><i class="fa fa-clone" aria-hidden="true"  ></i> Board Permission</a>-->
+                                    <!--                </li>-->
+    
+                                    <!--            </ul>-->
+                                    <!--        </div>-->
+                                    <!--    </div>-->
+                                    <!--</div>-->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="header-bottom">
+    
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- breadcrumb End -->
+    
+            <div class="row row-sm">
+                <div class="board-content-wrapper">
+                    <div class="board-filter">
+                        <div class="board-control-component">
+                            <div class="control-component-btn">
+                                <div class="dropdown">
+                                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-table" aria-hidden="true" ></i>
+                                        <a data-toggle="tooltip" title="Clear Commands">DDL Commands
+                                           </a>
+                                    </button>
+    
+                                    {% if pr_check  == t %}
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="width: 180px; padding: 1px;" >
+                                            <a class="dropdown-item trunback" href="#"  id="{{id}}" onclick="datadel(event)"><i class="fa fa-circle-o-notch" aria-hidden="true"></i> Truncate Table</a>
+                                            <a class="dropdown-item delbasetable trunback" href="#"  id="{{id}}"  onclick="delbase(event)" ><i class="fa fa-trash-o" aria-hidden="true"></i> Drop Table</a>
+                                            <!-- <a class="dropdown-item" href="#">Something else here</a> -->
+                                        </div>
+                                    {% else %}
+                                        {% for x in tbl_data %}
+                                            {% if x.create_tables == true %}
+                                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                    <a class="dropdown-item" href="#"  id="{{id}}" onclick="datadel(event)">Truncate Table</a>
+                                                    <a class="dropdown-item delbasetable" href="#"  id="{{id}}"  onclick="delbase(event)" >Drop Table</a>
+                                                    <!-- <a class="dropdown-item" href="#">Something else here</a> -->
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="board-new-item-component">
+                            <div class="new-item-btn">
+                                <div class="btn-group">
+                                    <button class="btn btn-primary btn-new-item " style="background: #866ec7;color: white;"   id="{{id}}" >New Item</button>
+                                    <button data-toggle="dropdown" class="btn btn-default btn-arrow-dropdown" style="background: #866ec7;color: white;"  type="button"><i class="fa fa-angle-down"></i></button>
+                                    {% if pr_check  == t %}
+                                        <ul class="dropdown-menu">
+                                            <li id="btn_new_row"><a id="more-subs" > <i class="fa fa-clone" aria-hidden="true"></i> New Items</a></li>
+                                            <li data-toggle="modal" data-target="#importmod"><a href="#"><i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>Import Items</a></li>
+                                            <li  data-toggle="modal" data-target="#myModal1"><a href="#"><i class="fa fa-columns" aria-hidden="true"></i>Add new column</a></li>
+                                            <li  class="item_tbl_drop" id="col_relation"><a href="#"><i class="fa fa-compress" aria-hidden="true"></i>Add Ref. column</a></li>
+                                            <li data-toggle="modal" data-target="#calc_model"><a href="#" id="btn_open_calc_modal"><i class="fa fa-link" aria-hidden="true"></i>Add Calc. column</a></li>
+                                            <li data-toggle="modal" data-target="#calc_model_edit"><a href="#" id="btn_open_calc_modal_edit"><i class="fa fa-pencil" aria-hidden="true"></i>Edit Calc. column</a></li>
+                                        </ul>
+                                    {% else %}
+                                        <ul class="dropdown-menu">
+                                            {% for x in tbl_data %}
+                                                {% if x.add_data == true %}
+                                                    <li id="btn_new_row"><a id="more-subs" > <i class="fa fa-clone" aria-hidden="true"></i> New Items</a></li>
+                                                    <li data-toggle="modal" data-target="#importmod"><a href="#"><i class="fa fa-arrow-circle-o-down" aria-hidden="true"></i>Import Items</a></li>
+                                                {% endif %}
+                                                {% if x.add_col == true %}
+                                                    <li  data-toggle="modal" data-target="#myModal1"><a href="#"><i class="fa fa-columns" aria-hidden="true"></i>Add new column</a></li>
+                                                    <li  class="item_tbl_drop" id="col_relation"><a href="#"><i class="fa fa-compress" aria-hidden="true"></i>Add Ref. column</a></li>
+                                                    <li data-toggle="modal" data-target="#calc_model"><a href="#" id="btn_open_calc_modal"><i class="fa fa-compress" aria-hidden="true"></i>Add Calc. column</a></li>
+                                                    <li data-toggle="modal" data-target="#calc_model_edit"><a href="#" id="btn_open_calc_modal_edit"><i class="fa fa-link" aria-hidden="true"></i>Edit Calc. column</a></li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="board-filters-component">
+                            <!--<div class="search-filter">-->
+                            <!--    <div class="form-group m-0">-->
+                            <!--        <input type="text" placeholder="Search / Filter Board" class="form-control">-->
+                            <!--    </div>-->
+                            <!--</div>-->
+                            <div class="profile-filter">
+                                <a data-toggle="dropdown" class="menu-icon">
+                                    <span data-tooltip="tooltip" title="List of Users" data-placement="top" >
+                                    <i class="fa fa-user-circle" aria-hidden="true"></i></span></a>
+                                <ul class="dropdown-menu">
+                                    <li>{{user.email}}</li>
+                                    <hr>
+                                    {% for obj in allowed_users %}
+                                        <li>{{obj.user_id}}</li>
+                                        <hr>
+                                    {% endfor %}
+    
+                                </ul>
+                            </div>
+                            <div class="profile-filter hidden-columns">
+                                <a class="menu-icon " data-toggle="dropdown">
+                                    <span data-tooltip="tooltip" title="Hide/Show" data-placement="top">
+                                    <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                                     </span>
+    
+                                </a>
+                                <ul class="dropdown-menu" style="overflow: scroll; height: 400px;">
+                                    <p class="head">Choose Columns to Display</p>
+    
+                                    {% for all in alls %}
+                                        <li>
+                                            <a href="#">
+                                                <span  class="drop_check_box_label" id="{{all.pk}}" >{{all.c_name}}</span>
+                                                <div class="custom-checkbox">
+                                                    <label class="c-container">
+                                                        <input  type="checkbox" class="h_ch" id="{{forloop.counter}}" >
+                                                        <!-- <span class="c-checkmark"></span> -->
+                                                    </label>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                    <div class="col-xs-12">
+                                        <!--<button class="btn btn-primary" color="primary" expand="block" shape="round" id="btn_h">Apply Changes</button>-->
+                                    </div>
+                                </ul>
+                            </div>
+                            <div class="profile-filter filter-column">
+                                <a class="menu-icon" data-toggle="dropdown"><span data-tooltip="tooltip" title="Filter" data-placement="top">
+                                    <i class="fa fa-filter" aria-hidden="true" ></i></span></a>
+                                <ul class="dropdown-menu" id="fiter-dropdown"  style="width: 100px; overflow: scroll;">
+                                    <div class="filter-title">
+                                        <div class="title-container">
+                                            <span class="main-title">
+                                                <b>Filter your board</b>
+                                            </span>
+                                            <div class="filter-action">
+                                                <div class="export-to-excel">
+                                                   <button class="btn btn-default save-filter-btn export-advanced-filter-button" style="background: #2ca01c;color: white;"  id="btnExport">Export to Excel </button>&nbsp;&nbsp;
+                                                        <button class="btn btn-default save-filter-btn export-advanced-filter-button"  style="background: #2ca01c;color: white;" onclick="javascript:demoFromHTML();" > Export to PDF</button>
+                                                </div>
+                                                <div class="save-filter">
+                                                    <button style="background: #2ca01c;color: white;"   class="btn btn-default save-filter-btn tablefilter">
+                                                        <i class="fa fa-floppy-o" aria-hidden="true"></i>Save as new view
+                                                    </button>
+                                                    &nbsp;
+                                                        <i class="fa fa-refresh ref" aria-hidden="true"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="filter-items"  style="width: 650px;">
+                                        <div class="filter-items-inner">
+                                            {% for col in column %}
+                                                <div class="advanced-filter-item groups">
+                                                    <p class="filter-head-text">{{col.c_name}}</p>
+                                                    <div class="filter-items-list-container">
+                                                        {% for obj in c_values %}
+                                                            {% if col.pk == obj.bc_fk %}
+                                                                <div class="advanced-filter-option groups filterdiv">
+                                                                    <!-- <input  name="filter" type="checkbox" class="f_ch " > -->
+                                                                    <span class="advanced-filter-option-content filter-option">{{obj.c_v}}</span>
+                                                                    <span class="advanced-filter-option-counter">{{ct}}</span>
+                                                                </div>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="board-content-area">
+    
+                {% if messages %}
+                  <!-- {% for message in messages %} -->
+                  <div class="alert {{ message.tags }} alert-dismissible" style="background: #17a2b8" role="alert">
+                  <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close"> -->
+                  <!-- <span aria-hidden="true" >&times;</span>
+                   </button> -->
+                    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                    {{ message }}
+                   </div>
+                  <!-- {% endfor %} -->
+                {% endif %}
+    
+                        <div class="project-table-container">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div id="customers"  class="dataTables_wrapper reference_table_container table-responsive" >
+                                        <table class="table display resizable " id="demo">
+                                            <thead class="addcol" id="{{id}}">
+                                                <tr>
+                                                    {% for all in alls %}
+                                                        <th style="min-width:100px" id="{{all.pk}}">{{ all.c_name }}</th>
+                                                    {% endfor %}
+                                                </tr>
+                                            </thead>
+                                            <tbody id= "{{max_row}}" class="table_body">
+                                                <tr id="0">
+                                                    {% for c, id, row_id, data_type in mylist %}
+                                                        {% if forloop.counter|divisibleby:bc and forloop.counter != mylist_length %}
+                                                            <td id="{{id}}" class="" >
+                                                                {% if data_type == timage%}
+                                                                    <div class="t-content">
+                                                                        <img src="{{c}}" class="td_image">
+                                                                        <a><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                                                                    </div>
+                                                                {% else %}
+                                                                    <div class="t-content">
+                                                                        <p class="t-content-text">{{c}}</p>
+                                                                         <a><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                                                                    </div>
+                                                                {% endif %}
+                                                            </td>
+                                                            </tr>
+                                                            <tr id="{{row_id}}">
+                                                        {%else%}
+                                                            <td id="{{id}}" class="">
+                                                                {% if data_type == timage%}
+                                                                    <div class="t-content">
+                                                                        <img src="{{c}}" class="td_image">
+                                                                        <a><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                                                                    </div>
+                                                                {% else %}
+                                                                    <div class="t-content">
+                                                                        <p class="t-content-text">{{c}}</p>
+                                                                        <a><i class="fa fa-pencil" aria-hidden="true"></i></a>
+                                                                    </div>
+                                                                {% endif %}
+                                                            </td>
+                                                        {%endif%}
+                                                    {% endfor %}
+                                                            </tr>
+                                            </tbody>
+                                        </table>
+                                         {% if max_row >= 1%}
+                                        {% if pr_check  == t %}
+                                            <a class="newrow_add" id="{{id}}"><button type="submit"style="background: #866ec7;color: white;"  class="btn btn-primary newrow_add_btn"><i class='fa fa-plus' ></i> New row</button></a>
+                                        {% else %}
+                                            {% for x in tbl_data %}
+                                                {% if x.add_data == true %}
+                                                    <a class="newrow_add" id="{{id}}"><button type="submit" style="background: #866ec7;color: white;"  class="btn btn-primary newrow_add_btn"><i class='fa fa-plus' ></i> New row</button></a>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                          {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="sidebar sidebar-right">
+                <div class="head">
+                    <h4>New Item</h4>
+                     <a class="sidebar-close close_btn"><img src="/static/img/close.svg"></a>
+                </div>
+    
+                <div class="content-sidebar">
+                    <div class="card-header tab-card-header bg-transparent">
+                        <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link" id="one-tab" data-toggle="tab" href="#one" role="tab" aria-controls="One" aria-selected="true">Activity</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="two-tab" data-toggle="tab" href="#two" role="tab" aria-controls="Two" aria-selected="false">Information</a>
+                            </li>
+    
+    
+                        </ul>
+                    </div>
+    
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active p-4" id="one" role="tabpanel" aria-labelledby="one-tab">
+                            {% for all in alls %}
+                                <div class="row form-group">
+                                    <div id="mesBox">Exceeds the Size limit</div>
+                                    <div class="col-md-12">
+                                        <label class="col-form-label">{{all.c_name}}</label>
+                                    </div>
+                                    <div class="col-sm-12 ffield">
+                                        {%if all.d_type == tydate %}
+                                            <input type="date" class="form-control detailid_add_new" id="{{all.pk}}" name="{{all.nul_type}}" value="{{cdate|date:'Y-m-d'}}">
+    
+                                        {%elif all.d_type == tytime%}
+                                            <input type="time" class="form-control detailid_add_new" id="{{all.pk}}" name="{{all.nul_type}}">
+    
+                                        {%elif all.d_type == ttext or all.d_type == tt %}
+                                            <input type="text" class="form-control detailid_add_new max" id="{{all.pk}}" maxlength="{{all.d_size}}" name="{{all.nul_type}}">
+    
+                                        {% elif all.d_type == tnumeric or all.d_type == tnum %}
+                                            <input type="number" class="form-control detailid_add_new max" id="{{all.pk}}" maxlength="{{all.d_size}}" name="{{all.nul_type}}">
+    
+                                        {% elif all.d_type == Calc %}
+                                            <input type="text" class="form-control detailid_clc max" id="{{all.pk}}" maxlength="{{all.d_size}}" disabled>
+                                       {% elif all.d_type == timage %}
+                                            <form method="POST" enctype="multipart/form-data" class="fileUploadForm_images_data" name="{{all.nul_type}}">
+                                                {% csrf_token %}
+                                                <input type="file" class="form-control detailid_add_new_image" id="{{all.pk}}" name="files">
+                                            </form>
+                                        {%else%}
+                                            <select class="form-control detailid_add_new ref_select_drop {{all.pk}} select2 select_liner_data" id="{{all.pk}}" name="{{all.nul_type}}">
+                                                <option val="0" name="0">Select..</option>
+                                            </select>
+                                        {%endif%}
+                                    </div>
+                                </div>
+                            {%endfor%}
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <button class="btn btn-primary adddetails" style="float: right;"   id="{{id}}">Add Row</button>
+                                </div>
+                            </div>
+                            <!--<button class="btn btn-danger"  id="adddetails" style="float:right">Add Row</button>-->
+                            <!-- <button class="btn btn-danger adddetails" id="{{id}}" style="float:right">Add Row</button> -->
+                        </div>
+                        <div class="tab-pane fade p-3" id="two" role="tabpanel" aria-labelledby="two-tab">
+                            <div class="row form-group">
+    
+                                <div class="col-sm-12 margin_sm">
+                                    <label class="col-form-label">Base Name</label>
+                                    <input type="text" class="form-control detailid bname" value="{{info.base_name}}" required>
+                                </div>
+    
+                                <div class="col-sm-12 margin_sm">
+                                    <label class="col-form-label">Technical Name</label>
+                                    <input type="text" class="form-control detailid tname" value="{{info.technical_name}}" required>
+                                </div>
+    
+                                <div class="col-sm-12 margin_sm">
+                                     <label class="col-form-label">Table Type</label>
+                                    <input type="text" class="form-control detailid ttype" value="{{info.table_type}}" required>
+                                </div>
+    
+                                <div class="col-sm-12 margin_sm">
+                                     <label class="col-form-label">Description</label>
+                                    <input type="text" class="form-control detailid desc" value="{{info.discription}}" required>
+                                </div>
+    
+                                <div class="col-sm-12 margin_sm">
+                                    <label class="col-form-label">Purpose</label>
+                                    <input type="text" class="form-control detailid purp" value="{{info.purpose}}" required>
+                                </div>
+    
+                                <div class="col-sm-12 margin_sm">
+                                     <label class="col-form-label">BCP</label>
+                                    <input type="text" class="form-control detailid bcp" value="{{info.bcp}}" required>
+                                </div>
+    
+                                <div class="col-sm-12 margin_sm">
+                                     <label class="col-form-label">Tags</label>
+                                    <input type="text" class="form-control detailid tag" value="{{info.tags}}" required>
+                                </div>
+                                <div class="form-group row margin_sm mt-4">
+                                    <div class="col-sm-12">
+                                        <button class="btn btn-primary info_edit" style="float:right;"  id="{{id}}" >Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    
+    
+    
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Modal Adding New Column-->
+            <div class="modal fade" id="myModal1" role="dialog" style="z-index:2000;">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Adding New Column</h4>
+                        </div>
+                        <div class="modal-body">
+                            <input type="text" id="" class="form-control newcol space_adjust_md" placeholder="Enter New Column">
+                            <br>
+                            <select class="form-control space_adjust_md newcoltype">
+                                <option value="String">String</option>
+                                <option value="Date">Date</option>
+                                <option value="Time">Time</option>
+                                <option value="Image">Image</option>
+                                <option value="Number">Number</option>
+                            </select>
+                            <br>
+                            <input type="text" id="" class="form-control newcolsize space_adjust_md" placeholder="Enter Column Size">
+                            <br>
+                            <select class="form-control nultype " name="noyes">
+                                <option value="NOTNULL">Not-Null</option>
+                                <option value="NULL">Null</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="savenewcol" class="btn btn-success" style="background:  #2ca01c;color: white;"  data-dismiss="modal">Save</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Adding New Column end-->
+    
+            <!-- Modal Adding New Relation Column-->
+            <div class="modal fade" id="Relation_column_model" role="dialog" style="z-index:2000;">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Adding New Relation Column</h4>
+                        </div>
+                        <!-- Relation tables -->
+                        <div class="modal-body">
+                            <select class="form-control space_adjust_md" id="master_table_relation_select">
+                                <option value="None">Select ...</option>
+                            </select>
+                        </div>
+                        <div class="modal-body">
+                            <select class="form-control space_adjust_md " id="master_table_relation_column_select">
+                                <option value="None">Select ...</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" style="background: #2ca01c;color: white;"  id="btn_add_relation" class="btn btn-success" data-dismiss="modal">Save</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Adding New Relation Column end-->
+    
+    
+            <!-- Modal Rename  Column-->
+            <div class="modal fade" id="rmodal" role="dialog" style="z-index:2000;">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Rename</h4>
+                        </div>
+                        <div class="modal-body">
+                            <input type="text"  class="form-control newcol space_adjust_md col_md_rn">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" style="background: #866ec7;color: white;"  id="btn_rn" class="btn btn-success" data-dismiss="modal">Save</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal Rename  Column end-->
+    
+            <!-- Message Box -->
+            <div class="modal fade" id="messagebox" role="dialog">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="modal-body no_border_style">
+                            <p class="messagetxt"></p>
+                        </div>
+                        <div class="modal-footer no_border_style">
+                            <button type="button"style="background: #866ec7;color: white;"  id="btnconfirm" class="btn btn-success" data-dismiss="modal">Yes !!</button>
+                            <button type="button" style="background: #866ec7;color: white;"  class="btn btn-default" data-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Message Box -->
+    
+    
+            <!-- Calculation modal -->
+            <div class="modal fade" id="calc_model" role="dialog" style="z-index:2000;">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content"  style="width: 1000px;">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Calculation Column</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body srl" style="overflow-y: scroll;">
+                            <div class="container">
+    
+                                <div class="col-md-12" style="  padding: 10px; width:1200px; height: 450px;">
+    <div class="row">
+    <div class="col-sm-6 ">
+        <label class="label_frm">Field Name</label>
+        <div class="row">
+            <div class="col-md-12 calc_columns column_box srl " style="overflow-y: scroll; height: 400px; margin-top: -2px;">
+    
+            </div>
+    
+    
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row" style=" width: 500px;">
+    
+            <div class="col-md-7">
+            <label class="label_frm" style="margin-left: -15px;">Costant Value :</label>
+            </div>
+            <div class="col-md-3">
+                <input type="text" class="form-control" id="cr_sv">
+            </div>
+    
+            <div class="col-md-2">
+                <button class="btn btn-info" style="background:  #2ca01c;color: white;"  id="adding_const_btn">Add</button>
+           </div>
+    
+        </div>
+    
+    <div class="row " style="  width: 500px;">
+        <label class="label_frm">Operands </label>
+    
+                                        <div class="col-md-12 calc_columns operator_box cal_sign_box srl" style="height: 150px; overflow-y: scroll; margin-top: -5px;">
+                                            <button class="btn btn-info btn-oprator" style="background:#999999; border: #999999; " id="+">+</button>
+                                            <button class="btn btn-primary btn-oprator" style="background:#999999;    border: #999999; margin-left: 1px;" id="-">-</button>
+                                            <button class="btn btn-danger btn-oprator" style="background:#999999; border: #999999; margin-left: 1px;" id="*">*</button>
+                                            <button class="btn btn-warning btn-oprator" style="background:#999999; border: #999999;color: white;margin-left: 1px;" id="/">/</button>
+                                            <br>
+                                            <button class="btn btn-success btn-oprator" style="background:#999999; border: #999999; " id="%">%</button>
+                                            <button class="btn btn-success btn-oprator" style="background:#999999; border: #999999;margin-left: 1px; " id=">">Max</button>
+                                            <button class="btn btn-success btn-oprator" style="background:#999999; border: #999999;margin-left: 1px; " id="<">Min</button>
+                                            <button class="btn btn-success btn-bracket" style="background:#999999;  border: #999999;margin-top: 0.4em;margin-left: 1px; " id="(">(</button>
+                                            <button class="btn btn-success btn-bracket" style="background:#999999; border: #999999; margin-top: 0.4em;margin-left: 1px;" id=")">)</button>
+                                    </div>
+    
+    
+    
+    </div>
+    <div class="row " style="    width: 500px;">
+        <label class="label_frm" >Equations</label>
+        <div class="col-md-12 calc_columns equation_box srl" style="height: 90px; width: 400px; overflow-y: scroll;margin-top: -5px;">
+    
+        </div>
+    
+    
+    
+    
+    </div>
+    <div class="row" style="  width: 500px;">
+        <div class="form-group mtop">
+            <label class="label_frm">Resultant Column Name :</label>
+            <input type="text" class="form-control calc_result_column" style=" width: 500px;">
+        </div>
+    
+    
+    
+    
+    </div>
+    
+    
+    </div>
+    
+    
+    </div>
+    
+    
+    </div>
+                                </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" style="background:  #2ca01c;color: white;"  class="btn btn-info save_calc" data-dismiss="modal">Save</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Calculation modal End -->
+    
+            <!-- Calculation edit modal -->
+            <div class="modal fade" id="calc_model_edit" role="dialog" style="z-index:2000;">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content" style="width: 1000px;">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Calculation Column Edit</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body srl"style="overflow-y: scroll;">
+    
+                                <div class="container">
+    
+                                    <div class="col-md-12" style="  padding: 10px; width:1200px; height: 450px;">
+        <div class="row">
+        <div class="col-sm-6 ">
+            <label class="label_frm">Field Name</label>
+            <div class="row">
+                <div class="col-md-12 calc_columns column_box_edit srl " style="overflow-y: scroll; height: 400px; margin-top: -2px;">
+    
+                </div>
+    
+    
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row" style=" width: 500px;">
+    
+                <div class="col-md-7">
+                <label class="label_frm" style="margin-left: -15px;">Costant Value :</label>
+                </div>
+                <div class="col-md-3">
+                    <input type="text" class="form-control" id="cr_sv_edit">
+                </div>
+    
+                <div class="col-md-2">
+                    <button class="btn btn-info" style="background: #2ca01c;color: white;"  id="adding_const_btn_edit">Add</button>
+               </div>
+    
+            </div>
+    
+        <div class="row " style="  width: 500px;">
+            <label class="label_frm">Operands </label>
+    
+                                            <div class="col-md-12 calc_columns operator_box_edit cal_sign_box_edit srl" style="height: 115px; overflow-y: scroll; margin-top: -5px;">
+                                                <button class="btn btn-info btn-oprator"style="background:#999999;border: #999999; " id="+">+</button>
+                                                <button class="btn btn-primary btn-oprator"style="background:#999999; border: #999999; margin-left: 1px;" id="-">-</button>
+                                                <button class="btn btn-danger btn-oprator" style="background:#999999; border: #999999; margin-left: 1px;"id="*">*</button>
+                                                <button class="btn btn-warning btn-oprator"style="background:#999999; border: #999999; color: white; margin-left: 1px;" id="/">/</button>
+                                                <br>
+                                                <button class="btn btn-success btn-oprator"style="background:#999999; border: #999999; " id="%">%</button>
+                                                <button class="btn btn-success btn-oprator"style="background:#999999; border: #999999; margin-left: 1px;" id=">">Max</button>
+                                                <button class="btn btn-success btn-oprator"style="background:#999999; border: #999999; margin-left: 1px;" id="<">Min</button>
+                                                <button class="btn btn-success btn-bracket"style="background:#999999; border: #999999; margin-top: 0.4em;margin-left: 1px;" id="(">(</button>
+                                                <button class="btn btn-success btn-bracket"style="background:#999999; border: #999999; margin-top: 0.4em;margin-left: 1px;" id=")">)</button>
+                                        </div>
+    
+    
+    
+        </div>
+        <div class="row " style="    width: 500px;">
+            <label class="label_frm" >Equations</label>
+            <div class="col-md-12 calc_columns equation_box_edit srl" style="height: 70px; width: 400px; overflow-y: scroll;margin-top: -5px;">
+    
+            </div>
+    
+    
+    
+    
+        </div>
+        <div class="row" style="  width: 500px;">
+            <div class="form-group mtop">
+                <label class="label_frm">Select Calculation Column:</label>
+                <select class="form-control edit_calc_col_name">
+                    <option value="0">Select...</option>
+                </select>
+            </div>
+    
+    
+            <div class="form-group mtop" style="    margin-left: 120px;">
+                <label class="label_frm">Column Name :</label>
+                                                <input type="text" class="form-control calc_existing_column_name" disabled>
+            </div>
+    
+        </div>
+    
+    
+        <div class="row" style="  width: 500px;">
+            <div class="form-group mtop">
+                <label class="label_frm">Equation:</label>
+                <input type="text" class="form-control calc_existing_column_equ" style="width: 245px;" id="0" disabled>
+            </div>
+    
+            <div class="form-group mtop"  style="margin-left: 70px;"   >
+                <label class="label_frm">New Column Name :</label>
+                <input type="text" class="form-control calc_result_column_edit">
+            </div>
+    
+    
+        </div>
+    
+    
+    
+    
+    
+    
+        </div>
+    
+    
+        </div>
+    
+    
+        </div>
+                                    </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" style="background:  #2ca01c;color: white;"  class="btn btn-info update_calc" data-dismiss="modal">Update</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Calculation Edit modal End -->
+    
+            <!-- Modal copy table-->
+            <div class="modal right fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel2">Edit Record</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div id="mB">Exceeds the Size limit</div>
+                        <div class="modal-body  copy_details srl"  style="overflow-y: scroll; height: 500px;">
+    
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-danger edit_modal" style="background: #2ca01c;color: white;"   id="{{id}}" style="float:right">Save</button>
+                        </div>
+                        <div class="modal-footer">
+    
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal copy  table end-->
+    
+            <!-- Modal copy sub table-->
+            <div class="modal right fade" id="myModal123" tabindex="-1" role="dialog" aria-labelledby="myModalLabel123" style="z-index:2000;">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel123">Edit Record</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="modal-body  copy_details_sub_table srl"  style="overflow-y: scroll; height: 500px;">
+    
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-danger edit_modal_sub_table"   id="{{id}}" style="float:right;background: #866ec7;color: white;">Save</button>
+                        </div>
+                        <div class="modal-footer">
+    
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal copy  sub table end-->
+    
+            <!--invit Modal -->
+            <div class="modal fade" id="inviteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                            <h6 class="modal-title" id="myModalLabel"><i class="fa fa-share-alt"></i> Share</h6>
+                        </div>
+                        <div class="modal-body">
+                            <!-- <p><a title="Facebook" href=""><span class="fa-stack fa-lg"><i class="fa fas-square-o fa-stack-2x"></i><i class="fa fa-facebook fa-stack-1x"></i></span></a> <a title="Twitter" href=""><span class="fa-stack fa-lg"><i class="fa fa-square-o fa-stack-2x"></i><i class="fa fa-twitter fa-stack-1x"></i></span></a> <a title="Google+" href=""><span class="fa-stack fa-lg"><i class="fa fa-square-o fa-stack-2x"></i><i class="fa fa-google-plus fa-stack-1x"></i></span></a> <a title="Linkedin" href=""><span class="fa-stack fa-lg"><i class="fa fa-square-o fa-stack-2x"></i><i class="fa fa-linkedin fa-stack-1x"></i></span></a> <a title="Reddit" href=""><span class="fa-stack fa-lg"><i class="fa fa-square-o fa-stack-2x"></i><i class="fa fa-reddit fa-stack-1x"></i></span></a> <a title="WordPress" href=""><span class="fa-stack fa-lg"><i class="fa fa-square-o fa-stack-2x"></i><i class="fa fa-wordpress fa-stack-1x"></i></span></a> <a title="Digg" href=""><span class="fa-stack fa-lg"><i class="fa fa-square-o fa-stack-2x"></i><i class="fa fa-digg fa-stack-1x"></i></span></a>  <a title="Stumbleupon" href=""><span class="fa-stack fa-lg"><i class="fa fa-square-o fa-stack-2x"></i><i class="fa fa-stumbleupon fa-stack-1x"></i></span></a><a title="E-mail" href=""><span class="fa-stack fa-lg"><i class="fa fa-square-o fa-stack-2x"></i><i class="fa fa-envelope fa-stack-1x"></i></span></a>  <a title="Print" href=""><span class="fa-stack fa-lg"><i class="fa fa-square-o fa-stack-2x"></i><i class="fa fa-print fa-stack-1x"></i></span></a></p> -->
+                            <h2><i class="fa fa-envelope"></i>Invitation</h2>
+                            <p>Invite the New Member</p>
+                            <form action="/invitemail" method="POST">
+                                {% csrf_token %}
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+                                    <input type="email" class="form-control" name="email" placeholder="your@email.com">
+                                </div>
+                                <br/>
+                                <button type="submit" value="sub" name="sub" class="btn btn-primary"><i class="fa fa-share"></i> Subscribe Now!</button>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--invit Modal End -->
+    
+            <!-- import start -->
+            <div class="modal right fade" id="importmod" tabindex="-1" role="dialog" style="z-index:2000;" >
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4>Import Data</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">x</button>
+                        </div>
+                        <div class="modal-body ">
+                            <form method="POST" enctype="multipart/form-data" id="fileUploadForm">
+                                {% csrf_token %}
+                                <input type="file" name="files"/><br/><br/>
+    
+                                 <input type="submit" class="btn btn-info" style="background: #2ca01c;
+                                    color: white;" value="Submit" id="btnSubmit"  >
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+    
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- import End -->
+    
+    
+    
+    
+    
+    
+            <div class="modal left fade sutable_model_box sub-tables-con" id="exampleModal" tabindex="" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="container">
+                                <ul class="nav nav-tabs" id="sub_table_ul">
+                                    {% for id,col in additional_tbls %}
+                                    <li class="additional_table" id="{{id}}">
+                                        <a data-toggle="tab" href="#menu2">{{col}}</a>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                                <div class="tab-content">
+                                    <div id="menu2" class="tab-pane fade">
+                                        <div class="col-md-12">
+                                            <div id="mz">Exceeds the Size limit</div>
+                                        <br>
+                                            <div id="customers"  class="dataTables_wrapper reference_table_container sub-table-outer">
+                                                <table class="table display resizable sub_tables_main">
+                                                    <thead class="addcol_additional" id="{{id}}">
+    
+                                                    </thead>
+                                                    <tbody  class="table_body_additional">
+    
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 pull-right new_row_btn_div">
+    
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+    
+    
+    
+            {% if pr_check  == t %}
+                <!-- column menus -->
+                <div class="menu" id="contextMenu" class="dropdown clearfix" style="width: 120px;">
+                  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;width: 100%;">
+                    <li data-action="first" class="menu-option-list " id="col_edite"> <a><i class="fa fa-pencil"></i> Rename </li> </a>
+                    <li data-action="second" class="menu-option-list " id="col_delete"><a>  <i class="fa fa-trash"></i> Delete </li> </a>
+                  </ul>
+                </div>
+                <!-- column menus -->
+            {% else %}
+                <!-- column menus -->
+                <div class="menu" id="contextMenu" class="dropdown clearfix" style="width: 120px;">
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;width: 100%;">
+                        {% for x in tbl_data %}
+                             {% if x.update_col == true %}
+                                <li data-action="first" class="menu-option-list " id="col_edite"> <a><i class="fa fa-pencil"></i> Rename </li> </a>
+                             {% endif %}
+                             {% if x.delete_col == true %}
+                                <li data-action="second" class="menu-option-list " id="col_delete"><a>  <i class="fa fa-trash"></i> Delete </li> </a>
+                             {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                <!-- column menus -->
+            {% endif %}
+    
+           {% if pr_check  == t %}
+               <!-- row menus -->
+                <div class="RW_menu">
+                  <ul class="menu-options">
+                      <li class="menu-option-list" id="row_delete"><a> <i class="fa fa-trash" aria-hidden="true"></i> Delete Row </a></li>
+                      <li class="menu-option-list" id="row_dup">  <a><i class="fa fa-files-o" aria-hidden="true"></i>Duplicate Row</a></li>
+                          <li class="menu-option-list"><a id="row_copy"><i class="fa fa-pencil" aria-hidden="true"></i>Edit</a></li>
+                          <li class="menu-option-list"><a id="sutable_click_menu" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-table" aria-hidden="true"></i>Sub Tables</a></li>
+    
+                  </ul>
+                </div>
+                <!-- row menus -->
+           {% else %}
+                <!-- row menus -->
+                <div class="RW_menu">
+                    <ul class="menu-options">
+                        {% for x in tbl_data %}
+                             {% if x.delete_data == true %}
+                                <li class="menu-option-list" id="row_delete"><a> <i class="fa fa-trash" aria-hidden="true"></i> Delete Row </a></li>
+                             {% endif %}
+                             {% if x.add_data == true %}
+                                <li class="menu-option-list" id="row_dup"><a> <i class="fa fa-trash" aria-hidden="true"></i> Duplicate Row </a></li>
+                             {% endif %}
+                             {% if x.update_data == true %}
+                               <li class="menu-option-list"><a id="row_copy"><i class="fa fa-files-o" aria-hidden="true"></i>Edit</a></li>
+                             {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                <!-- row menus -->
+           {% endif %}
+    
+    
+    
+    
+    
+    
+    {% endblock %}

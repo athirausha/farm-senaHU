@@ -1,0 +1,1948 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+     <script src="//cdnjs.cloudflare.com/ajax/libs/jspdf/1.2.61/jspdf.min.js"></script>
+
+</head>
+<style>
+
+mark {
+  background: orange;
+  color: black;
+}
+
+ .site-heading h3{
+    font-size : 40px;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+.border {
+    background: #e8e8e8 ;
+    height: 1px;
+    width: 40%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 45px;
+    float:left;
+}
+
+/* Feature-CSS */
+
+.icon {
+    color : #fff;
+    padding:15px;
+    background:#323232 ;
+    font-size:50px;
+    border-radius:90px;
+    border:10px solid #323232 ;
+
+}
+.feature-box {
+    text-align: center;
+    padding: 20px;
+    transition: .5s;
+    margin-bottom: 30px;
+    border: 1px solid #e8e8e8;
+    background-color: white;
+}
+
+.y{
+    height: 812px;
+}
+.feature-box:hover {
+
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.feature-box h4 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 25px 0 15px;
+}
+.tt {
+
+    margin-right: 70px;
+}
+
+
+#mesBox {
+    display:none;
+    background-color: red;
+    border: 1px solid #abc;
+    color: white;
+    position: fixed;
+    padding: 20px;
+    top:0;
+    left: 50%;
+    height: 50px;
+}
+#mz {
+    display:none;
+    background-color: red;
+    border: 1px solid #abc;
+    color: white;
+    text-align: center;
+    height: 30px;
+    width: 300px;
+    top:0;
+    left: 50%;
+
+}
+
+#mB {
+    display:none;
+    background-color: red;
+    border: 1px solid #abc;
+    color: white;
+    text-align: center;
+    height: 30px;
+    width: 300px;
+    top:0;
+    left: 50%;
+
+}
+ .padi{
+        padding: 10px;
+    }
+ .select2{
+        width: 180px;
+    }
+  .trunback:hover
+{
+  background-color: #009aff !important;
+}
+         .jsdragtable-contents {
+    background: rgb(218, 209, 209);
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    box-shadow: 2px 2px 5px #aaa;
+    padding: 0;
+}
+
+.jsdragtable-contents table {
+    margin-bottom: 0;
+}
+
+.p-0 {
+
+  margin-top: 30px !important; }
+
+  .settings-menu .head img{
+        max-width: 65px;
+  }
+   .settings-menu .head h4{
+        font-size: 18px;
+  }
+  .settings-menu .database-setting{
+      background:#fff;
+  }
+  .settings-menu .user-setting{
+       background:#fff;
+  }
+    .settings-menu .manage-user{
+       background:#fff;
+  }
+  .menu-content .menu-list{
+      list-style-type:none;
+  }
+    .menu-content .menu-list .menu-item img{
+    max-width: 20px;
+  }
+  .menu-content .menu-list .menu-item{
+      margin-bottom: 10px;
+  }
+    .menu-content .menu-list .menu-item a{
+     padding-left: 5px;
+    font-size: 19px;
+    color: #333;
+    text-decoration: none;
+  }
+
+  .bg-white{
+      background:#fff;
+      padding-top:40px;
+  }
+
+
+
+     </style>
+<body>
+    <div class="content-area">
+        <aside class="side-menu" style="overflow: scroll;">
+            <div class="side-user-details">
+                <div class="pro-pic">
+                    <img src="/static/img/logo1.png" class="img-fluid">
+                </div>
+            </div>
+            <ul class="side-navbar">
+                <li class="menu-head">
+                    <a class="title-menu-left">
+                        <span class="widget-menu">MAIN MENU</span>
+                        <i class="fa fa-cog" onclick="openNav()" aria-hidden="true"></i>
+
+                    </a>
+                </li>
+
+                <li class="side-navbar-list ">
+                    <a class="nav-item active" href="/index">
+                        <i class="fa fa-window-maximize" aria-hidden="true"></i>
+                        <p>Create Model</p>
+                    </a>
+                </li>
+                <li class="side-navbar-list ">
+                    <a class="nav-item active" href="/Models">
+                        <i class="fa fa-window-maximize" aria-hidden="true"></i>
+                        <p>Group Models</p>
+                    </a>
+                </li>
+                <li class="side-navbar-list ">
+                    <!--<a href="#yourbusiness" class="nav-item collapsed" data-toggle="collapse" aria-expanded="false">-->
+                    <!--    <i class="fa fa-file" aria-hidden="true"></i>-->
+                    <!--    <p>Models</p>-->
+                    <!--    <h4>-->
+                    <!--        <img src="/static/img/plus.png">-->
+                    <!--    </h4>-->
+                    <!--</a>-->
+                    <!--<ul class="list-unstyled collapse sub-menu" id="yourbusiness" style="">-->
+                    <!--    {% for menu in menus %}-->
+                    <!--    <li>-->
+                    <!--        <a class="nav-item" href="/viewbase/{{ menu.pk }}">-->
+                    <!--            <i class="fa fa-window-maximize" aria-hidden="true"></i>-->
+                    <!--             <p>{{ menu.base_name }}</p>-->
+                    <!--        </a>-->
+                    <!--    </li>-->
+                    <!--    {% endfor %}-->
+                    <!--</ul>-->
+                    <div class="btn-group dropright w-100 side-drop-container">
+                      <a type="button" class="nav-item dropdown-toggle w-100" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Model
+                      </a>
+                      <div class="dropdown-menu side-dropdown">
+
+                        {% for menu in menus %}
+                            <a href="/viewbase/{{ menu.pk }}" class="dropdown-item">{{ menu.base_name }}</a>
+
+                        {% endfor %}
+                      </div>
+                    </div>
+                </li>
+
+                 <li class="side-navbar-list ">
+                    <a href="#yourbusiness2" class="nav-item collapsed" data-toggle="collapse" aria-expanded="false">
+                        <i class="fa fa-file" aria-hidden="true"></i>
+                        <p>Permitted Models</p>
+
+                    </a>
+                    <ul class="list-unstyled collapse sub-menu" id="yourbusiness2" style="">
+                        {% for menu in permitted_tables %}
+                        <li>
+                            <a class="nav-item" href="/viewbase/{{ menu.pk }}">
+                                <i class="fa fa-window-maximize" aria-hidden="true"></i>
+                                 <p>{{ menu.base_name }}</p>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                <!--<li class="side-navbar-list ">-->
+                <!--    <a class="nav-item "> <i class="material-icons">dashboard</i>-->
+                <!--        <p>Elements</p>-->
+                <!--    </a>-->
+                <!--</li>-->
+                <!--<li class="side-navbar-list ">-->
+                <!--    <a class="nav-item "> <i class="material-icons">dashboard</i>-->
+                <!--        <p>Charts</p>-->
+                <!--    </a>-->
+                <!--</li>-->
+            </ul>
+
+            <ul class="side-navbar">
+                <!--<li class="menu-head">-->
+                <!--    <a class="title-menu-left">-->
+                <!--        <span class="widget-menu">WIDGET MENU</span>-->
+                <!--        <i class="fa fa-cog" aria-hidden="true"></i>-->
+
+                <!--    </a>-->
+                <!--</li>-->
+                <li class="side-navbar-list ">
+                    <a class="nav-item active"  href="/loaddashboard">
+                        <i class="fa fa-window-maximize" aria-hidden="true"></i>
+                        <p>Dashboard</p>
+                    </a>
+                </li>
+                 <li class="side-navbar-list " >
+                    <a href="#" class="nav-item active create_tables" data-toggle="modal" data-target="#createbase">
+                        <i class="fa fa-window-maximize" aria-hidden="true"></i>
+                        <p>Copy Schema</p>
+                    </a>
+                </li>
+                <li class="side-navbar-list ">
+                    <a href="/load_reportpage" class="nav-item " >
+                        <i class="fa fa-window-maximize" aria-hidden="true"></i>
+                        <p> Create Reports</p>
+                        <h4>
+
+                        </h4>
+                    </a>
+
+                </li>
+                 <li class="side-navbar-list ">
+                    <a href="#reportbusiness" class="nav-item collapsed" data-toggle="collapse" aria-expanded="false">
+
+                        <i class="fa fa-window-maximize" aria-hidden="true"></i>
+                        <p>  Reports </p>
+                        <h4>
+
+                        </h4>
+                    </a>
+                    <ul class="list-unstyled collapse sub-menu" id="reportbusiness" >
+                        {% for report in reports %}
+                        <li>
+
+                             <a class="nav-item" href="/view_reportpage/{{report.pk}}">
+                                    <i class="fa fa-window-maximize" aria-hidden="true"></i>
+                                    <p>{{ report.Reportname }}</p>
+
+                                </a>
+
+                        </li>
+                        {% endfor %}
+
+
+                    </ul>
+                </li>
+                <!--<li class="side-navbar-list ">-->
+                <!--    <a class="nav-item "> <i class="material-icons">dashboard</i>-->
+                <!--        <p>Elements</p>-->
+                <!--    </a>-->
+                <!--</li>-->
+                <!--<li class="side-navbar-list ">-->
+                <!--   <a class="nav-item " data-toggle="modal" data-target="#inviteModal"> <i class="fas fa-envelope"></i>-->
+                <!--        <p>Invite</p>-->
+                <!--    </a>-->
+                <!--</li>-->
+            </ul>
+
+        </aside>
+        <div class="wrapper">
+            <div class="header  header-fixed ">
+                <div class="container-fluid">
+                    <div class="main-header-left ">
+                        <div class="app-sidebar__toggle" data-toggle="sidebar">
+                            <a class="open-toggle" id="toggle-btn"><i class="material-icons">menu</i></a>
+                        </div>
+                        <div class="header-top-menu-left">
+                            <ul class="navbar-nav">
+                                <li>
+                                    <a>
+                                        <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="header-top-menu-center time-section">
+                            <div class="date-container">
+                                <i class="fa fa-calendar-o" aria-hidden="true"></i>
+                                <span id="date"></span>
+                            </div>
+                            <div class="time-container">
+                                <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                <div id="clock">
+                                    <p class="unit" id="hours"></p>
+                                    <p class="unit" id="minutes"></p>
+                                    <p class="unit" id="seconds"></p>
+                                    <p class="unit" id="ampm"></p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="main-header-right ">
+                        <div class="nav nav-item  navbar-nav-right ml-auto">
+                            <div class="dropdown main-profile-menu nav nav-item nav-link">
+                                <ul class="navbar-nav">
+                                    <li class="nav-item dropdown">
+                                        <a class="profile-user d-flex nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <img src="{{profile_pic}}"  class="avatar img-circle img-thumbnail" name="myimage">
+                                            Hi, {{user.name}}
+                                            <b class="caret"></b>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right animate slideIn p-0" aria-labelledby="navbarDropdown">
+                                            <div class="main-header-profile bg-primary p-3">
+                                                <div class="d-flex">
+                                                    <div class="main-img-user">
+                                                        <img alt="" src="{{profile_pic}}" class="avatar img-circle img-thumbnail" name="myimage"></div>
+                                                    <div class="ml-3">
+                                                        <h6>{{user.name}}</h6><span>{{user.company_name}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                           <a class="dropdown-item" href="/userprofile"><i class="fa fa-user" style="color: gainsboro;" aria-hidden="true"></i>Profile</a>
+
+
+                                           <a class="dropdown-item" href="/logout"><i class="fa fa-sign-out" style="color: gainsboro;" aria-hidden="true"></i>Logout</a>
+                                           </div>
+                                    </li>
+                                        <li class="nav-item dropdown">
+                                            <a class="profile-user d-flex nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                 <i class="fa fa-bell" aria-hidden="true"></i>
+                                                <div class="noft-red notification_count">{{nti_count}}</div>
+                                            </a>
+
+                                            <div class="dropdown-menu dropdown-menu-right animate slideIn p-0 dropmenu-items" aria-labelledby="navbarDropdown">
+                                                <div class="main-header-profile  p-3 notification_element">
+                                                    {% for x in nti_msg %}
+                                                        <div class="d-flex">
+                                                            <div class="main-img-user">
+                                                                <img alt="" src="{{x.pic}}" class="img-fluid">
+                                                            </div>
+                                                            <div class="ml-3">
+                                                                <h6>{{x.heading}}</h6>
+                                                                <p>{{x.message}}</p>
+                                                                 <button class="btn btn-sm pull-right message_clear" id="{{x.pk}}" style="font-size:8px;">Read</button>
+                                                                 <button class="btn btn-sm btn-danger pull-right message_delete" id="{{x.pk}}" style="font-size:8px;">Delete</button>
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                    <button class="btn btn-info message_delete_all"style="width:100%; margin-top:1em;">Clear All</button>
+                                                </div>
+                                            </div>
+
+                                        </li>
+                                        <!--<li class="nav-item dropdown">-->
+                                        <!--    <a onclick="openNav()"><i class="fa fa-cog" aria-hidden="true"></i>Settings</a>-->
+                                        <!--</li>-->
+                                        <li class="nav-item dropdown">
+                                            <!--<a onclick="openNav()"><i class="fa fa-cog" aria-hidden="true"></i>Settings</a>-->
+<div class="dropdown show">
+  <a class=" " href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+   <i class="fa fa-cog" aria-hidden="true"></i>Settings
+  </a>
+
+  <div class="top-setting-menu dropdown-menu " aria-labelledby="dropdownMenuLink">
+   <div class="container settings-menu">
+                    <div class="row">
+                            <div class="col-md-4 bg-white">
+                                <div class="database-setting ">
+                                    <div class="head text-center">
+
+                                        <h4>Database &amp; Table Handling</h4>
+                                    </div>
+                                    <hr>
+                                    <div class="menu-content">
+                                        <ul class="menu-list">
+                                            <li class="menu-item">
+                                                <img src="/static/images/del.png">
+                                                <a data-toggle="modal" href="#" data-target="#messagebox_truncate_tables">Truncate Tables</a>
+                                            </li>
+
+                                            <!-- <li><a href='/truncate_tables'>Truncate Tables</a></li> -->
+                                            <li class="menu-item">
+                                                <img src="/static/images/deltbl.png">
+                                                <a data-toggle="modal" href="#" data-target="#messagebox_delete_tables">Delete Tables</a>
+                                            </li>
+
+                                             <!-- <li><a href='/delete_tables'>Delete Tables</a></li> -->
+                                            <li class="menu-item">
+                                                 <img src="/static/images/deluser.png">
+                                                 <a data-toggle="modal" href="#" data-target="#messagebox_delete_users">Delete Users</a>
+                                            </li>
+
+                                             <!-- <li><a href='/delete_users'>Delete Users</a></li> -->
+                                        </ul>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-4 bg-white">
+                                <div class="user-setting ">
+                                     <div class="head text-center">
+
+                                        <h4>User Account Settings</h4>
+                                    </div>
+                                    <hr>
+                                    <div class="menu-content">
+                                          <ul class="menu-list">
+                                            <li class="menu-item">
+                                                <img src="/static/images/disacco.png">
+                                                <a data-toggle="modal" href="#" data-target="#account_disable">Disable Account</a>
+                                            </li>
+                                            <li class="menu-item">
+                                                <img src="/static/images/delac.png">
+                                                <a data-toggle="modal" href="#" data-target="#account_delete">Delete Account</a>
+                                            </li>
+
+
+
+
+                                            <li class="menu-item">
+                                                <img src="/static/images/addus.png">
+                                                <a href="/company_ind_reg_load">Add New user Account</a>
+                                            </li>
+                                            <li class="menu-item">
+                                                <img src="/static/images/delus.png">
+                                                <a data-toggle="modal" href="#" data-target="#edit_user_account">Edit User Account</a>
+                                            </li>
+                                            <li class="menu-item">
+                                                <img src="/static/images/delus.png">
+                                                <a data-toggle="modal" href="#" data-target="#account_user_delete">Delete User Account</a>
+                                            </li>
+                                            <li class="menu-item">
+                                                <img src="/static/images/disacco.png">
+                                                <a data-toggle="modal" href="#" data-target="#user_account_disable">Disable User Account</a>
+                                            </li>
+
+
+
+                                        </ul>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-4 bg-white">
+                                <div class="manage-user ">
+                                        <div class="head text-center">
+
+                                          <h4>Manage Users</h4>
+                                        </div>
+                                        <hr>
+                                         <div class="menu-content">
+                                             <ul class="menu-list">
+                                                <li class="menu-item">
+                                                    <img src="/static/images/users.png" style="width: 40px; " alt="">
+                                                    <a href="/permission_user_list">Users</a>
+                                                </li>
+
+
+                                                 <li class="menu-item">
+                                                    <img src="/static/images/users.png" style="width: 40px; " alt="">
+                                                    <a href="/admin-user-management">Manage Users</a>
+                                                </li>
+
+
+                                                <!--<li><i class="fa fa-bell padi" style="color:gainsboro" aria-hidden="true"></i> <a href="#">Notifications</a></li>-->
+                                            </ul>
+                                        </div>
+                                </div>
+                            </div>
+                                        </div>
+
+                </div>
+  </div>
+</div>
+                                        </li>
+
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-wrapper">
+                <div class="container-fluid p-0">
+                    {% block content %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+    <!-- The overlay -->
+   <!-- The overlay -->
+    <div id="myNav" class="overlay">
+        <!-- Button to close the overlay navigation -->
+        <a href="javascript:void(0)" style="color: gainsboro;" class="closebtn" onclick="closeNav()">&times;</a>
+        <div class="board-content-wrapper app-configuration" style="background: #f5f5f5;">
+        <div class="app-configuration-container">
+
+            <!-- <div class="search-configuration">
+                <form>
+                    <div class="form-group row justify-content-center">
+                        <div class="col-md-5 d-flex">
+                            <label for="staticEmail" class="col-sm-2 col-form-label">Setup</label>
+                            <div class="col-sm-10">
+                              <input type="text"  class="form-control"  placeholder="Search Setup" >
+                            </div>
+                        </div>
+                    </div>
+
+                  </form>
+
+            </div> -->
+            <div class="config-list">
+
+                <div class="container settings-menu">
+                    <div class="row">
+                            <div class="col-md-4 bg-white">
+                                <div class="database-setting ">
+                                    <div class="head text-center">
+                                        <img src="/static/images/datatbl.png"  alt="Cinque Terre">
+                                        <h4>Database & Table Handling</h4>
+                                    </div>
+                                    <hr/>
+                                    <div class="menu-content">
+                                        <ul class="menu-list">
+                                            <li class="menu-item">
+                                                <img src="/static/images/del.png">
+                                                <a data-toggle="modal" href="#" data-target="#messagebox_truncate_tables">Truncate Tables</a>
+                                            </li>
+
+                                            <!-- <li><a href='/truncate_tables'>Truncate Tables</a></li> -->
+                                            <li class="menu-item">
+                                                <img src="/static/images/deltbl.png">
+                                                <a data-toggle="modal" href="#"  data-target="#messagebox_delete_tables">Delete Tables</a>
+                                            </li>
+
+                                             <!-- <li><a href='/delete_tables'>Delete Tables</a></li> -->
+                                            <li class="menu-item">
+                                                 <img src="/static/images/deluser.png">
+                                                 <a data-toggle="modal" href="#"  data-target="#messagebox_delete_users">Delete Users</a>
+                                            </li>
+
+                                             <!-- <li><a href='/delete_users'>Delete Users</a></li> -->
+                                        </ul>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-4 bg-white">
+                                <div class="user-setting ">
+                                     <div class="head text-center">
+                                       <img src="/static/images/userpng.png" alt="Cinque Terre">
+                                        <h4>User Account Settings</h4>
+                                    </div>
+                                    <hr/>
+                                    <div class="menu-content">
+                                          <ul class="menu-list">
+                                            <li class="menu-item">
+                                                <img src="/static/images/disacco.png">
+                                                <a data-toggle="modal" href="#"  data-target="#account_disable">Disable Account</a>
+                                            </li>
+                                            <li class="menu-item">
+                                                <img src="/static/images/delac.png">
+                                                <a data-toggle="modal" href="#"  data-target="#account_delete">Delete Account</a>
+                                            </li>
+                                            {% for obj in account_details %}
+
+                                            {% if obj.account_type == 'company_account' %}
+
+                                            <li class="menu-item">
+                                                <img src="/static/images/addus.png">
+                                                <a href="/company_ind_reg_load">Add New user Account</a>
+                                            </li>
+                                            <li class="menu-item">
+                                                <img src="/static/images/delus.png">
+                                                <a data-toggle="modal" href="#"  data-target="#edit_user_account">Edit User Account</a>
+                                            </li>
+                                            <li class="menu-item">
+                                                <img src="/static/images/delus.png">
+                                                <a data-toggle="modal" href="#"  data-target="#account_user_delete">Delete User Account</a>
+                                            </li>
+                                            <li class="menu-item">
+                                                <img src="/static/images/disacco.png">
+                                                <a data-toggle="modal" href="#"  data-target="#user_account_disable">Disable User Account</a>
+                                            </li>
+
+                                            {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-4 bg-white">
+                                <div class="manage-user ">
+                                        <div class="head text-center">
+                                         <img src="/static/images/manguser.jpg" alt="Cinque Terre">
+                                          <h4>Manage Users</h4>
+                                        </div>
+                                        <hr/>
+                                         <div class="menu-content">
+                                             <ul class="menu-list">
+                                                <li class="menu-item">
+                                                    <img src="/static/images/users.png" style="width: 40px; " alt="">
+                                                    <a href="/permission_user_list">Users</a>
+                                                </li>
+                                                {% for obj in account_details %}
+                                                 {% if obj.account_type == 'company_account' %}
+                                                 <li class="menu-item">
+                                                    <img src="/static/images/users.png" style="width: 40px; " alt="">
+                                                    <a href="/admin-user-management">Manage Users</a>
+                                                </li>
+                                                {% endif %}
+                                                {% endfor %}
+                                                <!--<li><i class="fa fa-bell padi" style="color:gainsboro" aria-hidden="true"></i> <a href="#">Notifications</a></li>-->
+                                            </ul>
+                                        </div>
+
+                                </div>
+
+                            </div>
+
+                                            <!-- <div class="col-sm-6 col-md-3">
+                                                    <div class="col-md-12 feature-box">
+                                                    <span class="glyphicon glyphicon-cog icon"></span>
+                                                    <h4>Fully Responsive</h4>
+                                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin sapien augue, dictum et gravida et, viverra et est. </p>
+                                                    <button type="button" class="btn btn-primary site-btn">Start Right Now</button>
+                                                </div>
+                                            </div> End Col -->
+
+
+
+                                        </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+    </div>
+
+
+    <!-- Modal Account delete and feedback -->
+    <div class="modal fade" id="account_delete" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <form method="post" action="/delete_account">
+                    {% csrf_token %}
+                <div class="modal-header" style="border:0px;">
+                    <h4 class="modal-title">Sorry to see you go, {{user.name}}</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body" style="border:0px;">
+                    <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-12" style="padding:0.4em;border:1px #ebb434 solid;">
+                            <p>
+                                Keep in mind that you will not able to reactivate your account or retrieve any of the content or information you have added
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 mtop">
+                            <p style="font-weight:bolder;">Can you tell us why your deleting you acount</p>
+                        </div>
+                        <div class="col-md-12">
+                            <label><input type="checkbox" value="I have Duplicate Account" name="feedback_dup"> I have duplicate Account</label>
+                        </div>
+                        <div class="col-md-12">
+                            <label><input type="checkbox" value="I have privacy issue" name="feedback_privacy"> I have privacy issue</label>
+                        </div>
+                        <div class="col-md-12">
+                            <label><input type="checkbox" value="I have UI issues" name="feedback_ui"> I have UI issues</label>
+                        </div>
+                        <div class="col-md-12">
+                            <label><input type="checkbox" value="I have service issuse" name="feedback_service"> I have service issuse</label>
+                        </div>
+                        <div class="col-md-12 mtop">
+                            <p style="font-weight:bolder;">Your feedback is important, Anthing else you'd like us to know?</p>
+                        </div>
+                        <div class="col-md-12">
+                            <textarea class="form-control" name="feedback_acc_del"></textarea>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer" style="border:0px;">
+                    <button type="submit" class="btn btn-primary" id="">Delete Account</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Account delete and feedback end -->
+
+      <!-- Modal Account disable and feedback -->
+        <div class="modal fade" id="account_disable" role="dialog">
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <form method="post" action="/disable_account">
+                        {% csrf_token %}
+                    <div class="modal-header" style="border:0px;">
+                        <h4 class="modal-title">Sorry to see you go, {{user.name}}</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body" style="border:0px;">
+                        <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12" style="padding:0.4em;border:1px #ebb434 solid;">
+                                <p>
+                                  <!--You can activate your account by login using your registered email id and password-->
+                                  Your account will gets activate after deactivation period
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12 mtop">
+                                <p style="font-weight:bolder;">Select deactivation period</p>
+                            </div>
+                            <div class="col-md-12 ">
+                                <label class="check"><input type="checkbox" value="1 Day"   name="disable_for">1 Day</label>
+                            </div>
+                            <div class="col-md-12 ">
+                                <label class="check"> <input type="checkbox" value="1 Week"   name="disable_for">1 Week</label>
+                            </div>
+                            <div class="col-md-12 ">
+                                <label class="check"><input type="checkbox" value="1 Month"  name="disable_for">1 Month</label>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="check"><input type="checkbox" value="1 Year"  name="disable_for">1 Year</label>
+                            </div>
+                            <div class="col-md-12 mtop">
+                                <p style="font-weight:bolder;">Your feedback is important, Anthing else you'd like us to know?</p>
+                            </div>
+                            <div class="col-md-12">
+                                <textarea class="form-control" name="feedback_acc_del"></textarea>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer" style="border:0px;">
+                        <button type="submit" class="btn btn-primary" id="">Disable Account</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Modal Account disable and feedback end -->
+
+<!-- Modal Users Account disable and feedback -->
+         <div class="modal fade" id="user_account_disable" role="dialog">
+
+            <div class="modal-dialog">
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <!-- <form method="post" action="/disable_user_account">
+                        {% csrf_token %} -->
+                    <div class="modal-header" style="border:0px;">
+                        <!-- <h4 class="modal-title">Sorry to see you go, {{user.name}}</h4> -->
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body" style="border:0px;">
+                        <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12" style="padding:0.4em;border:1px #ebb434 solid;">
+                                <p>
+                                  <!--You can activate your account by login using your registered email id and password-->
+                                  seleted account will gets activate after deactivation period
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="row form-group">
+                            <div class="col-md-12">
+                                <label class="col-form-label">Select User</label>
+                            </div>
+                            <div class="col-md-12 ">
+                                <select class="form-control" name="user_disable_account" id="user_disable_account">
+                                    <option value="0">Select ..</option>
+                                    {% for item in login_obj %}
+                                    {% for company in account_details %}
+                                    {% if item.company_name == company.company_name %}
+
+                                        <option value="{{item.pk}}">{{ item.email }}</option>
+
+                                      {% endif %}
+                                        {% endfor %}
+                                        {% endfor %}
+                                </select>
+                            </div>
+
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 mtop">
+                                <p style="font-weight:bolder;">Select deactivation period</p>
+                            </div>
+                            <div class="col-md-12 ">
+                                <label class="check"><input type="checkbox" value="1 Day"   class="disable_for">1 Day</label>
+                            </div>
+                            <div class="col-md-12 ">
+                                <label class="check"> <input type="checkbox" value="1 Week"   class="disable_for">1 Week</label>
+                            </div>
+                            <div class="col-md-12 ">
+                                <label class="check"><input type="checkbox" value="1 Month"  class="disable_for">1 Month</label>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="check"><input type="checkbox" value="1 Year"  class="disable_for">1 Year</label>
+                            </div>
+                            <div class="col-md-12 mtop">
+                                <p style="font-weight:bolder;">Your feedback is important, Anthing else you'd like us to know?</p>
+                            </div>
+                            <div class="col-md-12">
+                                <textarea class="form-control" name="feedback_acc_del"></textarea>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer" style="border:0px;">
+                        <button type="submit" class="btn btn-primary" id="disble_users_account">Disable Account</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                    <!-- </form> -->
+                </div>
+            </div>
+        </div>
+        <!-- Modal Account disable and feedback end -->
+
+
+    <!-- Message Box -->
+<div class="modal fade" id="messagebox_truncate_tables" style="margin-right: 600px;" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+
+       <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body no_border_style">
+         <p style="font-size:14px;">Are you sure wants to Truncate all tables?</p>
+        </div>
+        <div class="modal-footer no_border_style">
+        <!-- <form method='POST' action='/truncate_tables'>
+            {% csrf_token %} -->
+            <button type="button" class="btn btn-success btn-truncate-tables" data-dismiss="modal">Yes !!</button></a>
+
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+       <!-- </form> -->
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- Message Box -->
+
+  <!-- Message Box -->
+<div class="modal fade" id="messagebox_delete_tables" style="margin-right: 600px;" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+
+       <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body no_border_style">
+         <p style="font-size:14px;">Are you sure wants to Delete all tables ?</p>
+        </div>
+        <div class="modal-footer no_border_style">
+        <!-- <form method='POST' action='/truncate_tables'>
+            {% csrf_token %} -->
+            <button type="button" class="btn btn-success btn-delete-tables" data-dismiss="modal">Yes !!</button></a>
+
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+       <!-- </form> -->
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- Message Box -->
+ <!-- Message Box -->
+ <div class="modal fade" id="messagebox_delete_users" style="margin-right: 600px;" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+
+       <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body no_border_style">
+         <p>Are you want to Delete All Users ?</p>
+        </div>
+        <div class="modal-footer no_border_style">
+        <!-- <form method='POST' action='/delete_users'>
+            {% csrf_token %} -->
+
+            <button type="submit" class="btn btn-success btn-delete-users" data-dismiss="modal">Yes !!</button>
+
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <!-- </form> -->
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- Message Box -->
+
+   <!-- Modal User Account delete  -->
+    <div class="modal fade" id="account_user_delete" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+
+                <div class="modal-body" style="border:0px;">
+                    <div class="col-md-12">
+
+                        <div class="row form-group">
+                            <div class="col-md-12">
+                                <label class="col-form-label">Select User</label>
+                            </div>
+                            <div class="col-md-12 ">
+                                <select class="form-control" id="user_del_company">
+                                    <option value="0">Select ..</option>
+                                    {% for item in login_obj %}
+                                    {% for company in account_details %}
+                                    {% if item.company_name == company.company_name %}
+
+                                        <option value="{{item.pk}}">{{ item.email }}</option>
+
+                                      {% endif %}
+                                        {% endfor %}
+                                        {% endfor %}
+                                </select>
+                            </div>
+
+
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-md-12">
+                                <label class="col-form-label">Role</label>
+                            </div>
+                            <div class="col-md-12 ">
+                                <select class="form-control" id="role_user">
+                                    <option value="0">Select ..</option>
+                                    {% for item in designations %}
+                                    <option value="{{item.profile}}">{{item.profile}}</option>
+                                    {% endfor %}
+
+                                </select>
+
+
+                            </div>
+
+
+                        </div>
+
+                  </div>
+                </div>
+                <div class="modal-footer" style="border:0px;">
+                    <button type="submit" class="btn btn-info del_account_company" >Delete Account</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Account disable and feedback end -->
+
+    <!-- Modal User Account Edit  -->
+    <div class="modal fade" id="edit_user_account" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="border:0px;">
+                    <h4 class="modal-title">Update User Account</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <div class="modal-body" style="border:0px;">
+                    <div class="col-md-12">
+
+                        <div class="row form-group">
+                            <div class="col-md-12">
+                                <label class="col-form-label">Select User</label>
+                            </div>
+                            <div class="col-md-12 ">
+                                <select class="form-control" id="user_name_edit">
+                                    <option value="0">Select ..</option>
+                                    {% for item in login_obj %}
+                                    {% for company in account_details %}
+                                    {% if item.company_name == company.company_name %}
+
+                                        <option value="{{item.pk}}">{{ item.email }}</option>
+
+                                      {% endif %}
+                                        {% endfor %}
+                                        {% endfor %}
+                                </select>
+                            </div>
+
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-md-12">
+                                <label class="col-form-label">Role</label>
+                            </div>
+                            <div class="col-md-12 ">
+                                <select class="form-control" id="role_user_up">
+                                    <option value="0">Select ..</option>
+                                    {% for item in designations %}
+                                    <option value="{{item.profile}}">{{item.profile}}</option>
+                                    {% endfor %}
+
+                                </select>
+
+                            </div>
+
+
+                        </div>
+
+                        <div class="row form-group">
+                            <div class="col-md-12">
+                                <label class="col-form-label">Name</label>
+                            </div>
+                            <div class="col-md-12 ">
+                               <input type='text' id='up_name'>
+                            </div>
+
+
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-md-12">
+                                <label class="col-form-label">Email</label>
+                            </div>
+                            <div class="col-md-12 ">
+                               <input type='text' id='up_email'>
+                            </div>
+
+
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-md-12">
+                                <label class="col-form-label">Phone</label>
+                            </div>
+                            <div class="col-md-12 ">
+                               <input type='text' id='up_phone'>
+                            </div>
+
+
+                        </div>
+
+
+
+                  </div>
+                </div>
+                <div class="modal-footer" style="border:0px;">
+                    <button type="submit" class="btn btn-info update_user_account" > Apply Changes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Account disable and feedback end -->
+    <!-- Modal for schema -->
+      <div class="modal fade create_tbl" id="createbase" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Create Table</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row col-md-12 form-group">
+                        <div class="col-md-6">
+                            <label  class="col-form-label ">Table Name</label>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="table_name form-control">
+                        </div>
+                    </div>
+                    <div class="row col-md-12 form-group">
+                        <div class="col-md-6">
+                            <label  class="col-form-label" >select table</label>
+                        </div>
+                        <div class="col-md-6">
+                            <select name="seltable"  class="form-control space_adjust_md" id="table_select">
+                                <option>Select...</option>
+                                {% for menu in menus %}
+                                <option value="{{ menu.pk }}">{{ menu.base_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row col-md-12 form-group">
+                        <div class="col-md-6">
+                            <label  class="col-form-label "> Select column </label>
+                        </div>
+                        <div class="col-md-6 ">
+                            <select id="column_select"  name="colselect" class="selectpicker w-160 form-control space_adjust_md" multiple title="select.." >
+
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary saveseltable">submit</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Modal for schema end -->
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+    <script src="{%  static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/noty@3.2.0-beta/lib/noty.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/noty@3.2.0-beta/lib/noty.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/noty@3.2.0-beta/lib/themes/metroui.css">
+    <script src="{% static 'js/script.js' %}"></script>
+    <script src="{% static 'js/ajx.js' %}"></script>
+    <script src="{% static 'js/snew.js' %}"></script>
+    <script src="{% static 'js/advanced.js' %}"></script>
+     <script src="{% static 'js/sub_table.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap-notify-master/bootstrap-notify-master/bootstrap-notify.min.js' %}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"/>
+    <script src="{% static 'js/main.js' %}"></script>
+     <!-- chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css">
+    <!-- !-- Import D3 Scale Chromatic via CDN --> 
+    <script src="https://d3js.org/d3-color.v1.min.js"></script>
+    <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/mark.js/7.0.0/jquery.mark.min.js"></script>
+    <script>
+    $('.select2').select2();
+    $('.rr').select2();
+    </script>
+
+    <script>
+
+        /* Open when someone clicks on the span element */
+        function openNav() {
+            document.getElementById("myNav").style.width = "100%";
+        }
+
+        /* Close when someone clicks on the "x" symbol inside the overlay */
+        function closeNav() {
+            document.getElementById("myNav").style.width = "0%";
+        }
+    </script>
+
+    <script type="text/javascript"> window.CSRF_TOKEN = "{{ csrf_token }}"; </script>
+
+    <!-- ///////////////////////////////////drag drop row table/////////////////////////////////////////////////////// -->
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
+<script type="text/javascript">
+  $('tbody').sortable();
+</script>
+
+<!-- ///////////////////////////////////drag drop row table END/////////////////////////////////////////////////////// -->
+
+<script>
+    var table;
+    $(document).ready( function (){
+
+      table = $('#demo').DataTable( {
+
+      });
+      $(".h_ch").click(function(){
+        if (this.checked) {
+      table.column($(this).attr('id')-1).visible(false);
+        }else
+        table.column($(this).attr('id')-1).visible(true);
+    });
+    });
+</script>
+
+<!--///////////////////////////info ////////////////////////////-->
+
+
+<script>
+
+    $(document).ready(()=>{
+
+      $('.info_edit').click(function(e){
+         validation_checker = false;
+         bname = $('.bname').val();
+         tname = $('.tname').val()
+         ttype = $('.ttype').val()
+         desc = $('.desc').val()
+         purp = $('.purp').val()
+         bcp = $('.bcp').val()
+         tag = $('.tag').val()
+
+
+         $(".detailid").map(function(){
+                                                if($(this).val() == "")
+                                                {
+                                                    $(this).css({'border':'1px solid #d1383d'});
+                                                    validation_checker = true;
+                                                }
+                                                else
+                                                {
+                                                    $(this).css({'border':'1px solid green'});
+                                                }
+                                              }).get();
+
+
+         if(validation_checker != true)
+         {
+             $.ajax({
+                url: '/infoedit',
+                type: 'POST',
+                headers: {//<==
+                "X-CSRFTOKEN": "{{ csrf_token }}"//<==
+                },
+                data:{
+                id:e.target.id,bname:bname,tname:tname,ttype:ttype,desc:desc,purp:purp,bcp:bcp,tag:tag
+                },
+                success: function (data){
+                    console.log(data);
+                    $('#myModal2').modal('hide');
+                    new Noty({
+                       type: 'success',
+                       layout: 'topRight',
+                       theme: 'metroui',
+                       text: 'Master table details updated. ! 🤖',
+                       timeout: '4000',
+                       progressBar: true,
+                       closeWith: ['click'],
+                       killer: true,
+
+                    }).show();
+                }
+             });
+         }
+         else
+         {
+            new Noty({
+               type: 'error',
+               layout: 'topRight',
+               theme: 'metroui',
+               text: 'Required fields cannot be empty. ! 🤖',
+               timeout: '4000',
+               progressBar: true,
+               closeWith: ['click'],
+               killer: true,
+
+            }).show();
+         }
+
+
+
+      });
+
+
+
+    });
+   </script>
+
+
+<!--///////////////////////////info ends////////////////////////////-->
+<script>
+
+  /* SCHEMA*/
+/* schema column fetch */
+
+$('#table_select').on('change',function(e){
+
+        console.log($("#table_select option:selected").val());
+        base_id=$("#table_select option:selected").val();
+
+        $.ajax({
+            url:'/fetch_columns',
+            type:'POST',
+            data:{csrfmiddlewaretoken: window.CSRF_TOKEN,base_id:base_id},
+
+            success:function(data) {
+                console.log(data.data[0].c_name)
+                console.log(base_id)
+                $('#column_select').empty();
+                // $('#column_select').append('<option value="0">Select</option>')
+                $('#column_select').append('<option  value="'+base_id+'">Select all</option>')
+
+
+                for(i=0;i<data.data.length;i++)
+                {
+                    console.log(data.data[i].c_name)
+                    $("#column_select").append('<option value="'+data.data[i].pk+'">'+data.data[i].c_name+'</option>')
+
+                }
+
+                $('#column_select').selectpicker('refresh');
+
+
+            },
+
+        });
+
+
+
+});
+/* schema column fetch  end*/
+
+/* Select all options on click select all */
+$('#column_select').on('change',function(){
+
+    if($("#column_select option:selected").html() == 'Select all')
+    {
+        $('#column_select').selectpicker('selectAll');
+
+    }
+
+});
+
+/* Select all options on click select all end */
+
+
+/* schema save*/
+$('.saveseltable').click(function(e){
+   $('#createbase').hide()
+    var column_id=[]
+    var  column_txt=[]
+    var col_length;
+    base_id =$('#table_select option:selected').val()
+    tbl_name=$('.table_name').val()
+    console.log(tbl_name)
+    console.log(base_id)
+
+    column_id=$("select[name='colselect'] option:selected ").map(function(){return $(this).val();}).get();
+    console.log(column_id)
+
+    column_txt=$("select[name='colselect'] option:selected").map(function(){return $(this).text();}).get();
+    console.log(column_txt)
+    col_length=column_id.length
+    console.log(col_length)
+    col_length = console.log(column_txt[0])
+
+       console.log("if c_id"+column_txt)
+    console.log("if c_l"+col_length)
+
+    if( tbl_name != ''){
+
+            $.ajax({
+                url:'/schema_save',
+                type:'POST',
+                data:{csrfmiddlewaretoken: window.CSRF_TOKEN,base_id:base_id,table:tbl_name,column_txt:column_txt},
+
+                success: function(data) {
+                    console.log(data)
+                }
+
+           });setTimeout(function(){
+              location.reload();
+            }, 2000);
+    }
+
+});
+
+/* schema save end*/
+
+
+</script>
+
+<!-- ////////////////////column drag///////////// -->
+  <script>
+   $("#demo").jsdragtable();
+</script>
+
+
+<script>
+    function cuteHide(el) {
+      el.animate({opacity: '0'}, 450, function(){
+        el.animate({height: '0px'}, 450, function(){
+          el.remove();
+        });
+      });
+    }
+    $(document).ready(function(){
+
+
+        $('.dropright').hover(function(){
+          $('.dropdown-toggle', this).trigger('click');
+        });
+
+        $(".message_clear").click(function(e){
+            var id = $(this).attr('id');
+            console.log(id);
+            var count = $(".notification_count").text();
+            count = count-1;
+            $.ajax({
+                type:"POST",
+                url: "/clear_notification",
+                data:{csrfmiddlewaretoken: window.CSRF_TOKEN, n_id:id},
+                async: false,
+                success: function( data )
+                {
+                    console.log(data.Result);
+                }
+            });
+            var el = $(this).parent().parent();
+            cuteHide(el);
+            $(".notification_count").text(count);
+            e.stopPropagation();
+
+        });
+        $(".message_delete").click(function(e){
+            var count = $(".notification_count").text();
+            count = count-1;
+            var id = $(this).attr('id');
+            console.log(id);
+            $.ajax({
+                type:"POST",
+                url: "/delete_notification",
+                data:{csrfmiddlewaretoken: window.CSRF_TOKEN, n_id:id},
+                async: false,
+                success: function( data )
+                {
+                    console.log(data.Result);
+                }
+            });
+            var el = $(this).parent().parent();
+            cuteHide(el);
+            $(".notification_count").text(count);
+            e.stopPropagation();
+        });
+    });
+    $(".message_delete_all").click(function(e){
+        var count = $(".notification_count").text();
+        count = count-count;
+        $.ajax({
+            type:"POST",
+            url: "/delete_notification_all",
+            data:{csrfmiddlewaretoken: window.CSRF_TOKEN},
+            async: false,
+            success: function( data )
+            {
+                console.log(data.Result);
+            }
+        });
+        var el = $(this).parent();
+        cuteHide(el);
+        e.stopPropagation();
+        $(".notification_count").text(count);
+    });
+
+</script>
+
+<!--/////////////////////////////reportsss//////////////////////-->
+<!--
+///////////report fetch//////////// -->
+
+<script>
+
+$('#tname').on('change',function(e){
+
+console.log($("#tname option:selected").val());
+base_id=$("#tname option:selected").val();
+
+$.ajax({
+    url:'/load_reportpagefetch',
+    type:'POST',
+    data:{csrfmiddlewaretoken: window.CSRF_TOKEN,base_id:base_id},
+
+    success:function(data) {
+        console.log(data.data[0].c_name)
+        console.log(base_id)
+        $('#field_name').empty();
+        // $('#field_name').append('<option value="0">Select</option>')
+        $('#field_name').append('<option  value="'+base_id+'">Select all</option>')
+
+
+        for(i=0;i<data.data.length;i++)
+        {
+            console.log(data.data[i].c_name)
+            $("#field_name").append('<option value="'+data.data[i].pk+'">'+data.data[i].c_name+'</option>')
+
+        }
+
+        $('#field_name').selectpicker('refresh');
+
+
+    },
+
+});
+
+
+
+});
+
+
+/* Select all options on click select all */
+$('#field_name').on('change',function(){
+
+    if($("#field_name option:selected").html() == 'Select all')
+    {
+        $('#field_name').selectpicker('selectAll');
+
+    }
+
+});
+
+/* Select all options on click select all end */
+
+    /* e*/
+$('.savetable').click(function(e){
+
+    var column_id=[]
+    var  column_txt=[]
+    var col_length;
+    base_id =$('#tname option:selected').val()
+    rpt_name=$('.rname').val()
+    console.log(rpt_name)
+    Drpt_name=$('.drname').val()
+    console.log(Drpt_name)
+
+
+    console.log(base_id)
+
+    column_id=$("select[name='fieldselect'] option:selected ").map(function(){return $(this).val();}).get();
+    console.log(column_id)
+
+    column_txt=$("select[name='fieldselect'] option:selected").map(function(){return $(this).text();}).get();
+    console.log(column_txt)
+    col_length=column_id.length
+    console.log(col_length)
+    col_length = console.log(column_txt[0])
+
+       console.log("if c_id"+column_txt)
+    console.log("if c_l"+col_length)
+
+    {
+
+            $.ajax({
+                url:'/save_reportpage',
+                type:'POST',
+                data:{csrfmiddlewaretoken: window.CSRF_TOKEN,base_id:base_id,column_txt:column_txt,rpt_name:rpt_name,Drpt_name:Drpt_name},
+
+                success: function(data) {
+                    console.log(data)
+                }
+
+           });setTimeout(function(){
+              location.reload();
+            }, 2000);
+    }
+
+});
+
+/* schema save end*/
+</script>
+
+
+
+<!-- //////////////////////////excel export/////////////////////////// -->
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+    $("#reportExport").click(function() {
+        let table = document.getElementsByTagName("table");
+        TableToExcel.convert(table[0], { // html code may contain multiple tables so here we are refering to 1st table tag
+        name: `export.xlsx`, // fileName you could use any name
+        title: 'Excel',
+        sheet: {
+            name: 'Sheet 1' // sheetName
+        }
+
+        });
+  });
+});
+</script>
+
+
+<!-- ////////////////export Pdf report//////////////////////////// -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.3/jspdf.min.js"></script>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+
+<script>
+
+function getPDF(){
+
+var HTML_Width = $(".canvas_div_pdf").width();
+var HTML_Height = $(".canvas_div_pdf").height();
+var top_left_margin = 15;
+var PDF_Width = HTML_Width+(top_left_margin*2);
+var PDF_Height = (PDF_Width*1.5)+(top_left_margin*2);
+var canvas_image_width = HTML_Width;
+var canvas_image_height = HTML_Height;
+
+var totalPDFPages = Math.ceil(HTML_Height/PDF_Height)-1;
+
+
+html2canvas($(".canvas_div_pdf")[0],{allowTaint:true}).then(function(canvas) {
+    canvas.getContext('2d');
+
+    console.log(canvas.height+"  "+canvas.width);
+
+
+    var imgData = canvas.toDataURL("image/jpeg", 1.0);
+    var pdf = new jsPDF('p', 'pt',  [PDF_Width, PDF_Height]);
+    pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin,canvas_image_width,canvas_image_height);
+
+
+    for (var i = 1; i <= totalPDFPages; i++) {
+        pdf.addPage(PDF_Width, PDF_Height);
+        pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height*i)+(top_left_margin*4),canvas_image_width,canvas_image_height);
+    }
+
+    pdf.save("HTML-Document.pdf");
+});
+};
+</script>
+
+
+
+
+<!-- /**TO DELETE REPORT */ -->
+<script>
+
+$('.reportdelete').click(function(){
+
+
+   report_id =$('.reportdelete').val()
+
+
+
+           $.ajax({
+               url:'/del_reportpage',
+               type:'POST',
+               data:{csrfmiddlewaretoken: window.CSRF_TOKEN,report_id:report_id},
+
+               success: function(data) {
+                   console.log(data)
+                  window.location.href = "/load_reportpage";
+               }
+
+          });setTimeout(function(){
+             location.reload();
+           }, 2000);
+
+
+});
+
+</script>
+<!-- /**TO DELETE REPORT */  -->
+<!--////////////////////////////reports end/////////////////////-->
+
+<script>
+    /* CREATING GROUP FOR TABLE PASSING GROUP NAME, PRIMARY TABLE ID AND SECONDRY TABLES ID */
+    $("#group_tbl").click(function(){
+        var group_name = $('#table_gr_name').val();
+        var primary_tbl_id = $("#primary_table_id").val();
+        var secondry_tbl_id = $("#secondary_table_id").val();
+        console.log(group_name);
+        console.log(primary_tbl_id);
+        console.log(secondry_tbl_id);
+        $.ajax({
+            type:"POST",
+            url: "/Create_tbl_group",
+            data:{csrfmiddlewaretoken: window.CSRF_TOKEN, group_name:group_name, primary_tbl_id:primary_tbl_id, secondry_tbl_id:secondry_tbl_id},
+            async: false,
+            success: function( data )
+            {
+                console.log(data);
+                // messages(data.Message, data.Type)
+                new Noty({
+                type: 'success',
+                layout: 'topRight',
+                theme: 'metroui',
+                text: 'Group Created successfully. !',
+                timeout: '3000',
+                progressBar: true,
+                closeWith: ['click'],
+                killer: true,
+
+             }).show();
+            }
+         });
+        setTimeout(function(){location.reload();}, 2000);
+    });
+    /* CREATING GROUP FOR TABLE PASSING GROUP NAME, PRIMARY TABLE ID AND SECONDRY TABLES ID END */
+
+     $(".delete_secondry_tbl").click(function(){
+         $.ajax({
+            type:"POST",
+            url: "/delete_secondry_tbl",
+            data:{csrfmiddlewaretoken: window.CSRF_TOKEN, tbl_id:$(this).attr('id')},
+            async: false,
+            success: function( data )
+            {
+                console.log(data);
+                messages(data.Message, data.Type)
+            }
+         });
+        setTimeout(function(){location.reload();}, 100);
+     });
+
+
+</script>
+
+<script>
+    $(document).on('keyup','.exL',function(){
+
+
+        var maxCount = $(this).attr('maxlength');
+        console.log(maxCount)
+        var txtval=$(this).val().length
+
+        console.log(txtval)
+        if(txtval < maxCount){
+    $(".exL").css('border','1px solid black');
+    $("#mz").css("display", "none");
+
+
+    }
+    else{
+    $(".exL").css('border','1px solid red');
+    $("#mz").css("display", "block");
+
+
+    }
+    });
+
+    </script>
+
+
+
+<script>
+$(document).on('keyup','.details_edit',function(){
+
+
+    var maxCount = $(this).attr('maxlength');
+    console.log(maxCount)
+    var txtval=$(this).val().length
+
+    console.log(txtval)
+    if(txtval < maxCount){
+$(".details_edit").css('border','1px solid black');
+$("#mB").css("display", "none");
+
+
+}
+else{
+$(".details_edit").css('border','1px solid red');
+$("#mB").css("display", "block");
+
+
+}
+});
+
+
+
+</script>
+
+<!-- GROUP TABLE UPDATE -->
+<script>
+    allvalues  =[];
+    $(document).on('change','#group_name_id',function(){
+    var  sec_value =[];
+
+    allvalues=$("#up_secondary_table_id option").map(function(){return $(this).val();}).get();
+    console.log('allvalues'+allvalues)
+    var group_id = $("#group_name_id option:selected").html();
+    console.log('group'+group_id)
+    $.ajax({
+       type:"POST",
+       url: "/group_update_fetch",
+       data:{csrfmiddlewaretoken: window.CSRF_TOKEN, group_id: group_id},
+       async: false,
+       success: function(data)
+       {
+           console.log(data)
+           console.log(data.primary_tbl[0]['table_id_primary'])
+
+           console.log(data.secondary_tbl.length)
+
+            $("#up_primary_table_id").val(data.primary_tbl[0].table_id_primary).prop('selected',true);
+
+
+           for(i=0;i<data.secondary_tbl.length;i++)
+
+            {
+              sec_value.push(data.secondary_tbl[i]['secondary_tables_id'])
+
+            }
+
+
+       }
+
+    });
+    console.log(sec_value)
+    $.each(sec_value, function(i,e){
+        console.log('e'+e)
+        $("#up_secondary_table_id option[value='" + e + "']").prop('selected',true);
+    });
+
+
+
+    $(".seltables").selectpicker("refresh");
+});
+
+$("#group_tbl_update").click(function(){
+  var secondary_table_id=[];
+  var secondary_table_name=[];
+  var group_id = $('#group_name_id option:selected').val()
+  var primary_tbl_id =$('#up_primary_table_id option:selected').val()
+  secondary_table_id =$("#up_secondary_table_id option:selected ").map(function(){return $(this).val();}).get();
+
+  console.log('group_id'+group_id)
+  console.log('primary_tbl_id'+primary_tbl_id)
+  console.log('secondary_table_id'+secondary_table_id)
+
+  $.ajax({
+       type:"POST",
+       url: "/update_group",
+       data:{csrfmiddlewaretoken: window.CSRF_TOKEN, group_id: group_id,primary_tbl_id:primary_tbl_id,secondary_table_id:secondary_table_id},
+       async: false,
+       success: function(data)
+       {
+            new Noty({
+                type: 'success',
+                layout: 'topRight',
+                theme: 'metroui',
+                text: 'Group updated successfully. !',
+                timeout: '3000',
+                progressBar: true,
+                closeWith: ['click'],
+                killer: true,
+
+             }).show();
+
+
+
+       }
+    }); setTimeout(function(){location.reload();}, 100);
+
+
+});
+</script>
+<!-- GROUP TABLE UPDATE end-->
+
+</body>
+
+</html>

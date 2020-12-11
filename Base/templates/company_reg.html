@@ -1,0 +1,157 @@
+{% extends 'index.html' %}
+{% block content %}
+    <style>
+
+.divider-text {
+    position: relative;
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+.divider-text span {
+    padding: 7px;
+    font-size: 12px;
+    position: relative;
+    z-index: 2;
+}
+.divider-text:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+    top: 55%;
+    left: 0;
+    z-index: 1;
+}
+
+.btn-facebook {
+    background-color: #405D9D;
+    color: #fff;
+}
+.btn-twitter {
+    background-color: #42AEEC;
+    color: #fff;
+}
+.alert {
+  padding: 20px;
+  background-color:#b3a5a4;
+  color: white;
+  width:300px;
+  height: 100px;
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
+    </style>
+
+    <div class="container">
+        <br>
+        <div class="card bg-light">
+            <article class="card-body mx-auto" style="max-width: 400px;">
+            <a onclick="openNav()" style="align-content: center;" ><i class="fa fa-close" style="margin-left: 650px;" aria-hidden="true"></i></a>
+                <h4 class="card-title mt-3 text-center" style=" margin-left: -100px;">Create Account</h4>
+                <p class="text-center" style="margin-left: -110px;">Get started with your free account</p>
+                {% if messages %}
+                <!-- {% for message in messages %} -->
+                    <div class="alert {{ message.tags }} alert-dismissible" role="alert" style="background: #17a2b8;;padding: 5px;height: 40px; text-align: center;
+}">
+                        <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                        {{ message }}
+                    </div>
+                <!-- {% endfor %} -->
+                {% endif %}
+
+                <form method="POST" action="/company_registration">
+                    {% csrf_token %}
+
+                    <div class="form-group input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                        </div>
+                        <input name="fname" class="form-control fnmm" placeholder="Full name" type="text">
+                        &nbsp;<div id="fnm" style="visibility: hidden;" ><label style="color: red;">Please Fill Name</label></div>
+                    </div>
+
+                    <div class="form-group input-group" style="width: 358px;">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+                         </div>
+                        <input name="email" class="form-control emll" style="font-size: 12px;" placeholder="Email address" type="email" required>
+                        &nbsp;<div id="eml" style="visibility: hidden;" ><label style="color: red;">Please Fill Email</label></div>
+                    </div>
+
+                    <div class="form-group input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"> <i class="fa fa-phone"></i> </span>
+                        </div>
+                        <input name="mobile" class="form-control mobb" placeholder="Phone number" type="text">
+                        <div id="mob" style="visibility: hidden;" ><label style="color: red;">Please Fill Mobile</label></div>
+                    </div>
+
+                    <div class="form-group input-group" style="width: 251px;">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"> <i class="fa fa-university"></i> </span>
+                        </div>
+                        {% for obj in account_details %}
+                        <input name="company" class="form-control" value="{{obj.company_name}}"  type="text" readonly>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"> <i class="fa fa-user-plus"></i> </span>
+                        </div>
+                         <!--<input name="role" class="form-control proo" placeholder="Profile" type="text">-->
+                          <select class="form-control" id="profile_reg" name="profile_reg_user">
+                            <option value="0">Choose profile ..</option>
+                            {% for item in designations %}
+                            <option value="{{item.profile}}">{{item.profile}}</option>
+                            {% endfor %}
+
+                        </select>
+                        <div id="pro" style="visibility: hidden;" ><label style="color: red;">Please Fill Profile</label></div>
+                    </div>
+
+                   <div class="form-group input-group" style="width: 380px;">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                        </div>
+                        <input class="form-control passs" placeholder="Create password" type="password" name="password">
+                        <div id="pass" style="visibility: hidden;" ><label style="color: red;">Please Fill Password</label></div>
+                    </div>
+
+                    <div class="form-group input-group" style="width: 435px;">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"> <i class="fa fa-check"></i> </span>
+                        </div>
+                        <input class="form-control cpasss" placeholder="Repeat password" type="password" name="cpassword">
+                        <div id="cpass" style="visibility: hidden;" ><label style="color: red;">Please Fill Confirm Password</label></div>
+                    </div>
+
+
+                    <div class="form-group" style="margin-left: 50px;">
+                        <button type="submit" id="userrr" style="max-width: 50%;" class="btn btn-primary btn-block createac_for_emp"> Create Account  </button>
+
+                    </div>
+
+
+
+
+                </form>
+            </article>
+        </div>
+    </div>
+    <br><br>
+    {% endblock %}

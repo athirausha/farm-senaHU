@@ -1,0 +1,131 @@
+{% extends 'index.html' %}
+
+{%block content%}
+
+<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#charts">Create Chart</button>
+
+<!-- Modal -->
+<div id="charts" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Modal Header</h4>
+      </div>
+      <div class="modal-body">
+
+        <div class="row col-md-12 form-group">
+            <div class="col-md-6">
+              <label  class="col-form-label ">Chart Name</label>
+            </div>
+            <div class="col-md-6">
+           <input type="text" class="chart_name form-control">
+            </div>
+        </div>
+
+            <div class="row col-md-12 form-group">
+                <div class="col-md-6">
+                  <label  class="col-form-label ">Detailed Chart Name</label>
+                </div>
+                <div class="col-md-6">
+               <input type="text" class="dchart_name form-control">
+                </div>
+  
+          </div>
+          <div class="row col-md-12 form-group">
+            <div class="col-md-6">
+              <label  class="col-form-label" >select table</label>
+          </div>
+   
+         <div class="col-md-6">
+   
+            <select class="form-control space_adjust_md " id="table_name">
+                <option value="0">Select..</option>
+                {% for menu in menus %}
+              <option value="{{ menu.pk }}">{{ menu.base_name }}</option>
+              {% endfor %}
+            </select>
+   
+            </div>
+          </div>
+
+          <div class="row col-md-12 form-group">
+            <div class="col-md-6">
+              <label  class="col-form-label" >X-axis</label>
+          </div>
+   
+         <div class="col-md-6">
+   
+            <select class="form-control axisvalues"  id="X-axis" name="fieldselect"  title="select..">
+                      
+                <!-- <option value="Numeric">x</option> -->
+                
+              </select>
+   
+            </div>
+          </div>
+
+          <div class="row col-md-12 form-group">
+            <div class="col-md-6">
+              <label  class="col-form-label" >Y-axis</label>
+          </div>
+   
+         <div class="col-md-6">
+   
+            <select class="form-control axisvalues"  id="Y-axis" name="fieldselect"  title="select..">
+                      
+                <!-- <option value="Numeric">x</option> -->
+                
+              </select>
+   
+            </div>
+          </div>
+
+          <div class="row col-md-12 form-group">
+            <div class="col-md-6">
+              <label  class="col-form-label" >Chart type</label>
+          </div>
+   
+         <div class="col-md-6">
+   
+            <select class="form-control space_adjust_md " id="chart_type">
+                <option value="0">Select..</option>
+               
+              <option value="line">Line</option>
+              <option value="bar">Bar</option>
+              <option value="pie">Pie</option>
+              <option value="doughnut">Doughnut</option>
+              <option value="polarArea">PolarArea</option>
+              <!-- <option value="radar">Radar</option> -->
+
+            
+            </select>
+   
+            </div>
+          </div>
+
+          
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary createchart">submit</button>
+      
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- //////////////////////// -->
+
+<!-- <div class="chart-container" style="position: relative;" > -->
+
+
+    <canvas id="myChart" aria-label="Hello ARIA World" role="img" width="150" height="50"></canvas>
+ 
+    <!-- </div> -->
+
+{% endblock %}

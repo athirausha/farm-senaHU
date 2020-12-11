@@ -1,0 +1,479 @@
+{% extends 'index.html' %}
+{% block content %}
+    <!-- breadcrumb Start -->
+    <div class="breadcrumb-header">
+        <div class="project-dashboard-content">
+            <div class="board-header-main">
+                <div class="header-top">
+                    <div class="p-head-left">
+                        <div class="board-name">
+                            <h4 contenteditable="true">User Details</h4>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="header-bottom">
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <!-- breadcrumb End -->
+
+    <div class="row row-sm">
+        <div class="board-content-wrapper">
+            <div class="user-details">
+                <div class="user-header">
+                    <div class="user-top-header">
+                        <div class="u-name">
+
+                        </div>
+                        <div class="u-name">
+
+                        </div>
+                    </div>
+                    <div class="search-user d-flex" >
+                            <form>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="search" id="searchfor">
+                                </div>
+                            </form>
+                            <div class="add-user">
+                                <a id="more-subs"><button class="btn btn-default" style="background: #866ec7;color: white;">Add User</button></a>
+                            </div>
+                    </div>
+
+                </div>
+                <div id="all_text" >
+                <div class="recent-user">
+                    <div class="recent-user-h">
+                        <h4>Recently Added</h4>
+                    </div>
+                    <div class="recent-user-details">
+                        <div class="container">
+                            <div class="row">
+                                {% for item in data %}
+
+                                    {%if item.created_date == c_date%}
+
+                                        <div class="col-md-4">
+                                            <div class="user-container">
+                                                <div class="user-image">
+                                                    <img class="img-fluid" src="{{item.image}}" alt="img">
+                                                </div>
+                                                <div class="user-content">
+                                                     <h4><b>Name</b>:{{ item.name }}</h4>
+                                                    <h4><b>Email</b>:{{ item.email_id }}</h4>
+                                                    <h4><b>Role</b> :{{ item.role }}</h4>
+                                                      <button class="btn btn-sm delete_userss" id="{{ item.email_id }}"> <i class="fa fa-trash" aria-hidden="true"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {%endif%}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="all-users">
+                    <div class="all-users-h">
+                        <h4>All Users</h4>
+                    </div>
+                    <div class="recent-user-details">
+                        <div class="container">
+                            <div class="row">
+                                {% for item in data %}
+                                    {%if item.created_date != c_date%}
+                                        <div class="col-md-4">
+                                            <div class="user-container">
+                                                <div class="user-image">
+                                                    <img class="img-fluid" src="{{item.image}}" alt="img">
+                                                </div>
+                                                <div class="user-content">
+                                                     <h4><b>Name</b>:{{ item.name }}</h4>
+                                                    <h4><b>Email</b>:{{ item.email_id }}</h4>
+                                                    <h4><b>Role</b> :{{ item.role }}</h4>
+                                                     <button class="btn btn-sm delete_userss" id="{{ item.email_id }}"> <i class="fa fa-trash" aria-hidden="true"></i></button>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    {%endif%}
+                                {% endfor %}
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="sidebar sidebar-right">
+        <a class="sidebar-close"><img src="/static/img/close.svg"></a>
+        <div class="content-sidebar">
+            <div class="card-header tab-card-header bg-transparent">
+                <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link" id="fifth-tab" data-toggle="tab" href="#five" role="tab" aria-controls="Five" aria-selected="false">Create Profile</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" id="two-tab" data-toggle="tab" href="#two" role="tab" aria-controls="Two" aria-selected="false">New Group / Role</a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link" id="three-tab" data-toggle="tab" href="#three" role="tab" aria-controls="Three" aria-selected="false">Update Role</a>
+                    </li>
+                     <li class="nav-item">
+                        <a class="nav-link" id="one-tab" data-toggle="tab" href="#one" role="tab" aria-controls="One" aria-selected="true">New User</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="forth-tab" data-toggle="tab" href="#four" role="tab" aria-controls="Four" aria-selected="false">Update User</a>
+                    </li>
+
+                </ul>
+            </div>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active p-4" id="one" role="tabpanel" aria-labelledby="one-tab">
+                    <div class="col-md-12 col-xs-12">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="">User Email</label>
+                            </div>
+                            <div class="col-md-12 col-xs-12">
+                                <form autocomplete="off" action="/action_page.php">
+                                    <div class="autocomplete">
+                                        <input id="useremail" class="form-control" type="email" name="email_user" placeholder="Email">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="row mtop">
+                            <div class="col-md-5">
+                                <label class="">Role</label>
+                            </div>
+                            <div class="col-md-2">
+
+                            </div>
+                            <div class="col-md-5 ">
+                                <label class="">Profile</label>
+                            </div>
+                        </div>
+                        <div class="row ">
+                            <div class="col-md-5 ">
+                                <select class="form-control" id="role">
+                                    <option value="0">Select ..</option>
+                                    {% for item in rolse_fr_per %}
+                                        <option value="{{item.pk}}">{{item.role}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2 ">
+                            </div>
+                            <div class="col-md-5 ">
+
+                                <select class="form-control" id="profile">
+                                   <option value="0">Select ..</option>
+                                    {% for item in profiles %}
+                                    <option value="{{item.profile}}">{{item.profile}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mtop">
+                            <div class="col-md-12">
+                                <label>Select Project/Models</label>
+                            </div>
+                            <div class="col-md-12">
+                                <select class="form-control selectpicker" id="table_id" multiple>
+                                    <option value="0">Select ..</option>
+                                    {% for menu in menus %}
+                                        <option value="{{ menu.pk }}">{{ menu.base_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row  mtop">
+                            <div class="col-md-12">
+                                <label>Select Reports</label>
+                            </div>
+                            <div class="col-md-12">
+                                <select class="form-control selectpicker" multiple id="report_id">
+                                    <option value="0">Select ..</option>
+                                    {% for report in reports %}
+                                        <option value="{{ report.pk }}">{{ report.Reportname }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mtop">
+                            <div class="col-md-12" >
+                                <button class="btn btn-primary" id="Add_user_list" style="width:100%; background: #866ec7;color: white;">Apply Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade p-3" id="two" role="tabpanel" aria-labelledby="two-tab">
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <label class="col-form-label">Role / Group Name</label>
+                        </div>
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" id="role_name" required>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="col-form-label">Description</label>
+                        </div>
+                        <div class="col-md-12">
+                           <textarea class="form-control" id="role_about"></textarea>
+                        </div>
+                        <div class="col-md-12 mtop">
+                            <p>Permisions</p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="add_user">ADD USERS</label>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="create_table">CREATE TABLES</label>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="add_data">ADD DATA</label>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="delete_data">DELETE DATA</label>
+                        </div>
+                         <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="update_data">UPDATE DATA</label>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="add_fields">ADD FIELDS</label>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="delete_fields">DELETE FIELDS</label>
+                        </div>
+                         <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="update_fields">UPDATE FIELDS</label>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="create_report">CREATE REPORT</label>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="view_report">VIEW REPORT</label>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="delete_report">DELETE REPORT</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <button class="btn btn-primary"  id="btn_creating_role" style="width:100%; background: #866ec7;color: white;">SAVE</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade p-3" id="three" role="tabpanel" aria-labelledby="three-tab">
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <label class="col-form-label">Select Role / Group Name</label>
+                        </div>
+                        <div class="col-md-12">
+                            <select class="form-control" id="role_update">
+                                    <option value="0">Select ..</option>
+                                    {% for item in rolse_fr_per %}
+                                        <option value="{{item.pk}}">{{item.role}}</option>
+                                    {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group role_updateion_div div_vs mtop">
+                        <div class="col-md-12">
+                            <label class="col-form-label">Role / Group Name</label>
+                        </div>
+                        <div class="col-md-12 ">
+                            <input type="text" class="form-control" id="up_role_name" required>
+                        </div>
+                        <div class="col-md-12 ">
+                            <label class="col-form-label">Discription</label>
+                        </div>
+                        <div class="col-md-12 ">
+                           <textarea class="form-control" id="up_role_about"></textarea>
+                        </div>
+                        <div class="col-md-12 mtop">
+                            <p>Permisions</p>
+                        </div>
+                    </div>
+                    <div class="row form-group role_updateion_div div_vs">
+                        <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="up_add_user">ADD USERS</label>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="up_create_table">Create Tables</label>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="up_add_data">ADD DATA</label>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="up_delete_data">DELETE DATA</label>
+                        </div>
+                         <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="up_update_data">UPDATE DATA</label>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="up_add_fields">ADD FIELDS</label>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="up_delete_fields">DELETE FIELDS</label>
+                        </div>
+                         <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="up_update_fields">UPDATE FIELDS</label>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="up_create_report">CREATE REPORT</label>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="up_view_report">VIEW REPORT</label>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="up_delete_report">DELETE REPORT</label>
+                        </div>
+                    </div>
+                    <div class="form-group row role_updateion_div div_vs">
+                        <div class="col-sm-12">
+                            <button class="btn btn-primary"  id="btn_update_role" style="width:100%; background: #866ec7;color: white;">SAVE</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade p-3" id="four" role="tabpanel" aria-labelledby="fourth-tab">
+
+                    <div class="col-md-12 col-xs-12">
+                        <div class="row form-group">
+                            <div class="col-md-12">
+                                <label class="col-form-label">Select User</label>
+                            </div>
+                            <div class="col-md-12 ">
+                                <select class="form-control" id="pro_update">
+                                    <option value="0">Select ..</option>
+                                    {% for item in data %}
+
+                                        <option value="{{item.created_user}}">{{ item.email_id }}</option>
+
+                                        {% endfor %}
+                                </select>
+                            </div>
+
+
+                        </div>
+                        <div class="row form-group pro_updateion_div div_pro mtop">
+                            <div class="col-md-5">
+                                <label class="">Role</label>
+                            </div>
+                            <div class="col-md-2">
+
+                            </div>
+                            <div class="col-md-5 ">
+                                <label class="">Profile</label>
+                            </div>
+                        </div>
+                        <div class="row form-group pro_updateion_div pro_vs ">
+                            <div class="col-md-5 ">
+                                <select class="form-control" id="up_role">
+
+                                    <option value="0">Select ..</option>
+                                    {% for item in rolse_fr_per %}
+                                        <option value="{{item.pk}}">{{item.role}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2 ">
+                            </div>
+                            <div class="col-md-5 ">
+                               <select class="form-control" id="up_profile">
+                                   <option value="0">Select ..</option>
+                                    {% for item in profiles %}
+                                    <option value="{{item.profile}}">{{item.profile}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row form-group pro_updateion_div div_pro mtop">
+                            <div class="col-md-12">
+                                <label>Select Project/Models</label>
+                            </div>
+                            <div class="col-md-12">
+                                <select class="form-control selectpicker" multiple id="up_table_id">
+                                    <option value="0">Select ..</option>
+                                    {% for menu in menus %}
+                                        <option value="{{ menu.pk }}">{{ menu.base_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row form-group pro_updateion_div div_pro mtop">
+                            <div class="col-md-12">
+                                <label>Select Reports</label>
+                            </div>
+                            <div class="col-md-12">
+                                <select class="form-control selectpicker" multiple id="up_report_id">
+                                    <option value="0">Select ..</option>
+                                    {% for report in reports %}
+                                        <option value="{{ report.pk }}">{{ report.Reportname }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row form-group pro_updateion_div div_pro mtop">
+                            <div class="col-md-12" >
+                                <button class="btn btn-primary" id="btn_update_pro"  style="width:100%; background: #866ec7;color: white;">Apply Changes</button>
+                            </div>
+                        </div>
+                    </div>
+
+            </div>
+
+             <div class="tab-pane fade show  p-4" id="five" role="tabpanel" aria-labelledby="fifth-tab">
+                <div class="col-md-12 col-xs-12">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label class="">Profile</label>
+                        </div>
+                        <div class="col-md-12 col-xs-12">
+
+                                <div class="users_profile_create">
+                                    <input id="userprofile" class="form-control" type="text" name="profile_user" placeholder="Profile">
+                                </div>
+
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="row mtop">
+                        <div class="col-md-12" >
+                            <button class="btn btn-primary" style="background: #866ec7;color: white;" id="profile_create" style="width:100%;">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

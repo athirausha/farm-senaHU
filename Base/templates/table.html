@@ -1,0 +1,452 @@
+{% extends 'index.html' %}
+{% block content %}
+<div class="row row-sm">
+    <div class="col-md-12 col-lg-12 col-xl-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="tab-section">
+                    <nav>
+                        <div class="nav nav-tabs nav-fill">
+                            <a class="nav-item nav-link active" href="#general" id="nav-home-tab" data-toggle="tab">General</a>
+                            <a class="nav-item nav-link" href="#nav-profile-tab" data-toggle="tab">Business Purpose</a>
+                            <a class="nav-item nav-link" href="dashboard.html#nav-contact-tab" data-toggle="tab">Columns</a>
+                            <a class="nav-item nav-link" href="dashboard.html#nav-table-service" data-toggle="tab">References</a>
+                        </div>
+                    </nav>
+                    <!-- Alert Box for displaying custom messages like table creation successful -->
+                    <div class="col-md-12 col-lg-12 col-xs-12" id="custom-alert-box">
+
+                    </div>
+                    <div class="tab-content py-3 px-3 " id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                            <div class="general-section ">
+                                <section class="" id="general">
+                                    <div class="sub-head">
+                                        <h4>General  <button class="btn btn-primary fa fa-pencil" style="font-size: 15px;background-color: #333; border-color: #333;" data-toggle="modal" data-target="#editgen" > </button></h4>
+                                    </div>
+                                    <form>
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label>Model Name:</label><i class="fa fa-asterisk" aria-hidden="true" style="color: red;font-size: 13px;"></i>
+                                                        <input class="form-control" type="text" id="bname">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label>Technical Name:</label><i class="fa fa-asterisk" aria-hidden="true" style="color: red; font-size: 13px;"></i>
+                                                        <input class="form-control" type="text" id="tname">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label>Type:</label>
+                                                        <input class="form-control" type="text" id="table_type">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </section>
+
+                                <section class="" id="nav-profile-tab">
+                                    <div class="sub-head">
+                                        <h4>Business Purpose</h4>
+                                    </div>
+                                    <form>
+                                         <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label>Description:</label>
+                                                        <input class="form-control" type="text" id="table_discription">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label>Purpose:</label>
+                                                        <input class="form-control" type="text" id="table_purpose">
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                             <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label>Contact Person:</label>
+                                                        <input class="form-control" type="text" id="table_bcp">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                      <div class="form-group">
+                                                          <label>Tags:</label>
+                                                          <input class="form-control" type="text" id="tags">
+                                                      </div>
+                                                </div>
+                                            </div>
+
+                                         </div>
+                                    </form>
+                                </section>
+
+                                <section id="nav-contact-tab">
+                                    <div class="sub-head">
+                                        <h4>Column <button class="btn btn-primary fa fa-pencil" style="font-size: 15px; background-color: #333; border-color: #333;" data-toggle="modal" data-target="#editcol" ></button></h4>
+                                    </div>
+                                    <div class="table-responsive table-model1">
+                                        <table class="table dt-responsive nowrap column_table">
+                                            <thead>
+                                                <tr>
+                                                    <th class="w-75px">
+                                                        <p class="m-0 small-head">sl. No</p>
+                                                    </th>
+
+                                                    <th>
+                                                        <p class="m-0 small-head">Name</p>
+                                                    </th>
+
+                                                    <th>
+                                                        <p class="m-0 small-head">Techinical Name</p>
+                                                    </th>
+
+
+
+                                                    <th>
+                                                        <p class="m-0 small-head">Data Type</p>
+                                                    </th>
+                                                    <th>
+                                                        <p class="m-0 small-head"> Size</p>
+                                                    </th>
+                                                    <th>
+                                                        <p class="m-0 small-head"> Nullable</p>
+                                                    </th>
+                                                    <th class="w-75px">
+                                                        <p class="m-0 small-head">Action</p>
+                                                    </th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td> 1</td>
+
+                                                    <td>
+                                                        <div class="form-group m-0">
+                                                            <input type="text" class="form-control" placeholder="Name" name="baycol_add">
+                                                        </div>
+                                                    </td>
+
+                                                    <td>
+                                                        <div class="form-group m-0">
+                                                            <input type="text" class="form-control" placeholder="Techinical Name" name="tech_name">
+                                                        </div>
+                                                    </td>
+
+                                                    <td>
+                                                        <div class="form-group">
+                                                            <select class="form-control" name="coldatatype" id="table_create_size">
+                                                                <option value="String">String</option>
+                                                                <option value="Date">Date</option>
+                                                                <option value="Time">Time</option>
+                                                                <option value="Number">Number</option>
+                                                                <option value="Image">Image</option>
+                                                            </select>
+                                                        </div>
+
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group m-0">
+                                                            <input type="number" class="form-control" placeholder="Size" name="sizee">
+                                                        </div>
+                                                    </td>
+                                                     <td>
+                                                        <div class="form-group">
+                                                            <select class="form-control " name="noyes">
+                                                                <option value="NOTNULL">Not-Null</option>
+                                                              <option value="NULL">Null</option>
+
+
+                                                            </select>
+                                                        </div>
+                                                    </td>
+                                                               <td>
+                                                        <div class="actions">
+                                                            <!--<a class="edit edit-col-table" data-toggle="tooltip" data-placement="top" title="Edit"><img src="/static/img/edit.svg"></a>-->
+                                                            <a class="delete delete-col-table btn-t-delete" data-toggle="tooltip" data-placement="top" title="Delete">
+                                                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                                </a>
+                                                        </div>
+
+                                                    </td>
+                                                </tr>
+
+
+                                            </tbody>
+
+                                        </table>
+                                        <input class="btn btn-sm btn-add-row" value="Add" type='button' id="add-row" />
+                                    </div>
+                                </section>
+
+
+                                <section id="nav-table-service">
+                                    <div class="sub-head">
+                                        <h4>References</h4>
+                                    </div>
+                                    <div class="table-responsive table-model1">
+                                        <table class="table dt-responsive nowrap reference_table">
+                                            <thead>
+                                                <tr>
+                                                    <th class="w-75px">
+                                                        <p class="m-0 small-head">Sl. No</p>
+                                                    </th>
+
+                                                    <th>
+                                                        <p class="m-0 small-head">Reference table</p>
+                                                    </th>
+                                                    <th>
+                                                        <p class="m-0 small-head">Reference Column</p>
+                                                    </th>
+                                                      <th class="w-75px">
+                                                        <p class="m-0 small-head">Action</p>
+                                                    </th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td> 1</td>
+
+                                                    <td>
+                                                        <div class="form-group m-0">
+                                                            <select  class="form-control" id="master_table_relation_select">
+                                                                <option value="0">Select...</option>
+                                                            </select>
+                                                        </div>
+
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group m-0">
+                                                            <select  class="form-control" id="master_table_relation_column_select">
+                                                                <option value="0">Select...</option>
+                                                            </select>
+
+                                                        </div>
+                                                    </td>
+                                                      <td>
+                                                        <div class="actions">
+                                                            <!--<a class="edit edit-ref-table" data-toggle="tooltip" data-placement="top" title="Edit"><img src="/static/img/edit.svg"></a>-->
+                                                            <a class="delete delete-ref-table btn-t-delete" data-toggle="tooltip" data-placement="top" title="Delete">
+                                                               <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                                                </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+
+                                        </table>
+                                        <input class="btn btn-sm btn-add-row" value="Add" type='button' data-toggle="modal" data-target="#newrefcol" id="referance_add_btn" />
+                                    </div>
+
+                                    <div class="form-group mt-3 text-right">
+                                        <button class="btn btn-form-save baseform">Save Changes</button>
+                                    </div>
+                                </section>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="newrefcol" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="margin-top: 300px;">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Add Reference Column</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="d-flex">
+                        <div class="form-group w-100 m-2">
+                            <select  class="form-control tblref" id="relation_select">
+                                <option value="0">Select...</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group w-100 m-2">
+                            <select   class="form-control colref" id="column_select">
+                                <option value="0">Select...</option>
+                            </select>
+
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-form-save" id="refrance_model_save">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--/////////////////////editmodel///////////-->
+<div class="modal fade" id="editgen" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit Modal</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <div class="row form-group">
+                    <div class="col-md-6" ><label class="col-form-label">Model Name</label></div>
+                    <div class="col-md-6"><select class="form-control space_adjust_md " id="tblsel">
+                        <option value="0">Select..</option>
+                        {% for menu in menus %}
+                      <option value="{{ menu.pk }}">{{ menu.base_name }}</option>
+                      {% endfor %}
+                    </select></div>
+<br><br>
+<div class="col-md-12 " >
+    <h3>General Purpose</h3>
+    <hr>
+    </div>
+                    <div class="col-md-6">
+                        <label class="col-form-label">Business Name</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control detailid bname" id="base_name" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="col-form-label">Technical Name</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control detailid tname" id="technical_name" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="col-form-label">Table Type</label>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control detailid " id="ttype" required>
+                    </div>
+                    <br><br>
+                    <div class="col-md-12">
+                        <h3>Business Purpose</h3>
+                        <hr>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="col-form-label">Description</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control detailid desc" id="discription" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="col-form-label">Purpose</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control detailid purp" id="purpose" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="col-form-label">BCP</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control detailid bcp" id="bcp" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="col-form-label">Tags</label>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control detailid " id="tagss" required>
+                    </div>
+                    <div class="form-group row">
+
+                    </div>
+                </div>            </div>
+            <div class="modal-footer">
+                <div class="col-sm-7">
+                    <button class="btn btn-danger info_edit btn_update_details"  id="{{id}}" >Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--///////////////////end edit model////////-->
+
+<!--/////////////////////viewcols///////////-->
+<div class="modal fade" id="editcol" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content srl"  style="overflow: scroll; width: 800px;">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">View Modal</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row form-group">
+                    <div class="col-md-6" >
+                        <label class="col-form-label">Model Name</label>
+                    </div>
+                    <div class="col-md-6">
+                        <select class="form-control space_adjust_md " id="col-property-selector">
+                            <option value="0">Select..</option>
+                            {% for menu in menus %}
+                                <option value="{{ menu.pk }}">{{ menu.base_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <br><br>
+                    <div class="col-md-12 column_property_content">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label class="">Business Name</label>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="">Technical Name</label>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="">Data Type</label>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="">Size</label>
+                            </div>
+                            <div class="col-md-2">
+                                <label class="">Nullable</label>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-7">
+                    <!-- <button class="btn btn-danger info_edit btn_update_col"  id="{{id}}" >Save</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,193 @@
+/* Start from Here */
+
+.main-container {
+    height: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  .main-container .header {
+    border-bottom: 1px solid #d4d7dc;
+  }
+  .main-container .header .header-content {
+    margin: 10px auto;
+    padding: 10px 20px;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .main-container .header .header-content img {
+    max-width: 175px;
+  }
+  
+  .content-area {
+    outline: 1px solid #d4d7dc;
+    margin: 20px auto 60px;
+    padding: 0;
+  }
+  .content-area .main-flex {
+    flex: 0 0 50%;
+    width: 50%;
+    display: block;
+  }
+  .content-area .signup-form {
+    padding: 30px 80px 60px;
+    height: 100%;
+  }
+  .content-area .signup-form .signup-text {
+    padding-top: 18px;
+    padding-bottom: 20px;
+    line-height: 20px;
+    font-size: 14px;
+    font-weight: 400;
+  }
+  .content-area .signup-form .top-head {
+    line-height: 32px;
+    color: #393a3d;
+    font-family: Avenir Next forINTUIT;
+    font-size: 30px;
+    font-weight: 500;
+  }
+  .content-area .signup-form .form-group {
+    margin-top: 20px;
+  }
+  .content-area .signup-form.bg-gray {
+    background-color: #eceef1;
+  }
+  .content-area .signup-form .form-footer p {
+    color: #757575;
+    font-style: italic;
+  }
+  .content-area .signup-form .signup-content {
+    padding-top: 60px;
+    font-size: 14px;
+  }
+  .content-area .signup-form .signup-content .signup-list {
+    padding-left: 25px;
+    padding-top: 20px;
+  }
+  .content-area .signup-form .signup-content .signup-list li {
+    line-height: 27px;
+  }
+  
+  .btn-signup {
+    background-color: #2CA01C !important;
+    border-color: #2CA01C !important;
+  }
+  
+  .footer-content {
+    font-size: 14px;
+    background-color: #0077c5;
+  }
+  .footer-content .footer-box {
+    padding: 60px 0;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .footer-content .footer-box .footer-top-row {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    -moz-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    text-align: left;
+  }
+  .footer-content .footer-box .footer-top-row .footer-logo img {
+    max-width: 100px;
+  }
+  .footer-content .footer-box .footer-top-row .footer-menu {
+    flex: 0 0 80%;
+    display: block;
+    text-align: right;
+    margin-top: 0;
+  }
+  .footer-content .footer-box .footer-top-row .footer-menu a {
+    display: inline-block;
+    color: #fff;
+    text-decoration: none;
+    padding-left: 5px;
+  }
+  .footer-content .footer-box .footer-top-row .footer-menu span {
+    display: inline-block;
+    color: #fff;
+    text-decoration: none;
+    padding-left: 5px;
+  }
+  .footer-content .footer-box .footer-bottom-row {
+    display: flex;
+    margin-top: 20px;
+    width: 100%;
+  }
+  .footer-content .footer-box .footer-bottom-row .footer-c-text {
+    flex: 0 0 80%;
+    display: block;
+  }
+  .footer-content .footer-box .footer-bottom-row .footer-c-text p {
+    color: #fff;
+    font-size: 14px;
+    line-height: 16px;
+    max-width: 537px;
+  }
+  
+  /*# sourceMappingURL=style.css.map */
+  
+  
+  .input-validation {
+    position: relative;
+  }
+  .input-validation a {
+    display: inline-block;
+    position: absolute;
+    right: 7px;
+    top: 0;
+    max-width: 26px;
+    bottom: 0;
+    margin: auto;
+    max-height: 26px;
+  }
+  .input-validation a img{
+    max-width: 26px;
+    max-height: 26px;
+  
+  }
+  
+  
+  .input-validation span {
+    display: inline-block;
+    position: absolute;
+    right: -225px;
+    top: 0;
+    max-width: 215px;
+    bottom: 0;
+    margin: auto;
+    max-height: 29px;
+  }
+  
+  .input-validation .arrow_boxp {
+    display: inline-block;
+    position: absolute;
+    right: -225px;
+    top: 43px;
+    max-width: 215px;
+    bottom: 0;
+    margin: auto;
+    max-height: 81px;
+  }
+  
+  .arrow_box{
+    background: #7490ad;width: 213px; color: white;
+    visibility: hidden;
+  }
+  .arrow_boxp{
+    background: #7490ad;width: 213px; color: white;
+    visibility: hidden;
+    height: 78px;
+  }
+  
+  
+  
+  
+  

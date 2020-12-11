@@ -1,0 +1,203 @@
+{% extends 'index.html' %}
+
+{%block content%}
+<style>
+
+  .alert {
+  padding: 20px;
+  background-color:#b3a5a4;
+  color: white;
+  width:300px;
+  height: 50px;
+}
+
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.closebtn:hover {
+  color: black;
+}
+
+.profile-tabs {
+  border-bottom: none;
+}
+.profile-tabs li {
+  padding: 4px 10px;
+}
+.profile-tabs li a {
+  color: #333333;
+  font-weight: 500;
+  text-decoration: none;
+}
+.profile-tabs li a.active {
+  background: #fff;
+  padding: 4px 10px;
+}
+</style>
+    <div class="row">
+  		<div class="col-sm-3">
+          <div class="text-center">
+          <form  method="POST" action="/imageprofile" enctype="multipart/form-data" id="inputfile">
+            {% csrf_token %}
+            {% if pro.user_image == NULL %}
+             <img src="media/user.jpg"  class="avatar img-circle img-thumbnail" name="myimage"   >
+             {% endif %}
+
+            <img src="{{pro.user_image.url}}"  class="avatar img-circle img-thumbnail" name="myimage" >
+            <h6>Upload a different photo...</h6>
+            <input type="file" name="propic" required>
+            <input value="Submit" id="submit_img" class=" btn  btn-success " style="margin-top: 10px;"   type="submit">
+        </form>
+
+        </div>
+        </hr>
+        <br>
+
+
+        <!--<div class="panel panel-default d-flex justify-content-between">-->
+        <!--    <div class="panel-heading">-->
+        <!--        Website-->
+        <!--        <i class="fa fa-link fa-1x"></i>-->
+        <!--    </div>-->
+        <!--    <div class="panel-body">-->
+        <!--        <a href="http://bootnipets.com">-->
+        <!--            www.Senahu.com-->
+        <!--        </a>-->
+        <!--    </div>-->
+        <!--</div>-->
+
+
+        <!--<ul class="list-group">-->
+        <!--    <li class="list-group-item text-muted">Activity <i class="fa fa-dashboard fa-1x"></i></li>-->
+        <!--    <li class="list-group-item text-right"><span class="pull-left"><strong>Shares</strong></span> 125</li>-->
+        <!--    <li class="list-group-item text-right"><span class="pull-left"><strong>Likes</strong></span> 13</li>-->
+        <!--    <li class="list-group-item text-right"><span class="pull-left"><strong>Posts</strong></span> 37</li>-->
+        <!--    <li class="list-group-item text-right"><span class="pull-left"><strong>Followers</strong></span> 78</li>-->
+        <!--</ul>-->
+    </div>
+
+    <div class="col-sm-9">
+        <ul class="nav nav-tabs profile-tabs">
+            <li class="active"><a data-toggle="tab" href="#home">Profile</a></li>
+            <li><a data-toggle="tab" href="#messages">Password</a></li>
+            <!--<li><a data-toggle="tab" href="#settings">Menu 2</a></li>-->
+        </ul>
+
+
+        <div class="tab-content">
+            <div class="tab-pane active" id="home">
+                <form method="POST" action="/userprofile" class="post-form" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                <hr>
+
+                <div class="form-group">
+                    <div class="col-xs-6">
+                        <label for="first_name">First name</label>
+                        {{form.name}}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-xs-6">
+                        <label for="last_name">Last name</label>
+                        {{form.lname}}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-xs-6">
+                        <label for="phone">Phone</label>
+                        {{form.phone}}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-xs-6">
+                        <label for="location">Location</label>
+                        {{form.location}}
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <div class="col-xs-6">
+                        <label >Skype</label>
+                        {{form.skype}}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <br>
+                        <button class="btn  btn-success saveit" type="submit"><i class="glyphicon glyphicon-ok-sign"></i> Save</button>
+                        <button class="btn " type="reset"><i class="glyphicon glyphicon-repeat"></i> Reset</button>
+                    </div>
+                </div>
+
+                <hr>
+            </form>
+            </div>
+
+            <div class="tab-pane" id="messages">
+                {% if messages %}
+                <!-- {% for message in messages %} -->
+              <div class="alert {{ message.tags }} alert-dismissible" style="background: #17a2b8" role="alert">
+                <!-- <button type="button" class="close" data-dismiss="alert" aria-label="Close"> -->
+                  <!-- <span aria-hidden="true" >&times;</span>
+                </button> -->
+                <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                {{ message }}
+              </div>
+            <!-- {% endfor %} -->
+            {% endif %}
+                <form method="POST" action="/updatepass">
+                    {% csrf_token %}
+
+                <hr>
+                <h3>Change Password</h3>
+                <div>
+                    <div class="form-group">
+                        <div class="col-xs-6">
+                            <label for="password">Current Password</label>
+                            <input type="password" class="form-control" name="cpass" id="cpassword" placeholder="password" title="enter your password." required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-xs-6">
+                            <label for="password2">New Password</label>
+                            <input type="password" class="form-control" name="npass" id="npassword" placeholder="password" title="enter your password2." required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <br>
+                        <button class="btn  btn-success" type="submit"><i class="glyphicon glyphicon-ok-sign"></i> Save</button>
+                        <button class="btn " type="reset"><i class="glyphicon glyphicon-repeat"></i> Reset</button>
+
+                    </div>
+                </div>
+            </form>
+            </div>
+
+            <div class="tab-pane" id="settings">
+                <hr>
+            </div>
+        </div>
+    </div>
+    </div>
+
+{% endblock %}
+
+

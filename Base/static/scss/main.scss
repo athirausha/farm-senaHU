@@ -1,0 +1,20 @@
+ //@import "../css/bootstrap";
+
+
+// @import "bourbon"; //Uncomment if you are not using Prepross
+
+// Global requirements
+@import "partials/variables";
+@import "partials/mixins";
+
+// Basecoat
+@import "partials/base";
+@import "partials/forms";
+@import "partials/tables";
+
+// Components
+@import "partials/buttons";
+
+// Custom Styles
+@import "partials/style";
+

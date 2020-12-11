@@ -1,0 +1,369 @@
+{% extends 'index.html' %}
+{% block content %}
+    <!-- breadcrumb Start -->
+    <div class="breadcrumb-header">
+        <div class="project-dashboard-content">
+            <div class="board-header-main">
+                <div class="header-top">
+                    <div class="p-head-left">
+                        <div class="board-name">
+                            <h4 contenteditable="true">Model Groups</h4>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="header-bottom">
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+    <!-- breadcrumb End -->
+
+    <div class="row row-sm">
+        <div class="board-content-wrapper">
+            <div class="user-details">
+                <div class="user-header">
+                    <div class="user-top-header">
+                        <div class="u-name">
+
+                        </div>
+                        <div class="u-name">
+
+                        </div>
+                    </div>
+                    <div class="search-user d-flex" >
+
+                            <div class="add-user">
+                                <a id="more-subs"><button class="btn btn-default">New Group</button></a>
+                            </div>
+                    </div>
+
+                </div>
+                <div class="recent-user">
+                    <div class="recent-user-h">
+                        <h4>Models Group</h4>
+                    </div>
+                    <div class="recent-user-details">
+                        <div class="container">
+                            <div class="row">
+                                {% for x in primary %}
+                                <div class="col-md-4" style=" padding:1em;">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <a href="/viewbase/{{x.p_id}}"><h6>{{ x.name }}</h6></a>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <p>Master Table : {{ x.master_tbl }}</p>
+                                            <p>Number Of Models : {{ x.total }}</p>
+                                            <p>Created By : {{ x.c_email }}</p>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="panel-group">
+                                                <div class="panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <h6 class="panel-title">
+                                                            <a data-toggle="collapse" href="#grpmod{{x.pk}}">Models</a>
+                                                        </h6>
+                                                    </div>
+
+                                                    <div id="grpmod{{x.pk}}" class="panel-collapse collapse">
+                                                        {% for y in secondary %}
+                                                            {% if y.master_id == x.pk %}
+                                                            <div class="col-md-12" style="padding:0.5em">
+                                                                <div class="row">
+                                                                    <div class="col-xs-6">
+                                                                        <a href="/viewbase/{{y.s_id}}"><p>{{y.secndary_tbl}}</p></a>
+                                                                    </div>
+                                                                    <div class="col-xs-6">
+                                                                         <button id="{{y.s_pk}}" class="delete_secondry_tbl">delete</button>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="sidebar sidebar-right">
+        <a class="sidebar-close"><img src="/static/img/close.svg"></a>
+        <div class="content-sidebar">
+            <div class="card-header tab-card-header bg-transparent">
+                <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link" id="one-tab" data-toggle="tab" href="#one" role="tab" aria-controls="One" aria-selected="true">New Group</a>
+
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="two-tab" data-toggle="tab" href="#two" role="tab" aria-controls="Two" aria-selected="false">Update Group</a>
+                    </li>
+                    <!--
+
+                     <li class="nav-item">
+                        <a class="nav-link" id="three-tab" data-toggle="tab" href="#three" role="tab" aria-controls="Three" aria-selected="false">Update Role</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="forth-tab" data-toggle="tab" href="#four" role="tab" aria-controls="Four" aria-selected="false">Update User</a>
+                    </li>
+                    -->
+                </ul>
+            </div>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active p-4" id="one" role="tabpanel" aria-labelledby="one-tab">
+                    <div class="col-md-12 col-xs-12">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="">Group Name</label>
+                            </div>
+                            <div class="col-md-12 col-xs-12">
+                                <input id="table_gr_name" class="form-control" type="text">
+                            </div>
+                        </div>
+
+                        <div class="row mtop">
+                            <div class="col-md-12">
+                                <label>Select Primary Table</label>
+                            </div>
+                            <div class="col-md-12">
+                                <select class="form-control" id="primary_table_id">
+                                    <option value="0">Select ..</option>
+                                    {% for menu in menus %}
+                                        <option value="{{ menu.pk }}">{{ menu.base_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mtop">
+                            <div class="col-md-12">
+                                <label>Select Secondary Tables</label>
+                            </div>
+                            <div class="col-md-12">
+                                <select class="form-control selectpicker" id="secondary_table_id" multiple>
+                                    <option value="0">Select ..</option>
+                                    {% for menu in menus %}
+                                        <option value="{{ menu.pk }}">{{ menu.base_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mtop">
+                            <div class="col-md-12" >
+                                <button class="btn btn-primary" id="group_tbl" style="width:100%;">Apply Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade p-3" id="two" role="tabpanel" aria-labelledby="two-tab">
+                    <div class="col-md-12 col-xs-12">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label class="">Group Name</label>
+                            </div>
+                            <div class="col-md-12 col-xs-12">
+                                <select class="form-control" id="group_name_id">
+                                    <option value="0">Select ..</option>
+                                    {% for group in  group_names %}
+                                        <option value="{{ group.pk }}">{{ group.Group_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mtop">
+                            <div class="col-md-12">
+                                <label>Select Primary Table</label>
+                            </div>
+                            <div class="col-md-12">
+                                <select class="form-control" id="up_primary_table_id">
+                                    <option value="0">Select ..</option>
+                                    {% for menu in menus %}
+                                        <option value="{{ menu.pk }}">{{ menu.base_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mtop">
+                            <div class="col-md-12">
+                                <label>Select Secondary Tables</label>
+                            </div>
+                            <div class="col-md-12">
+                                <select class="form-control selectpicker seltables" id="up_secondary_table_id" multiple>
+                                    <option value="0">Select ..</option>
+                                    {% for menu in sec_menus %}
+                                        <option value="{{ menu.pk }}" >{{ menu.base_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mtop">
+                            <div class="col-md-12" >
+                                <button class="btn btn-primary" id="group_tbl_update" style="width:100%;">Apply Changes</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="tab-pane fade p-3" id="three" role="tabpanel" aria-labelledby="three-tab">
+                    <div class="row form-group">
+                        <div class="col-md-12">
+                            <label class="col-form-label">Select Role / Group Name</label>
+                        </div>
+                        <div class="col-md-12">
+                            <select class="form-control" id="role_update">
+                                    <option value="0">Select ..</option>
+                                    {% for item in rolse_fr_per %}
+                                        <option value="{{item.pk}}">{{item.role}}</option>
+                                    {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group role_updateion_div div_vs mtop">
+                        <div class="col-md-12">
+                            <label class="col-form-label">Role / Group Name</label>
+                        </div>
+                        <div class="col-md-12 ">
+                            <input type="text" class="form-control" id="up_role_name" required>
+                        </div>
+                        <div class="col-md-12 ">
+                            <label class="col-form-label">Description</label>
+                        </div>
+                        <div class="col-md-12 ">
+                           <textarea class="form-control" id="up_role_about"></textarea>
+                        </div>
+                        <div class="col-md-12 mtop">
+                            <p>Permisions</p>
+                        </div>
+                    </div>
+                    <div class="row form-group role_updateion_div div_vs">
+                        <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="up_add_user">ADD USERS</label>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="up_create_table">Create Tables</label>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="up_add_data">ADD DATA</label>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="up_delete_data">DELETE DATA</label>
+                        </div>
+                         <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="up_update_data">UPDATE DATA</label>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="up_add_fields">ADD FIELDS</label>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="up_delete_fields">DELETE FIELDS</label>
+                        </div>
+                         <div class="col-md-6">
+                            <label class="checkbox-inline"><input type="checkbox" id="up_update_fields">UPDATE FIELDS</label>
+                        </div>
+                    </div>
+                    <div class="form-group row role_updateion_div div_vs">
+                        <div class="col-sm-12">
+                            <button class="btn btn-primary"  id="btn_update_role" style="width:100%;">SAVE</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade p-3" id="four" role="tabpanel" aria-labelledby="fourth-tab">
+
+                    <div class="col-md-12 col-xs-12">
+                        <div class="row form-group">
+                            <div class="col-md-12">
+                                <label class="col-form-label">Select User</label>
+                            </div>
+                            <div class="col-md-12 ">
+                                <select class="form-control" id="pro_update">
+                                    <option value="0">Select ..</option>
+                                    {% for item in data %}
+
+                                        <option value="{{item.pk}}">{{ item.email_id }}</option>
+
+                                        {% endfor %}
+                                </select>
+                            </div>
+
+
+                        </div>
+                        <div class="row form-group pro_updateion_div div_pro mtop">
+                            <div class="col-md-5">
+                                <label class="">Role</label>
+                            </div>
+                            <div class="col-md-2">
+
+                            </div>
+                            <div class="col-md-5 ">
+                                <label class="">Profile</label>
+                            </div>
+                        </div>
+                        <div class="row form-group pro_updateion_div pro_vs ">
+                            <div class="col-md-5 ">
+                                <select class="form-control" id="up_role">
+
+                                    <option value="0">Select ..</option>
+                                    {% for item in rolse_fr_per %}
+                                        <option value="{{item.pk}}">{{item.role}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-2 ">
+                            </div>
+                            <div class="col-md-5 ">
+                                <select class="form-control" id="up_profile">
+                                    <option value="0">Select ..</option>
+                                    <option value="Employee">Employee</option>
+                                    <option value="User">User</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row form-group pro_updateion_div div_pro mtop">
+                            <div class="col-md-12">
+                                <label>Select Project/Models</label>
+                            </div>
+                            <div class="col-md-12">
+                                <select class="form-control selectpicker" multiple id="up_table_id">
+                                    <option value="0">Select ..</option>
+                                    {% for menu in menus %}
+                                        <option value="{{ menu.pk }}">{{ menu.base_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row form-group pro_updateion_div div_pro mtop">
+                            <div class="col-md-12" >
+                                <button class="btn btn-primary" id="btn_update_pro" style="width:100%;">Apply Changes</button>
+                            </div>
+                        </div>
+                    </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

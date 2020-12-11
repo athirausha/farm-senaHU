@@ -1,0 +1,1122 @@
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.http import JsonResponse
+from django.db.models import Q
+from django.core.mail import EmailMessage
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from .token_generator import account_activation_token,password_reset_token,Invite_token
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+import smtplib
+from django.http import HttpResponseRedirect
+from django.contrib import messages
+
+# Create your views here.
+
+from Base.models import Base, Basecolumns, Basedetails, Login, Usergroup, Groupname, Users, Profile
+
+from Base.forms import ProfileForm
+
+
+def index(request):
+    user = Login.objects.get(id=request.session['user_id'])
+    user_email = user.email
+    menus = Base.objects.filter(created_by=user_email)
+    login_obj=Login.objects.all().exclude(id=request.session['user_id'])
+
+    users_obj=Users.objects.filter(user=user_email).values('fk_groupname')
+    users_array=[]
+    for item in users_obj:
+        users_array.append(item['fk_groupname'])
+    print("User array : ")
+    print(users_array)
+    group = Groupname.objects.filter(Q(pk__in= users_array) | Q(created_by=request.session['user_id'])).values('pk','group_name')
+    print(list(group))
+    gp_names=[]
+    for item in group:
+        gp_names.append(item['group_name'])
+    
+    base_tbl = Usergroup.objects.filter(Q(username=user_email) | Q(username__in=gp_names)).values('base_fk')
+   
+
+    print(base_tbl)
+    tmp_array = []
+    for item in base_tbl:
+        tmp_array.append(item['base_fk'])
+
+    base_tbl = Base.objects.filter(pk__in=tmp_array).values('pk', 'base_name').exclude(created_by=user_email)
+    if request.session.has_key('user_id'):
+        return render(request, 'table.html', {'menus':menus,'user':user,'login_obj':login_obj,'group':group, 'base_tbl':base_tbl})
+    return HttpResponseRedirect('/login')
+
+
+def Register(request):
+	try:
+		if request.method == 'POST':
+			name = request.POST['fname']
+			email = request.POST['email']
+			mobile = request.POST['mobile']
+			password = request.POST['password']
+			cpassword = request.POST['cpassword']
+			if password != cpassword:
+				# return HttpResponse('password not correct')
+			    messages.success(request,'Wrong password')
+			check_exist= Login.objects.filter(email=email).exists()
+			if check_exist == False:
+				user = Login(name=name,phone=mobile,password=password,email=email)
+				user.save()
+				if user.id > 0:
+					current_site = get_current_site(request)
+					email_subject = 'Activate Your Account'
+					message = render_to_string('activate_account.html', {
+						'user': user,
+						'domain': current_site.domain,
+						'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+						'token': account_activation_token.make_token(user),
+            		})
+					to_email = user.email
+					email = EmailMessage(email_subject, message, to=[to_email])
+					email.send()
+					# return HttpResponseRedirect('/verify')
+					messages.success(request, 'We have sent you an email, please confirm your email address to complete registration')
+					# return HttpResponse('We have sent you an email, please confirm your email address to complete registration')
+			# return HttpResponse('email id already exist')
+			else:
+			    messages.success(request,'Email id already exist')
+		return render(request,'register.html')
+	except Exception as e:
+		print(e)
+		return HttpResponse(e)
+
+def activate_account(request, uidb64, token):
+    try:
+        uid = force_bytes(urlsafe_base64_decode(uidb64))
+        user = Login.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, user.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        Login(request,user)
+		# return render(request,'login.html')
+        return HttpResponseRedirect('/login')
+        # return HttpResponse('Your account has been activate successfully')
+    else:
+        return HttpResponse('Activation link is invalid!')
+
+# def verification(request):
+# 	return render(request,'verifyemail.html')
+
+def fn_login(request):
+    try:
+        if request.method == 'POST':
+            username = request.POST['username']
+            password = request.POST['password']
+            check_exist = Login.objects.filter(email=username).exists()
+            if check_exist == False:
+                messages.success(request, 'User not Exist')
+                return HttpResponseRedirect('/login')
+            login_obj = Login.objects.get(email=username)
+            request.session['user_id'] = login_obj.id
+            print(request.session['user_id'])
+            if login_obj.password == password:
+                return HttpResponseRedirect('/index')
+            messages.success(request,'Wrong password')
+        return render(request, "login.html")
+    except Exception as e:
+        print(e)
+
+def Basecreation(request):
+	if request.method == "POST":
+		try:
+			name = request.POST['name']
+			print(name)
+			fk = request.POST['fk']
+			user =Login.objects.get(id=request.session['user_id'])
+			createdby=user.email
+			print(createdby)
+			alls = Base.objects.filter(base_name=name).values('base_name').count()
+			if alls == 0:
+				Base.objects.create(base_name= name, fk=fk, created_by=createdby)
+				rf = Base.objects.latest('pk')
+				return HttpResponse("done")
+			else:
+				return HttpResponse("error")
+		except Exception as e:
+			return HttpResponse(e)
+
+# ADDING NEW COLUMNS IF NO COLUMNS FOUND
+def Addcolumns(request):
+    if request.method == "POST":
+        try:
+            user =Login.objects.get(id=request.session['user_id'])
+            login_user=user.email
+            per_user=Usergroup.objects.filter(Q(username=login_user) & Q(base_fk=request.POST['fk'])).values('column_add')
+            data = Base.objects.filter(Q(created_by=login_user) & Q(pk=request.POST['fk'])).count()
+            
+            if (len(list(per_user)) > 0 and per_user[0]['column_add'] == True)  or data >0:
+                fk = request.POST['fk']
+                colname = request.POST['colname']
+                type_d = request.POST['type_d']
+                Basecolumns.objects.create(c_name=colname, base_fk=fk, d_type=type_d)
+                return HttpResponse('Basecol')
+            else:
+                 messages.success(request,'User have no permission for Addcolumn')
+        except Exception as e:
+            return HttpResponse(e)
+
+
+
+
+# ADDING VALUES TO COLUMNS
+def Adddetails(request):
+	if request.method == "POST":
+		try:
+			login_id = Login.objects.get(id=request.session['user_id'])
+			login_user = login_id.email
+			per_user=Usergroup.objects.filter(Q(username=login_user) & Q(base_fk=request.POST['base_id'])).values('row_add')
+			print(per_user)
+			data = Base.objects.filter(Q(created_by=login_user) & Q(pk=request.POST['base_id'])).count()
+			print(data)
+			print("Data count : "+str(data))
+			print("len of per user : "+ str(len(list(per_user))))
+			if (len(list(per_user)) > 0 and per_user[0]['row_add'] == True)  or data >0:
+				print("condition w")
+				d1 = request.POST['d1']
+				rr = request.POST['rr']
+				max_row = request.POST['mx']
+				max_row = int(max_row) + 1
+				print("d1 : "+str(d1))
+				print("rr : "+str(rr))
+				print("max row : "+str(max_row))
+				if d1 != '' and rr != '':
+					Basedetails.objects.create(c_v=d1, bc_fk=rr, row_num=max_row)
+					return HttpResponse('Adddetails')
+			else:
+				messages.success(request,'User have no permission for Adddetails')
+			
+		except Exception as e:
+			return HttpResponse(e)
+
+
+# CREATING NEW COLUMN IN TABLE
+def Newcol(request):
+	if request.method == "POST":
+		try:
+			login_id =Login.objects.get(id=request.session['user_id'])
+			login_user =login_id.email
+			fk = request.POST['fk']
+			colname = request.POST['colname']
+			max_row = request.POST['mx']
+			col_type = request.POST['col_type']
+            col_type = request.POST['col_type']
+			per_user=Usergroup.objects.filter(Q(username=login_user) & Q(base_fk=fk)).values('column_add')
+			print(per_user)
+			data = Base.objects.filter(Q(created_by=login_user) & Q(pk=fk)).count()
+			if (len(list(per_user)) > 0 and per_user[0]['column_add'] == True)  or data >0:
+
+                Basecolumns.objects.create(c_name= colname, base_fk=fk, d_type=col_type ,d_size=col_size)
+                querysets = Basecolumns.objects.filter(base_fk=fk).values('pk')
+                a = []
+                for item in querysets:
+                    a.append(item['pk'])
+                row_count = 1
+                max_row = int(max_row) + 1
+                f= Basecolumns.objects.latest('id')
+                for item in range(1,int(max_row)):
+                    Basedetails.objects.create(c_v= 'No', bc_fk= f, row_num= item)
+                row_count = row_count + 1
+                return HttpResponse(max_row)
+			else:
+				messages.success(request,'User have no permission for Addnewcolumn')
+				
+		except Exception as e:
+			return HttpResponse(e)
+
+# BASIC TABLE VIEW FUNCTIONALITY
+def Details(request, pkp):
+	try:
+		if request.session.has_key('user_id'):
+			user_in = Login.objects.get(id=request.session['user_id'])
+			user_email=user_in.email
+			menus = Base.objects.filter(created_by=user_email)
+			
+			user=Login.objects.all().exclude(id=request.session['user_id'])
+			# print(user)
+			users_obj=Users.objects.filter(user=user_email).values('fk_groupname')
+			users_array=[]
+			for item in users_obj:
+				users_array.append(item['fk_groupname'])
+			
+			group = Groupname.objects.filter(Q(pk__in= users_array) | Q(created_by=request.session['user_id'])).values('pk','group_name')
+			
+
+			print(group)
+			gp_names=[]
+			for item in group:
+				gp_names.append(item['group_name'])
+			base_tbl = Usergroup.objects.filter(Q(username=user_email) | Q(username__in=gp_names)).values('base_fk')
+			print(base_tbl)
+			tmp_array = []
+			for item in base_tbl:
+				tmp_array.append(item['base_fk'])
+			base_tbl = Base.objects.filter(pk__in=tmp_array).values('pk', 'base_name').exclude(created_by=user_email)		
+			
+			created_group = Groupname.objects.filter(created_by=request.session['user_id'])
+			
+			Message_me = Basecolumns.objects.filter(base_fk=pkp).count()
+			pros = Base.objects.filter(pk=pkp).values('base_name','pk')
+			if Message_me == 0:
+				return render(request,'view.html',{'status':0, 'menus':menus, 'pros':pros })
+			else:
+
+				# Fetching the columns related to master table
+				alls = Basecolumns.objects.filter(base_fk=pkp).values('base_name', 'c_name', 'base_fk','pk', 'd_type')
+
+				array_dtype = []
+				for item in alls:
+					array_dtype.append(item['d_type'])
+
+				tmp = []
+				# filtering columns primary key
+				for item in alls:
+					tmp.append(item['pk'])
+
+				mapp_value = []
+				map_filter_value = None
+
+				# Checking it is relation column
+				for item in alls:
+					if item['d_type'].isnumeric() == True:
+						mapp_value.append(item['d_type'])
+				if len(mapp_value) > 0:
+					mapp_filter_columns = Basecolumns.objects.filter(base_fk=mapp_value[0]).values('base_name', 'c_name', 'base_fk','pk', 'd_type')
+					mapp_filter_arry = []
+
+					for item in mapp_filter_columns:
+						if item['c_name'] == 'Name':
+							mapp_filter_arry.append(item['pk'])
+					map_filter_value = Basedetails.objects.filter(bc_fk__in=mapp_filter_arry).values('c_v','bc_fk','pk', 'row_num').order_by('row_num', 'bc_fk')
+					map_filter_value = list(map_filter_value)
+
+				# Fetching values related to column
+				querysets = Basedetails.objects.filter(bc_fk__in=tmp).values('c_v','bc_fk','pk', 'row_num').order_by('row_num', 'bc_fk')
+
+				# Final result of row values
+				column_values = []
+				# Final result of row value Id
+				colum_values_id =[]
+				# Final reslut of row number
+				column_row_val = []
+
+				# converting fetched basedetails object to list
+				querysets = list(querysets)
+				for item in querysets:
+					column_values.append(item['c_v'])
+					colum_values_id.append(item['pk'])
+					column_row_val.append(item['row_num'])
+
+				# Length of
+				length_base_details = len(column_values)
+				length_base_column = Basecolumns.objects.filter(base_fk=pkp).count()
+				total = int(length_base_details/length_base_column)
+
+				#Last row number ---> appending to table body as id
+				if len(column_row_val) == 0:
+					max_row = 0
+				else:
+					max_row  = max(column_row_val)
+
+
+				mylist = zip(column_values, colum_values_id, column_row_val)
+				mylist_length = len(column_values)
+
+
+
+			return render(request,'view.html',{ 'mylist_length':mylist_length,'base_tbl':base_tbl,'login_obj':user,'group':group,'crt_group':created_group, 'map_filter_value':map_filter_value, 'tytime':'Time', 'tydate':'Date', 'ttext':'Text', 'tnumeric':'Numeric', 'max_row':max_row, 'mylist':mylist, 'bc':length_base_column,'id':pkp, 'menus':menus, 'alls':alls, 'pros':pros})
+		return HttpResponseRedirect('/login')
+
+			#return JsonResponse({'base_relation': array_dtype})
+	except Exception as e:
+		print(e)
+		return HttpResponse(e)
+
+
+
+def Deletebase(request):
+    if request.method == "POST":
+        try:
+            login_id =Login.objects.get(id=request.session['user_id'])
+            # print(login_id)
+            login_user =login_id.email
+            # print(login_user)
+           
+            # print(request.POST['id'])
+
+            per_user=Usergroup.objects.filter(Q(username=login_user) & Q(base_fk=request.POST['id'])).values('delete_table')
+            data = Base.objects.filter(Q(created_by=login_user) & Q(pk=request.POST['id'])).count()
+            if (len(list(per_user)) > 0 and per_user[0]['delete_table'] == True)  or data >0:
+            
+
+                c=[]
+                service_id =request.POST['id']
+                print(service_id)
+                columns=Basecolumns.objects.filter(base_fk=service_id).values('pk')
+                print(columns)
+                for item in columns:
+                    c.append(item['pk'])
+                    print(c.append(item['pk']))
+                details = Basedetails.objects.filter(bc_fk__in=c).delete()
+                Basecolumns.objects.filter(base_fk=service_id).delete()
+                Base.objects.get(pk=service_id).delete()
+                data ={
+                    'deleted':True
+                }
+                return JsonResponse(data)
+            else:
+                return HttpResponse('No permission to Detlete')
+        except Exception as e:
+            return HttpResponse(e)
+
+def Deletebasedetails(request):
+
+    if request.method == "POST":
+        try:
+            login_id =Login.objects.get(id=request.session['user_id'])
+            # print(login_id)
+            login_user =login_id.email
+            # print(login_user)
+            
+            per_user=Usergroup.objects.filter(Q(username=login_user) & Q(base_fk=request.POST['id'])).values('truncate_table')
+            data = Base.objects.filter(Q(created_by=login_user) & Q(pk=request.POST['id'])).count()
+            if (len(list(per_user)) > 0 and per_user[0]['truncate_table'] == True)  or data >0:
+            
+
+                b =[]
+                del_id = request.POST['id']
+                print(del_id)
+                base_columns = Basecolumns.objects.filter(base_fk=del_id).values('pk')
+                print(base_columns)
+                for item in base_columns:
+                    b.append(item['pk'])
+                    # print(b.append(item['pk']))
+                details = Basedetails.objects.filter(bc_fk__in=b).delete()
+                Basecolumns.objects.filter(base_fk=del_id).delete()
+                data = {'deleted':True}
+                return JsonResponse(data)
+            else:
+                return HttpResponse('No permission to Detlete')
+
+        except Exception as e:
+            print(e)
+            return HttpResponse(e)
+
+
+
+def fetchdetails(request, pkp):
+	try:
+		a = []
+		colss = Baycolumns.objects.filter(fk_baymaster=pkp).values('bay_col_name','fk_baymaster','pk')
+		for item in colss:
+			a.append(item['pk'])
+		details = Baycolumnsvalues.objects.filter(fk_baycolumns__in=a).values('baycolvalue', 'pk', 'fk_baycolumns')
+		return render(request,'display.html',{'colss':colss, 'ranges':range(1), 'details':details})
+	except Exception as e:
+		return HttpResponse(e)
+
+def Columndelete(request):
+    if request.method == "POST":
+        try:
+            login_id =Login.objects.get(id=request.session['user_id'])
+            # print(login_id)
+            login_user =login_id.email
+            # print(login_user)
+            per_user=Usergroup.objects.filter(Q(username=login_user) & Q(base_fk=request.POST['base_id'])).values('column_delete')
+            data = Base.objects.filter(Q(created_by=login_user) & Q(pk=request.POST['base_id'])).count()
+            if (len(list(per_user)) > 0 and per_user[0]['column_delete'] == True)  or data >0:
+            
+
+                del_id = request.POST['id']
+                print(del_id)
+                col_id = Basecolumns.objects.get(id=del_id)
+                print(col_id)
+
+                details = Basedetails.objects.filter(bc_fk=col_id).delete()
+                Basecolumns.objects.filter(id=del_id).delete()
+                data = {'deleted': True}
+                return JsonResponse(data)
+            else:
+                 messages.success(request,'User have no permission for Delete column')
+
+        except Exception as e:
+            print(e)
+            return HttpResponse(e)
+
+
+def Updatedetails(request):
+	if request.method == "POST":
+		try:
+			login_id =Login.objects.get(id=request.session['user_id'])
+            # print(login_id)
+			login_user =login_id.email
+			per_user=Usergroup.objects.filter(Q(username=login_user) & Q(base_fk=request.POST['base_id'])).values('row_edit')
+			data = Base.objects.filter(Q(created_by=login_user) & Q(pk=request.POST['base_id'])).count()
+			if (len(list(per_user)) > 0 and per_user[0]['row_edit'] == True)  or data >0:
+
+				details_id =request.POST['id']
+				base_data =  Basedetails.objects.get(pk=details_id)
+				update = 0
+				if base_data.c_v != request.POST['d']:
+					base_data.c_v = request.POST['d']
+					update=update + 1
+				if update > 0 :
+					base_data.save()
+					update = 100
+				return JsonResponse({'dataresult':update})
+			else:
+				messages.success(request,'User have no permission for update details')
+		except Exception as e:
+			return HttpResponse(e)
+
+
+
+
+def Addclonedrow(request):
+    if request.method == "POST":
+        try:
+            login_id =Login.objects.get(id=request.session['user_id'])
+            # print(login_id)
+            login_user =login_id.email
+            # print(login_user)
+            per_user=Usergroup.objects.filter(Q(username=login_user) & Q(base_fk=request.POST['base_id'])).values('row_add')
+            print(per_user)
+            data = Base.objects.filter(Q(created_by=login_user) & Q(pk=request.POST['base_id'])).count()
+            print(data)
+            if (len(list(per_user)) > 0 and per_user[0]['row_add'] == True)  or data >0:
+            
+
+                d1 = request.POST['d1']
+                row_num = request.POST['mx']
+                rr      =request.POST['rr']
+                basedetails_obj = Basedetails.objects.get(id=rr)
+                rl = basedetails_obj.bc_fk
+                print(rl)
+                max_row = int(row_num) + 1
+                if d1 != '' and rl != '':
+                    Basedetails.objects.create(c_v= d1, row_num= max_row, bc_fk=rl)
+                    return HttpResponse('Adddetails')
+            else:
+                 messages.success(request,'User have no permission for addrow')
+
+        except Exception as e:
+            print(e)
+            return HttpResponse(e)
+
+
+
+
+def Copy(request):
+	if request.method =="POST":
+		try:
+			row_num =request.POST['rid']
+
+			fk    = request.POST['fk']
+			alls = Basecolumns.objects.filter(base_fk=fk).values('pk', 'base_fk')
+            # filtering columns primary key
+			tmp = []
+			for item in alls:
+				tmp.append(item['pk'])
+
+			# querysets = Basedetails.objects.filter(bc_fk__in=tmp).values('c_v','bc_fk','pk', 'row_num').order_by('row_num', 'bc_fk')
+			querysets=Basedetails.objects.filter(Q(bc_fk__in=tmp) & Q(row_num=row_num)).values('c_v','bc_fk','pk', 'row_num').order_by('row_num', 'bc_fk')
+
+
+			# print(querysets)
+
+			return JsonResponse({'data':list(querysets)})
+
+
+
+
+		except Exception as e:
+			print(e)
+			return HttpResponse(e)
+
+
+def Copyadd(request):
+	if request.method == "POST":
+		try:
+
+			d1 = request.POST['d1']
+			rr = request.POST['rr']
+			max_row = request.POST['mx']
+
+			max_row = int(max_row) + 1
+			if(d1 != '' and rr != ''):
+				Basedetails.objects.create(c_v= d1, bc_fk= rr, row_num= max_row)
+				return HttpResponse('Adddetails')
+		except Exception as e:
+			return HttpResponse(e)
+
+
+
+def inline_type(request):
+	if request.method == "POST":
+		try:
+			key = request.POST['key']
+			querysets=Basedetails.objects.filter(pk=key).values('c_v','bc_fk','pk', 'row_num').order_by('row_num', 'bc_fk')
+			querysets = list(querysets)
+			querysets = Basecolumns.objects.filter(pk=querysets[0]['bc_fk']).values('pk', 'd_type')
+			querysets = list(querysets)
+
+			relation_val_pk = [];
+			relation_val = [];
+
+			if len(querysets) >0:
+				if querysets[0]['d_type'].isnumeric() == True:
+					base = Basecolumns.objects.filter(base_fk=querysets[0]['d_type']).values('base_name', 'c_name', 'base_fk','pk', 'd_type')
+					for item in base:
+						if item['c_name'] == 'Name':
+							relation_val_pk.append(item['pk'])
+
+			relation = Basedetails.objects.filter(bc_fk__in=relation_val_pk).values('c_v','bc_fk','pk', 'row_num')
+			for item in relation:
+				relation_val.append(item['c_v'])
+
+			return JsonResponse({'Result':querysets, 'Relation':relation_val})
+
+		except Exception as e:
+			return HttpResponse(e)
+
+
+def delete_row(request):
+	if request.method == "POST":
+		try:
+			login_id = Login.objects.get(id=request.session['user_id'])
+			login_user = login_id.email
+			per_user=Usergroup.objects.filter(Q(username=login_user) & Q(base_fk=request.POST['base_id'])).values('row_delete')
+			data = Base.objects.filter(Q(created_by=login_user) & Q(pk=request.POST['base_id'])).count()
+			if (len(list(per_user)) > 0 and per_user[0]['row_delete'] == True)  or data >0:
+				m_id = request.POST['id']
+				Basedetails.objects.filter(pk=m_id).delete()
+				return HttpResponse('Done')
+			else:
+				messages.success(request,'User have no permission for Delete row')
+		except Exception as e:
+			return HttpResponse(e)
+
+
+
+# RENAMING COLUMN
+def edit_column(request):
+    if request.method == "POST":
+        try:
+            login_id =Login.objects.get(id=request.session['user_id'])
+            # print(login_id)
+            login_user =login_id.email
+            # print(login_user)
+            per_user=Usergroup.objects.filter(Q(username=login_user) & Q(base_fk=request.POST['base_id'])).values('column_edit')
+            data = Base.objects.filter(Q(created_by=login_user) & Q(pk=request.POST['base_id'])).count()
+            if (len(list(per_user)) > 0 and per_user[0]['column_edit'] == True)  or data >0:
+            
+                # COLUMN ID
+                c_id = request.POST['id']
+                # NEW NAME OF COLUMN
+                c_val = request.POST['val']
+                Basecolumns.objects.filter(pk=c_id).update(c_name=c_val)
+                return JsonResponse({'id': c_id, 'val': c_val})
+            else:
+                 messages.success(request,'User have no permission for Edit column')
+
+        except Exception as e:
+            return HttpResponse(e)
+
+def Logout(request):
+    # s=request.session['user_id']
+    # s.delete()
+    # session_destroy()
+	try:
+		if request.session.has_key('user_id'):
+			# del request.session['user_id']
+			request.session.flush()
+			return HttpResponseRedirect('/login')
+		else:
+			return HttpResponseRedirect('/login')
+	except Exception as e:
+		return HttpResponse(e)
+
+#user permission
+
+def Adminpermission(request):
+	try:
+		if request.method == 'POST':
+			ids = request.POST['id']
+			print(ids)
+			uname = request.POST['u_name']
+			print(uname)
+			ucount = Usergroup.objects.filter(Q(username=uname) & Q(base_fk=ids)).count()
+			print(ucount)
+			if ucount == 0:
+				
+				addcol = request.POST['addcol']
+				ecol = request.POST['editcol']
+				delcol = request.POST['delcol']
+				rowadd = request.POST['addrow']
+				erow = request.POST['editrow']
+				delrow = request.POST['deleterow']
+				rowview = request.POST['viewrow']
+				viewcol = request.POST['viewcol']
+				deltable = request.POST['deltable']
+				truncatetable = request.POST['truncatetable']
+				Usergroup.objects.create(username= uname, column_add= addcol, column_delete= delcol,column_edit=ecol,
+				row_add=rowadd,row_edit=erow,row_delete=delrow,column_view=viewcol,row_view=viewcol,base_fk=ids,delete_table=deltable,
+				truncate_table=truncatetable)
+			else:
+				user_obj = Usergroup.objects.get(username=uname)
+			update =0
+			if user_obj.column_add != request.POST['addcol']:
+				user_obj.column_add = request.POST['addcol']
+				update += 1
+			if user_obj.column_delete != request.POST['delcol']:
+				user_obj.column_delete = request.POST['delcol']
+				update += 1
+			if user_obj.column_edit != request.POST['editcol']:
+				user_obj.column_edit = request.POST['editcol']
+				update += 1	
+			if user_obj.row_add != request.POST['addrow']:
+				user_obj.row_add = request.POST['addrow']
+				update += 1
+			if user_obj.row_edit != request.POST['editrow']:
+				user_obj.row_edit = request.POST['editrow']
+				update += 1	
+			if user_obj.row_delete != request.POST['deleterow']:
+				user_obj.row_delete = request.POST['deleterow']
+				update += 1		
+			if user_obj.row_view != request.POST['viewrow']:
+				user_obj.row_view = request.POST['viewrow']
+				update += 1		
+			if user_obj.column_view != request.POST['viewcol']:
+				user_obj.column_view =request.POST['viewcol']
+				update += 1
+			if user_obj.delete_table!= request.POST['deltable']:
+				user_obj.delete_table = request.POST['deltable']
+				update += 1
+			if user_obj.truncate_table != request.POST['truncatetable']:
+				user_obj.truncate_table= request.POST['truncatetable']
+				update += 1		
+			if update > 0:
+				user_obj.save()
+		return render(request,'view.html')
+	except Exception as e:
+		print(e)
+		return HttpResponse(e)
+
+# FETCHING RELATION COLUMNS OF THE TABLE
+def filter_columns_for_relation(request):
+    if request.method == "POST":
+        try:
+            fk = request.POST['fk']
+            result = Basecolumns.objects.filter(base_fk=fk).values('c_name', 'pk')
+            return JsonResponse({'Result':list(result)})
+
+        except Exception as e:
+            return HttpResponse(e)
+
+
+# FETCHING RELATION TABLE OF THE TABLE
+def relation_maters(request):
+    if request.method == "POST":
+        try:
+            key = request.POST['key']
+            user = Login.objects.get( id=request.session['user_id'] )
+            user_email = user.email
+            data = Base.objects.filter( created_by=user_email).values('fk', 'pk', 'base_name')
+            #list_fk = [ item['fk'] for item in data ]
+            #data = Base.objects.filter(pk__in=list_fk).values('pk', 'base_name')
+            return JsonResponse({'Result':list(data)})
+        except Exception as e:
+            return HttpResponse(e)
+    else:
+        return HttpResponse('Request not POST')
+
+
+# SAVING THE RELATION COLUMN
+def save_relation_column(request):
+    if request.method == 'POST':
+        try:
+            # COLUMN PRIMARY KEY
+            colum_pk = request.POST['key']
+            # TABLE PRIMARY KEY
+            table_pk = request.POST['m_key']
+            # NAME OF THE COLUMN
+            name = request.POST['name']
+            # MAXIMUM NUMBER OF ROWS HAVE
+            max_row = request.POST['mx']
+            data_column = Basecolumns.objects.filter(pk=colum_pk).values('pk', 'c_name', 'base_fk', 'd_type')
+            data_column = list(data_column)
+            Basecolumns.objects.create(c_name=data_column[0]['c_name']+ ' ( ' + name + ' )', base_fk=table_pk, d_type=data_column[0]['base_fk'])
+            max_row = int(max_row) + 1
+            # THE ID OF NEW COLUMN CREATED
+            f = Basecolumns.objects.latest('id')
+
+            for item in range( 1, int( max_row ) ):
+                Basedetails.objects.create(c_v='No', bc_fk=f, row_num=item)
+            return JsonResponse({'data': 'Success'})
+
+        except Exception as e:
+            return HttpResponse(e)
+#USERGROUP
+def Usergroups(request):
+    try:
+        if request.method == 'POST':
+            try:
+				
+                group = request.POST['groupname']
+                dl=request.POST['length']
+                Groupname.objects.create(group_name=group,created_by=request.session['user_id'])
+                group_id=Groupname.objects.filter(group_name=group).values('pk')
+                print(group_id)
+                for i in range (0,int(dl)):
+                    user = request.POST.getlist('user[]')[i]
+                    Users.objects.create(user=user, fk_groupname=group_id[0]['pk'])
+                return HttpResponse('OK')
+            except Exception as e:
+                return HttpResponse(e)
+    except Exception as e:
+          print(e)
+          return HttpResponse(e)
+
+
+def groupfns(request):
+	try:
+		if request.method == 'POST':
+			login_obj =Login.objects.all()
+			user = Login.objects.get(id=request.session['user_id'])
+			user_email = user.email
+			menus = Base.objects.filter(created_by=user_email)
+			grpids = request.POST.get('selgroup')
+			# print(grpids)
+			grpname = Groupname.objects.get(id=grpids)
+			# print(grpname.group_name)
+			gname=grpname.group_name
+			userpermission = Usergroup.objects.filter(username=gname)
+			userper = Usergroup.objects.get(username=gname)
+			base_id=userper.base_fk
+			base_name=Base.objects.get(id=base_id)
+
+			user_obj = Users.objects.filter(fk_groupname=grpids).values('user','pk')
+			# print(user_obj)
+			users_obj=Users.objects.filter(user=user_email).values('fk_groupname')
+			users_array=[]
+			for item in users_obj:
+				users_array.append(item['fk_groupname'])
+			print("User array : ")
+			print(users_array)
+			group = Groupname.objects.filter(Q(pk__in= users_array) | Q(created_by=request.session['user_id'])).values('pk','group_name')
+			print(list(group))
+			gp_names=[]
+			for item in group:
+			    gp_names.append(item['group_name'])
+			base_tbl = Usergroup.objects.filter(Q(username=user_email) | Q(username__in=gp_names)).values('base_fk')
+			print(base_tbl)
+			tmp_array = []
+			for item in base_tbl:
+				tmp_array.append(item['base_fk'])
+			base_tbl = Base.objects.filter(pk__in=tmp_array).values('pk', 'base_name').exclude(created_by=user_email)
+		return render(request,'usergroup.html',{'grpmembers':user_obj,'permission':userpermission,'basename':base_name,'base_tbl':base_tbl,'group':group,'grpname':grpname,'menus':menus,'login_obj':login_obj})
+
+	except Exception as e:
+          print(e)
+          return HttpResponse(e)
+
+def groupedit(request):
+	try:
+		if request.method == "POST":
+			grp_obj =Groupname.objects.get(id=request.POST['id'])
+			print(grp_obj)
+			grp_name=grp_obj.group_name
+			print(grp_name)
+			user_per_name = Usergroup.objects.get(username=grp_name)
+			print(user_per_name)
+			gp_name=request.POST['groupname']
+			count=0
+			if grp_obj.group_name != gp_name:
+				grp_obj.group_name =gp_name
+				count +=1
+			if count >0:
+				grp_obj.save()
+				a=0
+				if user_per_name.username != gp_name:
+					user_per_name.username =gp_name
+					a +=1
+				if a> 0:
+					user_per_name.save()
+
+
+		return HttpResponse('Done')		
+	except Exception as e:
+          print(e)
+          return HttpResponse(e)	
+
+def Addtogroup(request):
+	try:
+		if request.method == "POST":
+			group_id =request.POST['gpid']
+			dl=request.POST['dl']
+			for i in range (0,int(dl)):
+				group_name=request.POST.getlist('groupname[]')[i]
+				Users.objects.create(user=group_name, fk_groupname=group_id)
+		# return HttpResponse('Done')		
+	except Exception as e:
+          print(e)
+          return HttpResponse(e)			
+
+def Deleteusers(request):
+	try:
+		if request.method == "POST":
+			id = request.POST['id']
+			Users.objects.get(id=id).delete()
+			data ={'deleted':True}
+			return JsonResponse(data)
+	except Exception as e:
+          print(e)
+          return HttpResponse(e)
+
+def Updatepermission(request):
+	try:
+		if request.method == "POST":
+			user_obj = Usergroup.objects.get(id=request.POST['id'])
+			update =0
+			if user_obj.column_add != request.POST['addcol']:
+				user_obj.column_add = request.POST['addcol']
+				update += 1
+			if user_obj.column_delete != request.POST['delcol']:
+				user_obj.column_delete = request.POST['delcol']
+				update += 1
+			if user_obj.column_edit != request.POST['editcol']:
+				user_obj.column_edit = request.POST['editcol']
+				update += 1	
+			if user_obj.row_add != request.POST['addrow']:
+				user_obj.row_add = request.POST['addrow']
+				update += 1
+			if user_obj.row_edit != request.POST['editrow']:
+				user_obj.row_edit = request.POST['editrow']
+				update += 1	
+			if user_obj.row_delete != request.POST['deleterow']:
+				user_obj.row_delete = request.POST['deleterow']
+				update += 1		
+			if user_obj.row_view != request.POST['viewrow']:
+				user_obj.row_view = request.POST['viewrow']
+				update += 1		
+			if user_obj.column_view != request.POST['viewcol']:
+				user_obj.column_view =request.POST['viewcol']
+				update += 1
+			if user_obj.delete_table!= request.POST['deltable']:
+				user_obj.delete_table = request.POST['deltable']
+				update += 1
+			if user_obj.truncate_table != request.POST['truncatetable']:
+				user_obj.truncate_table= request.POST['truncatetable']
+				update += 1		
+			if update > 0:
+				user_obj.save()	
+				data ={'updated':True}
+				return JsonResponse(data)
+	except Exception as e:
+          print(e)
+          return HttpResponse(e)
+def forgetpassword(request):
+    if request.method == "POST":
+        email =request.POST['email']
+
+        user= Login.objects.get(email=email)
+        current_site = get_current_site(request)
+        email_subject = 'Reset the Password'
+        message = render_to_string('resetpass.html', {
+        'user': user,
+        'domain': current_site.domain,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': password_reset_token.make_token(user),
+        })
+        to_email = email
+        email = EmailMessage(email_subject, message, to=[to_email])
+        email.send()
+        messages.success(request, 'We have sent you an reset link in the mail, please confirm your email address to reset')
+    return render(request,"forgetpass.html")
+
+def password_reset_confirm(request,uidb64, token):
+
+    try:
+
+
+        uid = force_bytes(urlsafe_base64_decode(uidb64))
+        user =  Login.objects.get(pk=uid)
+        print(user.id)
+
+
+        return render(request,'passwordset.html',{'user':user})
+    except Exception as e:
+        print(e)
+        return HttpResponse(e)
+
+
+def Newpassword(request):
+    try:
+        if request.method == "POST" :
+            user = Login.objects.get(id=request.POST['id'] )
+            password = request.POST['password']
+            print(user.password)
+            update = 0
+            if user.password != password :
+                user.password =password
+                update += 1
+            if update >0:
+                user.save()
+                messages.success(request, 'Password has been reset.')
+                return HttpResponseRedirect('/login')
+            return JsonResponse({'data':updated})
+
+    except Exception as e:
+        print(e)
+        return HttpResponse(e)
+
+
+
+def userprofile(request):
+	if request.method == "POST":
+		form = ProfileForm(request.POST, request.FILES)
+		if form.is_valid():
+			try:
+				data_count = Profile.objects.filter(log_fk=request.session['user_id']).count()
+				if data_count == 0:
+					section = form.save(commit=False)
+					section.log_fk = request.session['user_id']
+					section.save()
+					return HttpResponse('Fone')
+				else:
+					pro = Profile.objects.get(log_fk=request.session['user_id'])
+					form_up = ProfileForm(request.POST, request.FILES, instance = pro)
+					form_up.save()
+					return HttpResponse(form_up)
+			except Exception as e:
+				return HttpResponse(e)
+		else:
+			return HttpResponse(form)
+	else:
+		data_count = Profile.objects.filter(log_fk=request.session['user_id']).count()
+		if data_count > 0:
+			pro = Profile.objects.get(log_fk=request.session['user_id'])
+			form = ProfileForm(instance= pro)
+			return render(request,'userdetails.html',{'form':form, 'pro':pro})  
+		else:
+			form = ProfileForm()
+			return render(request,'userdetails.html',{'form':form})
+
+def infoedit(request):
+    try:
+        if request.method == "POST" :
+            basedata=Base.objects.get(id=request.POST['id'])
+            update = 0
+            if basedata.base_name != request.POST['bname'] :
+                basedata.base_name =request.POST['bname']
+                update += 1
+
+            if basedata.technical_name != request.POST['tname'] :
+                basedata.technical_name =request.POST['tname']
+                update += 1
+            if basedata.table_type != request.POST['ttype'] :
+                basedata.table_type =request.POST['ttype']
+                update += 1
+            if basedata.discription != request.POST['desc'] :
+                basedata.discription =request.POST['desc']
+                update += 1
+            if basedata.purpose != request.POST['purp'] :
+                basedata.purpose =request.POST['purp']
+                update += 1
+            if basedata.bcp != request.POST['bcp'] :
+                basedata.bcp =request.POST['bcp']
+                update += 1
+            if basedata.tags != request.POST['tag'] :
+                basedata.tags =request.POST['tag']
+                update += 1
+            if update >0:
+                basedata.save()
+        return JsonResponse({'data':updated})
+
+    except Exception as e:
+        print(e)
+        return HttpResponse(e)
+
+def Invite(request):
+    if request.method == "POST":
+        email =request.POST['email']
+        user=Login.objects.get(email=email)
+        user.save()
+
+
+        current_site = get_current_site(request)
+        email_subject = 'Invitation'
+        message = render_to_string('invitemail.html', {
+        'user': user,
+        'domain': current_site.domain,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': Invite_token.make_token(user),
+        })
+        to_email = user.email
+        email = EmailMessage(email_subject, message, to=[to_email])
+        email.send()
+        messages.success(request, 'We have sent you  link in the mail, please confirm your email address to Login')
+    return HttpResponseRedirect('/index')
+
+def Updatepassword(request):
+	try:
+		if request.method == "POST":
+			user = Login.objects.get(id=request.session['user_id'])
+			print(user)
+			cpass =request.POST['cpass']
+			print(cpass)
+			npass =request.POST['npass']
+			if user.password == cpass :
+				update = 0
+				if user.password != npass :
+					user.password = npass
+					update += 1
+					if update >0:
+						user.save()
+						messages.success(request, 'New password Updated')
+
+				else:
+					messages.success(request, 'New password same as old Password')
+
+			else:
+				messages.success(request, 'Current password not same')
+
+		return HttpResponseRedirect('/userprofile')
+	except Exception as e:
+		print(e)
+		return HttpResponse(e)
+
+# FEED PAGE
+def Feedpageload(request,pkp):
+	try:
+	
+		user = Login.objects.get(id=request.session['user_id'])
+		return render(request,'feed.html',{'pkp':pkp})
+	except Exception as e:
+		print(e)
+
+def Feedmessage(request):
+	try:
+		if request.method == "POST" :
+			message =request.POST['message']
+			print(message)
+			user    =request.session['user_id']
+			base_id = request.POST['id']
+			send_by = Usergroup.objects.filter(base_fk= base_id).values('username')
+			print(send_by.username)
+			if user == send_by:
+				feed.objects.create(user=user,message=message,base_fk=base_id)
+
+		return HttpResponse('Done')	
+	except Exception as e:	
+		print(e)

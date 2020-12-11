@@ -1,0 +1,101 @@
+{% extends 'index.html' %}
+{% block content %}
+
+<style>
+    table {
+  font-family: 'Arial';
+  margin: 25px auto;
+  border-collapse: collapse;
+  border: 1px solid #eee;
+  border-bottom: 2px solid #00cccc;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1), 0px 10px 20px rgba(0, 0, 0, 0.05), 0px 20px 20px rgba(0, 0, 0, 0.05), 0px 30px 20px rgba(0, 0, 0, 0.05);
+}
+
+table th, table td {
+  color: #999;
+  border: 1px solid #eee;
+  padding: 12px 35px;
+  border-collapse: collapse;
+}
+
+table th {
+  background: #365277;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+table th.last {
+  border-right: none;
+}
+
+
+
+body{
+
+color:#ccc;
+}
+</style>
+
+<!------ Include the above in your HEAD tag ---------->
+
+<container>
+    <a href="#" class="reportexport"><button type="button" class="btn btn-default btn-lg" id="reportExport"><span class="glyphicon glyphicon-download-alt"></span> Export into Excel
+
+    </button></a> &nbsp;
+
+    <a href="#" class="" ><button type="button" id="cmd" onclick="getPDF()" class="btn btn-default btn-lg" ><span class="glyphicon glyphicon-download-alt"></span> Export into Pdf
+
+    </button></a>
+    <div id=""></div>
+     {% if del_per_check == t%}
+    <button value="{{id}}" style="float: right;" class="btn btn-danger btn-lg reportdelete" hide >Delete</button>
+
+   {%endif%}
+    <br><br>
+	</container>
+	<div class="canvas_div_pdf">
+    <center><h3>{{dname}}</h3></center>
+    <h6 style="float: right;">{{rdate}}</h6>
+    <br>
+    <hr>
+	<table class="table table-condensed datatable table-bordered" id="Reporttable">
+  <thead>
+        <tr>
+            {% for c_name in base_cols %}
+            <th>{{c_name.c_name}}</th>
+              {% endfor %}
+        </tr>
+
+    </thead>
+     <tbody id= "{{max_row}}" class="table_body">
+      <tr id="0">
+          {% for c, id, row_id,data_type in mylist %}
+              {% if forloop.counter|divisibleby:bc and forloop.counter != mylist_length %}
+                 <td id="{{id}}" class="" >
+                {% if data_type == timage%}
+                    <img src="{{c}}" class="td_image">
+                {% else %}
+                    {{c}}
+                {% endif %}
+              </td>
+                  </tr>
+                  <tr id="{{row_id}}">
+              {%else%}
+                  <td id="{{id}}" class="" >
+                {% if data_type == timage%}
+                    <img src="{{c}}" class="td_image">
+                {% else %}
+                    {{c}}
+                {% endif %}
+              </td>
+              {%endif%}
+          {% endfor %}
+                  </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+{% endblock %}
